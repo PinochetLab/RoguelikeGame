@@ -7,6 +7,9 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Roguelike.Field;
+using Roguelike.VectorUtility;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Roguelike
 {
@@ -14,26 +17,27 @@ namespace Roguelike
     {
 
         private Texture2D texture;
-        private SpriteBatch spriteBatch;
-        private bool flipX = true;
-        private bool flipY = false;
+        private SpriteBatch spriteBatch = RoguelikeGame.instance.SpriteBatch;
 
-        public bool FlipX { get => flipX; set => flipX = value; }
-        public bool FlipY { get => flipY; set => flipY = value; }
+        public bool FlipX { get; set; } = false;
+        public bool FlipY { get; set; } = false;
 
-        public SpriteComponent(string path)
+        public SpriteComponent(Actor actor) : base(actor) { }
+
+        public void LoadTexture(string textureName)
         {
-            texture = RoguelikeGame.instance.LoadTexture(path);
-            spriteBatch = RoguelikeGame.instance.SpriteBatch;
+            texture = RoguelikeGame.instance.LoadTexture(textureName);
         }
 
-        public void Draw(Vector2 position)
+        public void Draw()
         {
-            SpriteEffects effect = SpriteEffects.None;
-            if (flipX) effect |= SpriteEffects.FlipHorizontally;
-            if (flipY) effect |= SpriteEffects.FlipVertically;
-            Rectangle rectangle = new Rectangle((int)position.X, (int)position.Y, 50, 50);
-            spriteBatch.Draw(texture, rectangle, null, Color.White, 0, Vector2.One, effect, 0);
+            Vector2Int position = Transform.Position * FieldInfo.CellSize;
+            var effect = SpriteEffects.None;
+            if (FlipX) effect |= SpriteEffects.FlipHorizontally;
+            if (FlipY) effect |= SpriteEffects.FlipVertically;
+            var rect = new Rectangle(position.X, position.Y, (int)(FieldInfo.CellSize * Transform.Scale.X), (int)(FieldInfo.CellSize * Transform.Scale.Y));
+            var rectSize = new Rectangle(0, 0, texture.Width, texture.Height);
+            spriteBatch.Draw(texture, rect, rectSize, Color.WhiteSmoke, 0, Vector2.Zero, effect, 0);
         }
     }
 }

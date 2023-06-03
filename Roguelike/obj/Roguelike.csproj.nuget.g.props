@@ -15,5 +15,6 @@
   </ItemGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)monogame.content.builder.task\3.8.1.303\build\MonoGame.Content.Builder.Task.props" Condition="Exists('$(NuGetPackageRoot)monogame.content.builder.task\3.8.1.303\build\MonoGame.Content.Builder.Task.props')" />
+    <Import Project="$(NuGetPackageRoot)apos.shapes\0.1.9\build\Apos.Shapes.props" Condition="Exists('$(NuGetPackageRoot)apos.shapes\0.1.9\build\Apos.Shapes.props')" />
   </ImportGroup>
 </Project>

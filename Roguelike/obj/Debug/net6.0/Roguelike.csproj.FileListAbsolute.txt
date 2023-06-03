@@ -23,4 +23,9 @@ D:\Education\SE\Roguelike\Roguelike\obj\Debug\net6.0\refint\Roguelike.dll
 D:\Education\SE\Roguelike\Roguelike\obj\Debug\net6.0\Roguelike.pdb
 D:\Education\SE\Roguelike\Roguelike\obj\Debug\net6.0\Roguelike.genruntimeconfig.cache
 D:\Education\SE\Roguelike\Roguelike\obj\Debug\net6.0\ref\Roguelike.dll
-D:\Education\SE\Roguelike\Roguelike\bin\Debug\net6.0\Content\hero.xnb
+D:\Education\SE\Roguelike\Roguelike\bin\Debug\net6.0\Content\apos-shapes.xnb
+D:\Education\SE\Roguelike\Roguelike\bin\Debug\net6.0\Apos.Shapes.dll
+D:\Education\SE\Roguelike\Roguelike\bin\Debug\net6.0\Content\FloorTile.xnb
+D:\Education\SE\Roguelike\Roguelike\bin\Debug\net6.0\Content\HeroSprite.xnb
+D:\Education\SE\Roguelike\Roguelike\bin\Debug\net6.0\Content\GrassTile.xnb
+D:\Education\SE\Roguelike\Roguelike\bin\Debug\net6.0\Content\Wall.xnb

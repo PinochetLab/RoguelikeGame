@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using Roguelike.Components;
+using Roguelike.VectorUtility;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,41 +13,27 @@ namespace Roguelike
     public class Actor
     {
 
-        protected Vector2 position { get; set; } = Vector2.Zero;
-        protected Vector2 scale { get; set; } = Vector2.One;
-        protected float angle { get; set; } = 0;
+        public TransformComponent Transform;
 
-        protected Actor()
-        {
-
-        }
-
-        protected Actor(Vector2 position, Vector2 scale, float angle)
-        {
-            this.position = position;
-            this.scale = scale;
-            this.angle = angle;
+        public Actor(Vector2Int position) {
+            Transform = new TransformComponent(this, position);
             RoguelikeGame.AddActor(this);
             OnStart();
         }
 
-        public virtual void OnStart()
-        {
+        public virtual void OnStart() {
 
         }
 
-        public virtual void Update(float deltaTime)
-        {
+        public virtual void Update(float deltaTime) {
 
         }
 
-        public virtual void Draw(float deltaTime)
-        {
+        public virtual void Draw(float deltaTime) {
 
         }
 
-        public virtual void Destroy()
-        {
+        public virtual void Destroy() {
             RoguelikeGame.RemoveActor(this);
         }
     }

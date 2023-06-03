@@ -14,7 +14,7 @@ namespace Roguelike
 
         public static bool IsPressed(Keys key)
         {
-            if (states.TryGetValue(key, out KeyState state))
+            if (states.TryGetValue(key, out var state))
             {
                 return state.Pressed;
             }
@@ -23,7 +23,7 @@ namespace Roguelike
 
         public static bool IsDown(Keys key)
         {
-            if (states.TryGetValue(key, out KeyState state))
+            if (states.TryGetValue(key, out var state))
             {
                 return state.IsDown;
             }
@@ -32,7 +32,7 @@ namespace Roguelike
 
         public static bool IsUp(Keys key)
         {
-            if (states.TryGetValue(key, out KeyState state))
+            if (states.TryGetValue(key, out var state))
             {
                 return state.IsUp;
             }

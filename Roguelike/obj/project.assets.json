@@ -2,6 +2,22 @@
   "version": 3,
   "targets": {
     "net6.0": {
+      "Apos.Shapes/0.1.9": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.1/Apos.Shapes.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.1/Apos.Shapes.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "build/Apos.Shapes.props": {}
+        }
+      },
       "MonoGame.Content.Builder.Task/3.8.1.303": {
         "type": "package",
         "build": {
@@ -58,6 +74,23 @@
     }
   },
   "libraries": {
+    "Apos.Shapes/0.1.9": {
+      "sha512": "jQYJnKxRW8TL3nlWHi+AgHJhUwF4/vm4f/cPkjn+nKMfWuxGDKgaABKE29c4AwpojGB1UuETcDX82hSqQitN4A==",
+      "type": "package",
+      "path": "apos.shapes/0.1.9",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "apos.shapes.0.1.9.nupkg.sha512",
+        "apos.shapes.nuspec",
+        "build/Apos.Shapes.props",
+        "build/Content/Content.mgcb",
+        "build/Content/apos-shapes.fx",
+        "lib/netstandard2.1/Apos.Shapes.dll",
+        "lib/netstandard2.1/Apos.Shapes.xml"
+      ]
+    },
     "MonoGame.Content.Builder.Task/3.8.1.303": {
       "sha512": "9Ilzzje62LhWElbPNEl7vh7XsRSbze+lvCJdZtTZUGu48FRgvYN6THURwIB9PN98EI33/Wnf6iuShNUtD7hL4Q==",
       "type": "package",
@@ -97,6 +130,7 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
+      "Apos.Shapes >= 0.1.9",
       "MonoGame.Content.Builder.Task >= 3.8.1.303",
       "MonoGame.Framework.DesktopGL >= 3.8.1.303"
     ]
@@ -145,6 +179,10 @@
       "net6.0": {
         "targetAlias": "net6.0",
         "dependencies": {
+          "Apos.Shapes": {
+            "target": "Package",
+            "version": "[0.1.9, )"
+          },
           "MonoGame.Content.Builder.Task": {
             "target": "Package",
             "version": "[3.8.1.303, )"

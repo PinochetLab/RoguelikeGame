@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Roguelike.VectorUtility;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
+using Roguelike.Field;
+using Roguelike.Components;
+using Roguelike.Components.ColliderComponent;
 
 namespace Roguelike
 {
@@ -14,50 +18,72 @@ namespace Roguelike
 
         private SpriteComponent spriteComponent;
 
+        private ColliderComponent collider;
+
         private float speed = 200;
 
-        public static Hero Spawn(Vector2 position)
-        {
-            return Spawn(position, Vector2.One, 0);
-        }
-
-        public static Hero Spawn(Vector2 position, Vector2 scale, float angle)
-        {
-            return new Hero(position, scale, angle);
-        }
-
-        private Hero(Vector2 position, Vector2 scale, float angle) : base(position, scale, angle)
-        {
-
-        }
+        public Hero(Vector2Int position) : base(position) { }
 
         public override void OnStart()
         {
             base.OnStart();
 
-            spriteComponent = new SpriteComponent("hero");
+            spriteComponent = new SpriteComponent(this);
+            spriteComponent.LoadTexture("HeroSprite");
+
+            //collider = new ColliderComponent(this);
+        }
+
+        private void OnTrigger(ColliderComponent other) {
+
         }
 
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
 
-            float hor = (Input.IsPressed(Keys.D) ? 1 : 0) + (Input.IsPressed(Keys.A) ? -1 : 0);
-            float ver = (Input.IsPressed(Keys.W) ? -1 : 0) + (Input.IsPressed(Keys.S) ? 1 : 0);
+            Vector2Int direction = Vector2Int.Zero;
 
-            Vector2 direction = Vector2.UnitX * hor + Vector2.UnitY * ver;
-            if (direction.Length() > 0) direction.Normalize();
+            if (Input.IsDown(Keys.D))
+            {
+                direction = Vector2Int.Right;
+            }
+            else if (Input.IsDown(Keys.A))
+            {
+                direction = Vector2Int.Left;
+            }
+            else if (Input.IsDown(Keys.W))
+            {
+                direction = Vector2Int.Up;
+            }
+            else if (Input.IsDown(Keys.S))
+            {
+                direction = Vector2Int.Down;
+            }
 
-            if (hor != 0) spriteComponent.FlipX = hor < 0;
+            if (direction != Vector2Int.Zero)
+            {
+                if (!ColliderManager.ContainsSolid(Transform.Position + direction))
+                {
+                    Transform.Position += direction;
+                    if (direction == Vector2Int.Right)
+                    {
+                        spriteComponent.FlipX = false;
+                    }
+                    else if (direction == Vector2Int.Left)
+                    {
+                        spriteComponent.FlipX = true;
+                    }
+                }
+            }
 
-            position += direction * speed * deltaTime;
         }
 
         public override void Draw(float deltaTime)
         {
             base.Draw(deltaTime);
 
-            spriteComponent.Draw(position);
+            spriteComponent.Draw();
         }
     }
 }

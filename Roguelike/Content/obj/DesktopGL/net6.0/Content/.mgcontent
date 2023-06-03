@@ -4,9 +4,15 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
+    <File>D:/Education/SE/Roguelike/Roguelike/Content/floor.jpg</File>
+    <File>D:/Education/SE/Roguelike/Roguelike/Content/grass.png</File>
     <File>D:/Education/SE/Roguelike/Roguelike/Content/hero.png</File>
+    <File>D:/Education/SE/Roguelike/Roguelike/Content/wall.png</File>
   </SourceFiles>
   <DestFiles>
-    <File>hero</File>
+    <File>FloorTile</File>
+    <File>GrassTile</File>
+    <File>HeroSprite</File>
+    <File>Wall</File>
   </DestFiles>
 </SourceFileCollection>
