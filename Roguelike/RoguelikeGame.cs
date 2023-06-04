@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System;
 using System.Net;
+using MonoGame.Extended;
 using Roguelike.Field;
 using Roguelike.Actors.Wall;
 using Roguelike.Actors;
@@ -109,14 +110,13 @@ namespace Roguelike
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
+                || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000;
 
             base.Update(gameTime);
-
-            Input.Update();
 
             foreach (var actor in actors)
             {
@@ -133,56 +133,39 @@ namespace Roguelike
             lastGameTime = gameTime;
         }
 
-        protected override void Draw(GameTime gameTime) {
+        protected override void Draw(GameTime gameTime)
+        {
             GraphicsDevice.Clear(Color.Black);
             base.Draw(gameTime);
 
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            int size = FieldInfo.ScreenWith;
-            int cellCount = FieldInfo.CellCount;
-            int cellSize = FieldInfo.CellSize;
+            var size = FieldInfo.ScreenWith;
+            var cellCount = FieldInfo.CellCount;
+            var cellSize = FieldInfo.CellSize;
 
-            for (int i = 0; i < cellCount; i++) {
-                for (int j = 0; j < cellCount; j++) {
-                    Texture2D tex = floorTexture;
-                    Rectangle rectangle = new(i * cellSize, j * cellSize, 1 * cellSize, 1 * cellSize);
-                    Rectangle rectSize = new(0, 0, tex.Width, tex.Height);
-                    spriteBatch.Draw(tex, rectangle, rectSize, Color.WhiteSmoke);
-                }
+            for (var i = 0; i < cellCount; i++)
+            for (var j = 0; j < cellCount; j++)
+            {
+                var tex = floorTexture;
+                var rectangle = new Rectangle(i * cellSize, j * cellSize, 1 * cellSize, 1 * cellSize);
+                var rectSize = new Rectangle(0, 0, tex.Width, tex.Height);
+                spriteBatch.Draw(tex, rectangle, rectSize, Color.WhiteSmoke);
             }
 
-            foreach (var actor in actors) {
+            foreach (var actor in actors)
                 actor.Draw(0);
-            }
-            
-            for (int i = 1; i < cellCount; i++) {
-                DrawLineBetween(spriteBatch, new Vector2(0, i * cellSize), new Vector2(size, i * cellSize), 2, Color.Black);
-                DrawLineBetween(spriteBatch, new Vector2(i * cellSize, 0), new Vector2(i * cellSize, size), 2, Color.Black);
+
+            for (var i = 1; i < cellCount; i++)
+            {
+                spriteBatch.DrawLine(new Vector2(0, i * cellSize), new Vector2(size, i * cellSize), Color.Black, 2);
+                spriteBatch.DrawLine(new Vector2(i * cellSize, 0), new Vector2(i * cellSize, size), Color.Black, 2);
             }
 
             foreach (var actor in canvasActors)
-            {
                 actor.Draw(0);
-            }
 
             spriteBatch.End();
-        }
-
-        public static void DrawLineBetween(SpriteBatch spriteBatch, Vector2 startPos, Vector2 endPos, int thickness, Color color) {
-            var distance = (int)Vector2.Distance(startPos, endPos);
-            var texture = new Texture2D(spriteBatch.GraphicsDevice, distance, thickness);
-
-            var data = new Color[distance * thickness];
-            for (int i = 0; i < data.Length; i++) {
-                data[i] = color;
-            }
-            texture.SetData(data);
-
-            var rotation = (float)Math.Atan2(endPos.Y - startPos.Y, endPos.X - startPos.X);
-            var origin = new Vector2(0, thickness / 2);
-
-            spriteBatch.Draw(texture, startPos, null, Color.White, rotation, origin, 1.0f, SpriteEffects.None, 1.0f);
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Input;
 
 namespace Roguelike.Actors.InventoryUtils
 {
@@ -79,10 +80,11 @@ namespace Roguelike.Actors.InventoryUtils
 
         public override void Update(float deltaTime)
         {
-            for (int i = 0; i < MaxElementsCount; i++)
+            var state = MouseExtended.GetState();
+            for (var i = 0; i < MaxElementsCount; i++)
             {
-                Rectangle rect = rects[i];
-                Vector2Int cursorPosition = Input.GetCursorPosition();
+                var rect = rects[i];
+                var cursorPosition = state.Position;
                 if (cursorPosition.X >= rect.X &&
                     cursorPosition.X <= rect.X + rect.Width &&
                     cursorPosition.Y >= rect.Y &&

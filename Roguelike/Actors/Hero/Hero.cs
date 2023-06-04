@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Input;
 using Roguelike.Field;
 using Roguelike.Components;
 using Roguelike.Components.ColliderComponent;
@@ -45,41 +46,38 @@ namespace Roguelike
         {
             base.Update(deltaTime);
 
-            Vector2Int direction = Vector2Int.Zero;
+            var direction = Vector2Int.Zero;
+            var state = KeyboardExtended.GetState();
 
-            if (Input.IsDown(Keys.D))
+            if (state.WasKeyJustDown(Keys.D))
             {
                 direction = Vector2Int.Right;
             }
-            else if (Input.IsDown(Keys.A))
+            else if (state.WasKeyJustDown(Keys.A))
             {
                 direction = Vector2Int.Left;
             }
-            else if (Input.IsDown(Keys.W))
+            else if (state.WasKeyJustDown(Keys.W))
             {
                 direction = Vector2Int.Up;
             }
-            else if (Input.IsDown(Keys.S))
+            else if (state.WasKeyJustDown(Keys.S))
             {
                 direction = Vector2Int.Down;
             }
 
-            if (direction != Vector2Int.Zero)
+            if (direction == Vector2Int.Zero || ColliderManager.ContainsSolid(Transform.Position + direction)) return;
+
+            Transform.Position += direction;
+            if (direction == Vector2Int.Right)
             {
-                if (!ColliderManager.ContainsSolid(Transform.Position + direction))
-                {
-                    Transform.Position += direction;
-                    if (direction == Vector2Int.Right)
-                    {
-                        spriteComponent.FlipX = false;
-                    }
-                    else if (direction == Vector2Int.Left)
-                    {
-                        spriteComponent.FlipX = true;
-                    }
-                    collider.UpdatePosition();
-                }
+                spriteComponent.FlipX = false;
             }
+            else if (direction == Vector2Int.Left)
+            {
+                spriteComponent.FlipX = true;
+            }
+            collider.UpdatePosition();
 
         }
 
