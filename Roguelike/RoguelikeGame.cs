@@ -15,7 +15,8 @@ using System.Runtime.CompilerServices;
 
 namespace Roguelike;
 
-public class RoguelikeGame : Game {
+public class RoguelikeGame : Game
+{
     private GraphicsDeviceManager graphics;
     private SpriteBatch spriteBatch;
 
@@ -34,7 +35,8 @@ public class RoguelikeGame : Game {
 
     public SpriteBatch SpriteBatch { get => spriteBatch; }
 
-    public static void AddActor(Actor actor) {
+    public static void AddActor(Actor actor)
+    {
         Actors.Add(actor);
     }
 
@@ -48,15 +50,18 @@ public class RoguelikeGame : Game {
         ActorsForRemove.Add(actor);
     }
 
-    public static void RemoveCanvasActor(CanvasActor actor) {
+    public static void RemoveCanvasActor(CanvasActor actor)
+    {
         CanvasActorsForRemove.Add(actor);
     }
 
-    public Texture2D LoadTexture(string path) {
+    public Texture2D LoadTexture(string path)
+    {
         return Content.Load<Texture2D>(path);
     }
 
-    private static void RemoveRemovedActors() {
+    private static void RemoveRemovedActors()
+    {
         foreach (var actor in ActorsForRemove) {
             Actors.Remove(actor);
         }
@@ -70,7 +75,8 @@ public class RoguelikeGame : Game {
         CanvasActorsForRemove.Clear();
     }
 
-    public RoguelikeGame() {
+    public RoguelikeGame()
+    {
         graphics = new GraphicsDeviceManager(this);
         graphics.PreferredBackBufferWidth = FieldInfo.ScreenWith;
         graphics.PreferredBackBufferHeight = FieldInfo.ScreenHeight;
@@ -79,7 +85,8 @@ public class RoguelikeGame : Game {
         Instance = this;
     }
 
-    protected override void Initialize() {
+    protected override void Initialize()
+    {
         base.Initialize();
         LoadContent();
 
