@@ -4,15 +4,29 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
+    <File>D:/Education/SE/Roguelike/Roguelike/Content/cell_highlited.png</File>
+    <File>D:/Education/SE/Roguelike/Roguelike/Content/cell.png</File>
+    <File>D:/Education/SE/Roguelike/Roguelike/Content/cell2.png</File>
+    <File>D:/Education/SE/Roguelike/Roguelike/Content/cell3.png</File>
+    <File>D:/Education/SE/Roguelike/Roguelike/Content/cell4.png</File>
+    <File>D:/Education/SE/Roguelike/Roguelike/Content/coin.png</File>
     <File>D:/Education/SE/Roguelike/Roguelike/Content/floor.jpg</File>
     <File>D:/Education/SE/Roguelike/Roguelike/Content/grass.png</File>
     <File>D:/Education/SE/Roguelike/Roguelike/Content/hero.png</File>
+    <File>D:/Education/SE/Roguelike/Roguelike/Content/kfc.png</File>
     <File>D:/Education/SE/Roguelike/Roguelike/Content/wall.png</File>
   </SourceFiles>
   <DestFiles>
+    <File>HighlightedCell</File>
+    <File>Cell</File>
+    <File>Cell2</File>
+    <File>Cell3</File>
+    <File>SelectedCell</File>
+    <File>Coin</File>
     <File>FloorTile</File>
     <File>GrassTile</File>
     <File>HeroSprite</File>
+    <File>KFC</File>
     <File>Wall</File>
   </DestFiles>
 </SourceFileCollection>

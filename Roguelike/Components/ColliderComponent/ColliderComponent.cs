@@ -12,8 +12,8 @@ namespace Roguelike.Components.ColliderComponent {
 
     public class ColliderComponent : Component {
 
-        public event Action<ColliderComponent> OnTriggerEnter;
-        public event Action<ColliderComponent> OnTriggerExit;
+        public event Action<ColliderComponent> OnTriggerEnter = delegate { };
+        public event Action<ColliderComponent> OnTriggerExit = delegate { };
 
         public ColliderType Type { get; set; }
 
@@ -28,11 +28,10 @@ namespace Roguelike.Components.ColliderComponent {
             }
 
             ColliderManager.ColliderMap[CurrentPosition].Add(this);
-
-            Debug.WriteLine(CurrentPosition.X + " " + CurrentPosition.Y);
         }
 
         public void UpdatePosition(){
+            ColliderManager.Update();
             if (ColliderManager.ColliderMap.TryGetValue(CurrentPosition, out var list))
             { 
                 list.Remove(this);

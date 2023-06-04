@@ -16,6 +16,9 @@ namespace Roguelike
     public class Hero : Actor
     {
 
+        public static string HeroTag = "Hero";
+        public override string Tag { get => HeroTag; }
+
         private SpriteComponent spriteComponent;
 
         private ColliderComponent collider;
@@ -31,7 +34,7 @@ namespace Roguelike
             spriteComponent = new SpriteComponent(this);
             spriteComponent.LoadTexture("HeroSprite");
 
-            //collider = new ColliderComponent(this);
+            collider = new ColliderComponent(this, ColliderType.Solid);
         }
 
         private void OnTrigger(ColliderComponent other) {
@@ -74,6 +77,7 @@ namespace Roguelike
                     {
                         spriteComponent.FlipX = true;
                     }
+                    collider.UpdatePosition();
                 }
             }
 

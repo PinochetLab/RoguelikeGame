@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Roguelike.Components;
+using Roguelike.Components.ColliderComponent;
 using Roguelike.VectorUtility;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace Roguelike
 {
     public class Actor
     {
+        public virtual string Tag { get => "none"; }
 
         public TransformComponent Transform;
 
@@ -34,6 +36,7 @@ namespace Roguelike
         }
 
         public virtual void Destroy() {
+            ColliderManager.Remove(Transform.Position, this);
             RoguelikeGame.RemoveActor(this);
         }
     }
