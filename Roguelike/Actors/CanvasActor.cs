@@ -5,7 +5,7 @@ namespace Roguelike.Actors;
 
 public class CanvasActor : Actor
 {
-    public CanvasActor(Vector2Int position) : base(position)
+    public override void Initialize(Vector2Int position)
     {
         Transform = AddComponent<TransformComponent>();
         Transform.Position = position;

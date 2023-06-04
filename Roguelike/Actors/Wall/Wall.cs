@@ -10,8 +10,6 @@ public class Wall : Actor {
 
     private ColliderComponent collider;
 
-    public Wall(Vector2Int position) : base(position) { }
-
     public override void OnStart()
     {
         base.OnStart();

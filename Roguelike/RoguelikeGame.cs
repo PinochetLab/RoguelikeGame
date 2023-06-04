@@ -83,22 +83,22 @@ public class RoguelikeGame : Game {
         base.Initialize();
         LoadContent();
 
-        var itemHolder = new ItemHolder(new Vector2Int(7, 3));
+        Actor.Create<ItemHolder>(7, 3);
 
-        var hero = new Hero(Vector2Int.One * (FieldInfo.CellCount / 2));
+        Actor.Create<Hero>(FieldInfo.Center);
 
 
-        for (int i = 0; i < FieldInfo.CellCount; i++) {
-            var w = new Wall(new Vector2Int(0, i));
-            w = new Wall(new Vector2Int(FieldInfo.CellCount - 1, i));
+        for (var i = 0; i < FieldInfo.CellCount; i++) {
+            Actor.Create<Wall>(0, i);
+            Actor.Create<Wall>(FieldInfo.CellCount - 1, i);
             if (i > 0 && i < FieldInfo.CellCount - 1) {
-                w = new Wall(new Vector2Int(i, 0));
-                w = new Wall(new Vector2Int(i, FieldInfo.CellCount - 1));
+                Actor.Create<Wall>(i, 0);
+                Actor.Create<Wall>(i, FieldInfo.CellCount - 1);
             }
         }
 
         var inventoryPosition = new Vector2Int(FieldInfo.ScreenWith / 2, FieldInfo.ScreenWith);
-        var inventory = new Inventory(inventoryPosition);
+        Actor.Create<Inventory>(inventoryPosition);
     }
 
     protected override void LoadContent()

@@ -62,7 +62,27 @@ public class Actor
         return null;
     }
 
-    public Actor(Vector2Int position) {
+
+    public static TActor Create<TActor>(Vector2Int position) where TActor : Actor, new ()
+    {
+        var actor = new TActor();
+        actor.Initialize(position);
+        return actor;
+    }
+
+    public static TActor Create<TActor>(int x, int y) where TActor : Actor, new() => Create<TActor>(new(x, y));
+
+    public static TActor Create<TActor>() where TActor : Actor, new() => Create<TActor>(Vector2Int.Zero);
+
+    public static Actor CreateEmpty(Vector2Int position) => Create<Actor>(position);
+
+    public static Actor CreateEmpty(int x, int y) => Create<Actor>(x, y);
+
+    public static Actor CreateEmpty() => Create<Actor>();
+
+
+
+    public virtual void Initialize(Vector2Int position) {
         Transform = AddComponent<TransformComponent>();
         Transform.Position = position;
         RoguelikeGame.AddActor(this);

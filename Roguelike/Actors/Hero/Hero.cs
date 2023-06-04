@@ -15,8 +15,6 @@ public class Hero : Actor
 
     private ColliderComponent collider;
 
-    public Hero(Vector2Int position) : base(position) { }
-
     public override void OnStart()
     {
         base.OnStart();

@@ -27,7 +27,6 @@ public class Inventory : CanvasActor
     private static readonly List<SpriteComponent> CellBorders = Enumerable.Repeat<SpriteComponent>(null, MaxElementsCount).ToList();
 
     private static readonly List<Rectangle> Rects = Enumerable.Repeat(new Rectangle(0, 0, 0, 0), MaxElementsCount).ToList();
-    public Inventory(Vector2Int position) : base(position) { }
 
     public static bool HasFreePlace()
     {
@@ -58,13 +57,13 @@ public class Inventory : CanvasActor
 
             Rects[i] = new Rectangle(cellPosition, size);
 
-            var cellBorderActor = new Actor(cellPosition);
+            var cellBorderActor = CreateEmpty(cellPosition);
             CellBorders[i] = cellBorderActor.AddComponent<SpriteComponent>();
             CellBorders[i].LoadTexture("Cell3");
             CellBorders[i].Size = Vector2Int.One * CellSize;
             CellBorders[i].IsTile = false;
 
-            var cellActor = new Actor(cellPosition);
+            var cellActor = CreateEmpty(cellPosition);
             Cells[i] = cellActor.AddComponent<SpriteComponent>();
             Cells[i].Transform.Scale = Vector2.One * 0.5f;
             Cells[i].Size = Vector2Int.One * CellSize;

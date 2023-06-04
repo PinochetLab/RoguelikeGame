@@ -13,8 +13,6 @@ public class ItemHolder : Actor
 
     private ColliderComponent collider;
 
-    public ItemHolder(Vector2Int position) : base(position) { }
-
     public override void OnStart()
     {
         base.OnStart();

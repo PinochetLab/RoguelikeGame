@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Roguelike.VectorUtility;
 
 namespace Roguelike.Field {
     public static class FieldInfo {
@@ -12,5 +8,12 @@ namespace Roguelike.Field {
         public static int CellCount { get; set; } = 15;
 
         public static int CellSize => ScreenWith / CellCount;
+
+        public static Vector2Int Center => Vector2Int.One * (CellCount / 2);
+
+        public static Vector2Int TopLeft => new (0, 0);
+        public static Vector2Int TopRight => new (0, CellCount - 1);
+        public static Vector2Int BottomLeft => new (CellCount - 1, 0);
+        public static Vector2Int BottomRight => new (CellCount - 1, CellCount - 1);
     }
 }
