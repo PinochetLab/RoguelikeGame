@@ -49,19 +49,19 @@ namespace Roguelike
             var direction = Vector2Int.Zero;
             var state = KeyboardExtended.GetState();
 
-            if (state.WasKeyJustDown(Keys.D))
+            if (state.WasKeyJustUp(Keys.D))
             {
                 direction = Vector2Int.Right;
             }
-            else if (state.WasKeyJustDown(Keys.A))
+            else if (state.WasKeyJustUp(Keys.A))
             {
                 direction = Vector2Int.Left;
             }
-            else if (state.WasKeyJustDown(Keys.W))
+            else if (state.WasKeyJustUp(Keys.W))
             {
                 direction = Vector2Int.Up;
             }
-            else if (state.WasKeyJustDown(Keys.S))
+            else if (state.WasKeyJustUp(Keys.S))
             {
                 direction = Vector2Int.Down;
             }
