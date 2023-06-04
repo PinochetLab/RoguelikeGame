@@ -1,56 +1,46 @@
 ﻿using Roguelike.Actors.InventoryUtils;
 using Roguelike.Actors.InventoryUtils.Items;
-using Roguelike.Components.ColliderComponent;
+using Roguelike.Components.Colliders;
+using Roguelike.Components.Sprites;
 using Roguelike.VectorUtility;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Roguelike.Actors
+namespace Roguelike.Actors;
+
+public class ItemHolder : Actor
 {
-    public class ItemHolder : Actor
+
+    private SpriteComponent spriteComponent;
+
+    private ColliderComponent collider;
+
+    public ItemHolder(Vector2Int position) : base(position) { }
+
+    public override void OnStart()
     {
+        base.OnStart();
 
-        private SpriteComponent spriteComponent;
+        spriteComponent = AddComponent<SpriteComponent>();
+        spriteComponent.LoadTexture("KFC");
 
-        private ColliderComponent collider;
+        collider = AddComponent<ColliderComponent>();
+        collider.Type = ColliderType.Trigger;
+        collider.OnTriggerEnter += OnTriggerEnter;
+    }
 
-        public ItemHolder(Vector2Int position) : base(position)
+    public void OnTriggerEnter(ColliderComponent collider)
+    {
+        if (collider.Owner.Tag == Hero.HeroTag)
         {
-
-        }
-
-        public override void OnStart()
-        {
-            base.OnStart();
-
-            spriteComponent = new SpriteComponent(this);
-            spriteComponent.LoadTexture("KFC");
-
-            collider = new ColliderComponent(this, ColliderType.Trigger);
-            collider.OnTriggerEnter += OnTriggerEnter;
-        }
-
-        public void OnTriggerEnter(ColliderComponent collider)
-        {
-            if (collider.Owner.Tag == Hero.HeroTag)
+            if (Inventory.HasFreePlace())
             {
-                if (Inventory.HasFreePlace())
-                {
-                    Inventory.Add(new ItemKFC());
-                    Destroy();
-                }
+                Inventory.Add(new ItemKFC());
+                Destroy();
             }
         }
+    }
 
-        public override void Draw(float deltaTime)
-        {
-            base.Draw(deltaTime);
-
-            spriteComponent.Draw();
-        }
+    public override void Draw()
+    {
+        base.Draw();
     }
 }

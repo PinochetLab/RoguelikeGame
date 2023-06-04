@@ -1,102 +1,104 @@
 ﻿using Roguelike.Field;
 using Roguelike.VectorUtility;
 using Roguelike.Actors.InventoryUtils.Items;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
+using Roguelike.Components.Sprites;
 
-namespace Roguelike.Actors.InventoryUtils
+
+namespace Roguelike.Actors.InventoryUtils;
+
+public class Inventory : CanvasActor
 {
-    public class Inventory : CanvasActor
+    public const string NoneName = "None";
+
+    private const int MaxElementsCount = 5;
+
+    public const int CellSize = 100;
+
+    private int selected = 0;
+
+    private static readonly List<Item> Items = Enumerable.Repeat<Item>(null, MaxElementsCount).ToList();
+
+    private static readonly List<SpriteComponent> Cells = Enumerable.Repeat<SpriteComponent>(null, MaxElementsCount).ToList();
+
+    private static readonly List<SpriteComponent> CellBorders = Enumerable.Repeat<SpriteComponent>(null, MaxElementsCount).ToList();
+
+    private static readonly List<Rectangle> Rects = Enumerable.Repeat(new Rectangle(0, 0, 0, 0), MaxElementsCount).ToList();
+    public Inventory(Vector2Int position) : base(position) { }
+
+    public static bool HasFreePlace()
     {
-        public const string NoneName = "None";
-        private const int MaxElementsCount = 5;
-        public const int CellSize = 100;
+        return Items.Any(x => x == null);
+    }
 
-        private int selected = 0;
+    public static void Add(Item item)
+    {
+        var index = Items.FindIndex(x => x == null);
+        Items[index] = item;
+        UpdateCell(index);
+    }
 
-        private static List<Item> items = Enumerable.Repeat<Item>(null, MaxElementsCount).ToList();
-        private static List<Image> cells = Enumerable.Repeat<Image>(null, MaxElementsCount).ToList();
-        private static List<Image> cellBorders = Enumerable.Repeat<Image>(null, MaxElementsCount).ToList();
-        private static List<Rectangle> rects = Enumerable.Repeat(new Rectangle(0, 0, 0, 0), MaxElementsCount).ToList();
+    public override void OnStart()
+    {
+        base.OnStart();
 
-        private static Inventory instance;
-        public Inventory(Vector2Int position) : base(position)
+        Items[3] = new ItemCoin();
+
+        for (var i = 0; i < MaxElementsCount; i++)
         {
-            instance = this;
+            var p = -MaxElementsCount / 2 + i;
+            p = p * CellSize - CellSize / 2;
+
+            var cellPosition = new Vector2Int(FieldInfo.ScreenWith / 2 + p, FieldInfo.ScreenHeight - CellSize);
+
+            var size = new Vector2Int(CellSize, CellSize);
+
+            Rects[i] = new Rectangle(cellPosition, size);
+
+            var cellBorderActor = new Actor(cellPosition);
+            CellBorders[i] = cellBorderActor.AddComponent<SpriteComponent>();
+            CellBorders[i].LoadTexture("Cell3");
+            CellBorders[i].Size = Vector2Int.One * CellSize;
+            CellBorders[i].IsTile = false;
+
+            var cellActor = new Actor(cellPosition);
+            Cells[i] = cellActor.AddComponent<SpriteComponent>();
+            Cells[i].Transform.Scale = Vector2.One * 0.5f;
+            Cells[i].Size = Vector2Int.One * CellSize;
+            Cells[i].IsTile = false;
+
+            if (Items[i] == null) continue;
+
+            UpdateCell(i);
         }
+    }
 
-        public static bool HasFreePlace()
+    public static void UpdateCell(int index)
+    {
+        Cells[index].LoadTexture(Items[index].TextureName);
+    }
+
+    public override void Update()
+    {
+        var state = MouseExtended.GetState();
+        for (var i = 0; i < MaxElementsCount; i++)
         {
-            return items.Any(x => x == null);
-        }
-
-        public static void Add(Item item)
-        {
-            int index = items.FindIndex(x => x == null);
-            items[index] = item;
-            UpdateCell(index);
-        }
-
-        public override void OnStart()
-        {
-            base.OnStart();
-
-            items[3] = new ItemCoin();
-
-            for (int i = 0; i < MaxElementsCount; i++)
+            var rect = Rects[i];
+            var cursorPosition = state.Position;
+            if (cursorPosition.X >= rect.X &&
+                cursorPosition.X <= rect.X + rect.Width &&
+                cursorPosition.Y >= rect.Y &&
+                cursorPosition.Y <= rect.Y + rect.Height)
             {
-                int p = -MaxElementsCount / 2 + i;
-                p = p * CellSize - CellSize / 2;
-
-                Vector2Int cellPosition = new Vector2Int(FieldInfo.ScreenWith / 2 + p, FieldInfo.ScreenHeight - CellSize);
-
-                Vector2Int size = new Vector2Int(CellSize, CellSize);
-
-                rects[i] = new Rectangle(cellPosition, size);
-
-                cellBorders[i] = new Image(cellPosition, size);
-                cellBorders[i].LoadTexture("Cell3");
-
-                cells[i] = new Image(cellPosition, (Vector2)size);
-                cells[i].Transform.Scale = Vector2.One * 0.5f;
-
-                if (items[i] == null) continue;
-
-                UpdateCell(i);
+                CellBorders[selected].LoadTexture("Cell3");
+                CellBorders[i].LoadTexture("SelectedCell");
+                selected = i;
+                return;
             }
         }
-
-        public static void UpdateCell(int index)
-        {
-            cells[index].LoadTexture(items[index].TextureName);
-        }
-
-        public override void Update(float deltaTime)
-        {
-            var state = MouseExtended.GetState();
-            for (var i = 0; i < MaxElementsCount; i++)
-            {
-                var rect = rects[i];
-                var cursorPosition = state.Position;
-                if (cursorPosition.X >= rect.X &&
-                    cursorPosition.X <= rect.X + rect.Width &&
-                    cursorPosition.Y >= rect.Y &&
-                    cursorPosition.Y <= rect.Y + rect.Height)
-                {
-                    cellBorders[selected].LoadTexture("Cell3");
-                    cellBorders[i].LoadTexture("SelectedCell");
-                    selected = i;
-                    return;
-                }
-            }
-            cellBorders[selected].LoadTexture("Cell3");
-        }
+        CellBorders[selected].LoadTexture("Cell3");
     }
 }

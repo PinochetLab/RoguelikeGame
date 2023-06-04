@@ -1,4 +1,4 @@
-﻿using Roguelike.Components.SpriteComponent;
+﻿using Roguelike.Components.Sprites;
 using Roguelike.VectorUtility;
 using System;
 using System.Collections.Generic;
@@ -7,40 +7,39 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Roguelike.Actors.InventoryUtils
+namespace Roguelike.Actors.InventoryUtils;
+
+public class Image : CanvasActor
 {
-    public class Image : CanvasActor
+    private ImageComponent imageComponent;
+
+    private Vector2Int size;
+
+    private string textureName = Inventory.NoneName;
+    public Image(Vector2Int position, Vector2Int size) : base(position)
     {
-        private ImageComponent imageComponent;
+        this.size = size;
+    }
 
-        private Vector2Int size;
+    public void LoadTexture(string name)
+    {
+        if (name == Inventory.NoneName || name == textureName) return;
+        imageComponent.LoadTexture(name);
+        imageComponent.Size = size;
+        textureName = name;
+    }
 
-        private string textureName = Inventory.NoneName;
-        public Image(Vector2Int position, Vector2Int size) : base(position)
-        {
-            this.size = size;
-        }
+    public override void OnStart()
+    {
+        base.OnStart();
 
-        public void LoadTexture(string name)
-        {
-            if (name == Inventory.NoneName || name == textureName) return;
-            imageComponent.LoadTexture(name);
-            imageComponent.Size = size;
-            textureName = name;
-        }
+        imageComponent = new ImageComponent(this, size);
+    }
 
-        public override void OnStart()
-        {
-            base.OnStart();
+    public override void Draw(float deltaTime)
+    {
+        base.Draw(deltaTime);
 
-            imageComponent = new ImageComponent(this, size);
-        }
-
-        public override void Draw(float deltaTime)
-        {
-            base.Draw(deltaTime);
-
-            imageComponent.Draw();
-        }
+        imageComponent.Draw();
     }
 }

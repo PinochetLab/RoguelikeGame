@@ -1,91 +1,74 @@
 ﻿using Roguelike.VectorUtility;
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
-using Roguelike.Field;
-using Roguelike.Components;
-using Roguelike.Components.ColliderComponent;
+using Roguelike.Components.Colliders;
+using Roguelike.Components.Sprites;
 
-namespace Roguelike
+namespace Roguelike.Actors;
+
+public class Hero : Actor
 {
-    public class Hero : Actor
+    public const string HeroTag = "Hero";
+    public override string Tag { get => HeroTag; }
+
+    private SpriteComponent spriteComponent;
+
+    private ColliderComponent collider;
+
+    public Hero(Vector2Int position) : base(position) { }
+
+    public override void OnStart()
     {
+        base.OnStart();
 
-        public static string HeroTag = "Hero";
-        public override string Tag { get => HeroTag; }
+        spriteComponent = AddComponent<SpriteComponent>();
+        spriteComponent.LoadTexture("HeroSprite");
 
-        private SpriteComponent spriteComponent;
+        collider = AddComponent<ColliderComponent>();
+        collider.Type = ColliderType.Trigger;
+    }
 
-        private ColliderComponent collider;
+    public override void Update()
+    {
+        base.Update();
 
-        private float speed = 200;
+        var direction = Vector2Int.Zero;
+        var state = KeyboardExtended.GetState();
 
-        public Hero(Vector2Int position) : base(position) { }
-
-        public override void OnStart()
+        if (state.WasKeyJustUp(Keys.D))
         {
-            base.OnStart();
-
-            spriteComponent = new SpriteComponent(this);
-            spriteComponent.LoadTexture("HeroSprite");
-
-            collider = new ColliderComponent(this, ColliderType.Solid);
+            direction = Vector2Int.Right;
         }
-
-        private void OnTrigger(ColliderComponent other) {
-
-        }
-
-        public override void Update(float deltaTime)
+        else if (state.WasKeyJustUp(Keys.A))
         {
-            base.Update(deltaTime);
-
-            var direction = Vector2Int.Zero;
-            var state = KeyboardExtended.GetState();
-
-            if (state.WasKeyJustUp(Keys.D))
-            {
-                direction = Vector2Int.Right;
-            }
-            else if (state.WasKeyJustUp(Keys.A))
-            {
-                direction = Vector2Int.Left;
-            }
-            else if (state.WasKeyJustUp(Keys.W))
-            {
-                direction = Vector2Int.Up;
-            }
-            else if (state.WasKeyJustUp(Keys.S))
-            {
-                direction = Vector2Int.Down;
-            }
-
-            if (direction == Vector2Int.Zero || ColliderManager.ContainsSolid(Transform.Position + direction)) return;
-
-            Transform.Position += direction;
-            if (direction == Vector2Int.Right)
-            {
-                spriteComponent.FlipX = false;
-            }
-            else if (direction == Vector2Int.Left)
-            {
-                spriteComponent.FlipX = true;
-            }
-            collider.UpdatePosition();
-
+            direction = Vector2Int.Left;
         }
-
-        public override void Draw(float deltaTime)
+        else if (state.WasKeyJustUp(Keys.W))
         {
-            base.Draw(deltaTime);
-
-            spriteComponent.Draw();
+            direction = Vector2Int.Up;
         }
+        else if (state.WasKeyJustUp(Keys.S))
+        {
+            direction = Vector2Int.Down;
+        }
+
+        if (direction == Vector2Int.Zero || ColliderManager.ContainsSolid(Transform.Position + direction)) return;
+
+        Transform.Position += direction;
+        if (direction == Vector2Int.Right)
+        {
+            spriteComponent.FlipX = false;
+        }
+        else if (direction == Vector2Int.Left)
+        {
+            spriteComponent.FlipX = true;
+        }
+        collider.UpdatePosition();
+
+    }
+
+    public override void Draw()
+    {
+        base.Draw();
     }
 }
