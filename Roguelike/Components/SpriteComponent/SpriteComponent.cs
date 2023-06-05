@@ -13,34 +13,46 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Diagnostics;
 using Roguelike.Texture;
 
-namespace Roguelike
+namespace Roguelike.Components.Sprites;
+
+public class SpriteComponent : Component, IDrawable
 {
-    public class SpriteComponent : Component
+    private Texture2D texture = null;
+    public Vector2Int Size { get; set; } = Vector2Int.One;
+
+    public bool IsTile { get; set; } = true;
+
+    private readonly SpriteBatch spriteBatch = RoguelikeGame.Instance.SpriteBatch;
+
+    public bool FlipX { get; set; } = false;
+    public bool FlipY { get; set; } = false;
+
+    public int DrawOrder => throw new NotImplementedException();
+
+    public bool Visible => throw new NotImplementedException();
+
+    public void LoadTexture(string textureName)
     {
+        texture = TextureLoader.LoadTexture(textureName);
+    }
 
-        private Texture2D texture = null;
-        private SpriteBatch spriteBatch = RoguelikeGame.instance.SpriteBatch;
+    public void Draw()
+    {
+        if (texture == null) return;
 
-        public bool FlipX { get; set; } = false;
-        public bool FlipY { get; set; } = false;
+        var pos = Transform.Position * (IsTile ? FieldInfo.CellSize : 1);
+        var size = IsTile ? Vector2Int.One * FieldInfo.CellSize : Size;
 
-        public SpriteComponent(Actor actor) : base(actor) { }
+        var position = pos + (size / 2 - size / 2 * Transform.Scale);
 
-        public void LoadTexture(string textureName)
-        {
-            texture = TextureLoader.LoadTexture(textureName);
-        }
+        var effect = SpriteEffects.None;
+        if (FlipX) effect |= SpriteEffects.FlipHorizontally;
+        if (FlipY) effect |= SpriteEffects.FlipVertically;
 
-        public void Draw()
-        {
-            if (texture == null) return;
-            Vector2Int position = Transform.Position * FieldInfo.CellSize;
-            var effect = SpriteEffects.None;
-            if (FlipX) effect |= SpriteEffects.FlipHorizontally;
-            if (FlipY) effect |= SpriteEffects.FlipVertically;
-            var rect = new Rectangle(position.X, position.Y, (int)(FieldInfo.CellSize * Transform.Scale.X), (int)(FieldInfo.CellSize * Transform.Scale.Y));
-            var rectSize = new Rectangle(0, 0, texture.Width, texture.Height);
-            spriteBatch.Draw(texture, rect, rectSize, Color.White, 0, Vector2.Zero, effect, 0);
-        }
+        var rect = new Rectangle(position.X, position.Y, (int)(size.X * Transform.Scale.X), (int)(size.Y * Transform.Scale.Y));
+
+        var rectSize = new Rectangle(0, 0, texture.Width, texture.Height);
+
+        spriteBatch.Draw(texture, rect, rectSize, Color.White, 0, Vector2.Zero, effect, 0);
     }
 }

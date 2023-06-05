@@ -16,7 +16,7 @@ namespace Roguelike.Texture
         {
             if (!textures.ContainsKey(path))
             {
-                textures.Add(path, RoguelikeGame.instance.LoadTexture(path));
+                textures.Add(path, RoguelikeGame.Instance.LoadTexture(path));
             }
             return textures[path];
         }

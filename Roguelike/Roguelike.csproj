@@ -12,12 +12,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Actors\InterfaceActor.cs" />
+    <Compile Remove="Actors\InventoryUtils\Image.cs" />
     <Compile Remove="Components\Inventory\AccessoryComponent.cs" />
     <Compile Remove="Components\Inventory\InventoryItemComponent - Copy - Copy.cs" />
     <Compile Remove="Components\Inventory\InventoryItemComponent - Copy.cs" />
     <Compile Remove="Components\Inventory\InventoryItemComponent.cs" />
     <Compile Remove="Components\Inventory\ItemComponent.cs" />
     <Compile Remove="Components\Inventory\WeaponComponent.cs" />
+    <Compile Remove="Components\SpriteComponent\ImageComponent.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Components\Inventory\AccessoryComponent" />

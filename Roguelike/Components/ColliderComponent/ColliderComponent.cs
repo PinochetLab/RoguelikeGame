@@ -1,61 +1,58 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Roguelike.VectorUtility;
 
-namespace Roguelike.Components.ColliderComponent {
+namespace Roguelike.Components.Colliders;
 
-    public enum ColliderType { Solid, Trigger }
+public enum ColliderType { Solid, Trigger }
 
-    public class ColliderComponent : Component {
+public class ColliderComponent : Component {
 
-        public event Action<ColliderComponent> OnTriggerEnter = delegate { };
-        public event Action<ColliderComponent> OnTriggerExit = delegate { };
+    public event Action<ColliderComponent> OnTriggerEnter = delegate { };
+    public event Action<ColliderComponent> OnTriggerExit = delegate { };
 
-        public ColliderType Type { get; set; }
+    public ColliderType Type { get; set; }
 
-        public Vector2Int CurrentPosition { get; set; }
+    public Vector2Int CurrentPosition { get; set; }
+    public override void Initialize()
+    {
+        base.Initialize();
 
-        public ColliderComponent(Actor actor, ColliderType type) : base(actor) {
-            CurrentPosition = Transform.Position;
-            Type = type;
+        CurrentPosition = Transform.Position;
 
-            if (!ColliderManager.ColliderMap.ContainsKey(CurrentPosition)) {
-                ColliderManager.ColliderMap[CurrentPosition] = new();
-            }
-
-            ColliderManager.ColliderMap[CurrentPosition].Add(this);
+        if (!ColliderManager.ColliderMap.ContainsKey(CurrentPosition))
+        {
+            ColliderManager.ColliderMap[CurrentPosition] = new();
         }
 
-        public void UpdatePosition(){
-            ColliderManager.Update();
-            if (ColliderManager.ColliderMap.TryGetValue(CurrentPosition, out var list))
-            { 
-                list.Remove(this);
-                foreach (var collider in list)
-                {
-                    collider.OnTriggerExit(this);
-                    OnTriggerExit(collider);
-                }
-            }
+        ColliderManager.ColliderMap[CurrentPosition].Add(this);
+    }
 
-            var position = Transform.Position;
+    public void UpdatePosition()
+    {
+        ColliderManager.Update();
+        if (ColliderManager.ColliderMap.TryGetValue(CurrentPosition, out var list))
+        { 
+            list.Remove(this);
+            foreach (var collider in list)
+            {
+                collider.OnTriggerExit(this);
+                OnTriggerExit(collider);
+            }
+        }
+
+        var position = Transform.Position;
             
-            if (!ColliderManager.ColliderMap.ContainsKey(position)) {
-                ColliderManager.ColliderMap[position] = new();
-            }
-
-            foreach (var collider in ColliderManager.ColliderMap[position]) {
-                collider.OnTriggerEnter(this);
-                OnTriggerEnter(collider);
-            }
-
-            ColliderManager.ColliderMap[position].Add(this);
-
-            CurrentPosition = position;
+        if (!ColliderManager.ColliderMap.ContainsKey(position)) {
+            ColliderManager.ColliderMap[position] = new();
         }
+
+        foreach (var collider in ColliderManager.ColliderMap[position]) {
+            collider.OnTriggerEnter(this);
+            OnTriggerEnter(collider);
+        }
+
+        ColliderManager.ColliderMap[position].Add(this);
+
+        CurrentPosition = position;
     }
 }

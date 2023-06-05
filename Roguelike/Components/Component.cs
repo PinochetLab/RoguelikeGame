@@ -1,23 +1,19 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Roguelike.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Roguelike.Actors;
 
-namespace Roguelike
+namespace Roguelike.Components;
+
+public abstract class Component
 {
-    public abstract class Component
+    private Actor owner = null;
+
+    public Actor Owner => owner;
+
+    public TransformComponent Transform => Owner?.Transform;
+
+    public virtual void Initialize() { }
+
+    public virtual void SetOwner(Actor actor)
     {
-        public Actor Owner { get; init; }
-
-        public TransformComponent Transform => Owner?.Transform;
-
-        protected Component(Actor actor)
-        {
-            Owner = actor;
-        }
+        owner ??= actor;
     }
 }

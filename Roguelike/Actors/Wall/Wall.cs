@@ -1,34 +1,28 @@
-﻿using Roguelike.Components.ColliderComponent;
+﻿using Roguelike.Components.Colliders;
 using Roguelike.VectorUtility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Roguelike.Components.Sprites;
 
-namespace Roguelike.Actors.Wall {
-    public class Wall : Actor {
+namespace Roguelike.Actors;
 
-        private SpriteComponent spriteComponent;
+public class Wall : Actor {
 
-        private ColliderComponent collider;
+    private SpriteComponent spriteComponent;
 
-        public Wall(Vector2Int position) : base(position) { }
+    private ColliderComponent collider;
 
-        public override void OnStart() {
-            base.OnStart();
+    public override void OnStart()
+    {
+        base.OnStart();
 
-            spriteComponent = new SpriteComponent(this);
-            spriteComponent.LoadTexture("Wall");
+        spriteComponent = AddComponent<SpriteComponent>();
+        spriteComponent.LoadTexture("Wall");
 
-            collider = new ColliderComponent(this, ColliderType.Solid);
-            collider.Type = ColliderType.Solid;
-        }
+        collider = AddComponent<ColliderComponent>();
+        collider.Type = ColliderType.Solid;
+    }
 
-        public override void Draw(float deltaTime) {
-            base.Draw(deltaTime);
-
-            spriteComponent.Draw();
-        }
+    public override void Draw()
+    {
+        base.Draw();
     }
 }
