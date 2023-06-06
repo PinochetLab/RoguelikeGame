@@ -77,6 +77,12 @@ public class SpriteComponent : Component, IDrawable
 
         var rect = new Rectangle(position.X, position.Y, (int)(size.X * Transform.Scale.X), (int)(size.Y * Transform.Scale.Y));
 
+        if (rect.Width < 0)
+        {
+            rect.X -= rect.Width;
+            rect.Width = -rect.Width;
+        }
+
         var rectSize = new Rectangle(0, 0, texture.Width, texture.Height);
 
         spriteBatch.Draw(texture, rect, rectSize, Color.White, 0, Vector2.Zero, effect, 0);
