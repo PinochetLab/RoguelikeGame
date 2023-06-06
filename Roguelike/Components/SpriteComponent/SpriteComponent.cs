@@ -33,7 +33,7 @@ public class SpriteComponent : Component, IDrawable
     /// </summary>
     public bool IsTile { get; set; } = true;
 
-    private readonly SpriteBatch spriteBatch = RoguelikeGame.Instance.SpriteBatch;
+    private static SpriteBatch SpriteBatch => RoguelikeGame.Instance.SpriteBatch;
 
     /// <summary>
     /// Отзеркаливание по горизонтали.
@@ -79,6 +79,6 @@ public class SpriteComponent : Component, IDrawable
 
         var rectSize = new Rectangle(0, 0, texture.Width, texture.Height);
 
-        spriteBatch.Draw(texture, rect, rectSize, Color.White, 0, Vector2.Zero, effect, 0);
+        SpriteBatch.Draw(texture, rect, rectSize, Color.White, 0, Vector2.Zero, effect, 0);
     }
 }

@@ -1,12 +1,7 @@
 ﻿using Roguelike.Components;
 using Roguelike.Components.Colliders;
 using Roguelike.VectorUtility;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Actors;
 
@@ -23,7 +18,7 @@ public class Actor
     /// <summary>
     ///  Компонент TransformComponent существует у каждого игрового объекта для удобства получения информации о позиции/размере и т.д.
     /// </summary>
-    public TransformComponent Transform;
+    public TransformComponent Transform { get; protected set; }
 
     private readonly List<Component> components = new();
 
@@ -43,10 +38,8 @@ public class Actor
 
         component.Initialize();
 
-        if (component is IDrawable)
-        {
-            RoguelikeGame.AddDrawable((IDrawable)component);
-        }
+        if (component is IDrawable draw)
+            RoguelikeGame.AddDrawable(draw);
 
         components.Add(component);
 
@@ -86,7 +79,8 @@ public class Actor
     }
 
     /// <summary>
-    /// Данная функция создаёт игровой объект переданного типа, присваивая его позицию к Vector2Int(x, y), после чего возвращает его.
+    /// Данная функция создаёт игровой объект переданного типа,
+    /// присваивая его позицию к Vector2Int(x, y), после чего возвращает его.
     /// </summary>
     public static TActor Create<TActor>(int x, int y) where TActor : Actor, new()
         => Create<TActor>(new Vector2Int(x, y));
@@ -112,8 +106,8 @@ public class Actor
     public static Actor CreateEmpty() => Create<Actor>();
 
     /// <summary>
-    /// Данный метод вызывает инициализацию игрового объекта, создаёт компонент TransformComponent и добавляет
-    /// текущий игровой компонент в глобальный список игровых объектов.
+    /// Данный метод вызывает инициализацию игрового объекта, создаёт компонент TransformComponent
+    /// и добавляет текущий игровой компонент в глобальный список игровых объектов.
     /// </summary>
     public virtual void Initialize(Vector2Int position)
     {
@@ -140,13 +134,12 @@ public class Actor
     }
 
     /// <summary>
-    /// Данный виртуальный метод вызывается каждый кадр игровой логики.
     /// Данный виртуальный метод вызывается при удалении объекта.
     /// </summary>
     public virtual void Destroy()
     {
         ColliderManager.Remove(Transform.Position, this);
         RoguelikeGame.RemoveActor(this);
-        drawables.ForEach(x => RoguelikeGame.RemoveDrawable(x));
+        drawables.ForEach(RoguelikeGame.RemoveDrawable);
     }
 }
