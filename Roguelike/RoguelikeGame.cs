@@ -3,18 +3,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System;
-using System.Net;
-using MonoGame.Extended;
 using Roguelike.Field;
 using Roguelike.Actors;
 using Roguelike.Actors.InventoryUtils;
-using System.Runtime.CompilerServices;
-using Roguelike.Components;
 using IDrawable = Roguelike.Components.IDrawable;
 using System.Linq;
+using Roguelike.World;
 
 namespace Roguelike;
 
@@ -23,7 +17,6 @@ namespace Roguelike;
 /// </summary>
 public sealed class RoguelikeGame : Game
 {
-
     /// <summary>
     /// Синглтон.
     /// </summary>
@@ -37,8 +30,7 @@ public sealed class RoguelikeGame : Game
 
 
     private readonly GraphicsDeviceManager graphics;
-
-    private Texture2D floorTexture;
+    private readonly WorldComponent _worldComponent;
 
     /// <summary>
     /// SpriteBatch, необходимый для отрисовки.
@@ -56,6 +48,9 @@ public sealed class RoguelikeGame : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         Instance = this;
+
+        _worldComponent = new WorldComponent(this);
+        Components.Add(_worldComponent);
     }
 
     /// <summary>
@@ -74,22 +69,6 @@ public sealed class RoguelikeGame : Game
         base.Initialize();
         LoadContent();
 
-        Actor.Create<ItemHolder>(7, 3);
-
-        Actor.Create<Hero>(FieldInfo.Center);
-
-
-        for (var i = 0; i < FieldInfo.CellCount; i++)
-        {
-            Actor.Create<Wall>(0, i);
-            Actor.Create<Wall>(FieldInfo.CellCount - 1, i);
-            if (i > 0 && i < FieldInfo.CellCount - 1)
-            {
-                Actor.Create<Wall>(i, 0);
-                Actor.Create<Wall>(i, FieldInfo.CellCount - 1);
-            }
-        }
-
         var inventoryPosition = new Vector2Int(FieldInfo.ScreenWith / 2, FieldInfo.ScreenWith);
         Actor.Create<Inventory>(inventoryPosition);
     }
@@ -100,7 +79,6 @@ public sealed class RoguelikeGame : Game
     protected override void LoadContent()
     {
         SpriteBatch = new SpriteBatch(GraphicsDevice);
-        floorTexture = Content.Load<Texture2D>("GrassTile");
     }
 
     /// <summary>
@@ -133,26 +111,6 @@ public sealed class RoguelikeGame : Game
         var delta = GetDeltaTime(gameTime);
 
         SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-
-        var size = FieldInfo.ScreenWith;
-        var cellCount = FieldInfo.CellCount;
-        var cellSize = FieldInfo.CellSize;
-
-        for (var i = 0; i < cellCount; i++)
-        for (var j = 0; j < cellCount; j++)
-        {
-            var tex = floorTexture;
-            var rectangle = new Rectangle(i * cellSize, j * cellSize, 1 * cellSize, 1 * cellSize);
-            var rectSize = new Rectangle(0, 0, tex.Width, tex.Height);
-            SpriteBatch.Draw(tex, rectangle, rectSize, Color.WhiteSmoke);
-        }
-        
-
-        for (var i = 1; i < cellCount; i++)
-        {
-            SpriteBatch.DrawLine(new Vector2(0, i * cellSize), new Vector2(size, i * cellSize), Color.Black, 2);
-            SpriteBatch.DrawLine(new Vector2(i * cellSize, 0), new Vector2(i * cellSize, size), Color.Black, 2);
-        }
 
         _drawables = _drawables.OrderBy(x => x.Canvas ? 100 : 0 + x.DrawOrder).ToList();
         _drawables.ForEach(x => x.Draw(delta));
@@ -201,5 +159,5 @@ public sealed class RoguelikeGame : Game
         DrawablesForRemove.Clear();
     }
 
-    private static float GetDeltaTime(GameTime gameTime) => (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000;
+    public static float GetDeltaTime(GameTime gameTime) => (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000;
 }
