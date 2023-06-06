@@ -6,8 +6,14 @@ using Roguelike.Components.Sprites;
 
 namespace Roguelike.Actors;
 
+/// <summary>
+/// Данный класс - класс главного персонажа.
+/// </summary>
 public class Hero : Actor
 {
+    /// <summary>
+    /// Тэг главного персонажа.
+    /// </summary>
     public const string HeroTag = "Hero";
     public override string Tag => HeroTag;
 
@@ -20,7 +26,7 @@ public class Hero : Actor
         base.OnStart();
 
         spriteComponent = AddComponent<SpriteComponent>();
-        spriteComponent.LoadTexture("HeroSprite");
+        spriteComponent.SetTexture("HeroSprite");
 
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
@@ -61,7 +67,5 @@ public class Hero : Actor
         {
             spriteComponent.FlipX = true;
         }
-        collider.UpdatePosition();
-
     }
 }
