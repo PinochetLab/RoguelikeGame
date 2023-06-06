@@ -1,7 +1,6 @@
 ﻿using Roguelike.Components;
 using Roguelike.Components.Colliders;
 using Roguelike.VectorUtility;
-using Roguelike.Components;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,16 +10,31 @@ using System.Threading.Tasks;
 
 namespace Roguelike.Actors;
 
+/// <summary>
+///  Класс Actor - это класс игрового объекта.
+/// </summary>
 public class Actor
 {
+    /// <summary>
+    ///  Tag используется для того, чтобы различать различные игровые объекты без кастов.
+    /// </summary>
     public virtual string Tag => "none";
 
+    /// <summary>
+    ///  Компонент TransformComponent существует у каждого игрового объекта для удобства получения информации о позиции/размере и т.д.
+    /// </summary>
     public TransformComponent Transform;
 
     private readonly List<Component> components = new();
+
     private readonly List<IUpdateable> updatable = new();
+
     private readonly List<IDrawable> drawables = new();
 
+    /// <summary>
+    ///  Данная функция создаёт у игрового объекта компонент необходимого типа, устанавливает текущий игровой 
+    ///  объект его владельцем, вызывает у компонента метод Initialize и возвращает созданный компонент.
+    /// </summary>
     public TComp AddComponent<TComp>() where TComp : Component, new()
     {
         var component = new TComp();
@@ -28,6 +42,11 @@ public class Actor
         component.SetOwner(this);
 
         component.Initialize();
+
+        if (component is IDrawable)
+        {
+            RoguelikeGame.AddDrawable((IDrawable)component);
+        }
 
         components.Add(component);
 
@@ -44,6 +63,9 @@ public class Actor
         return component;
     }
 
+    /// <summary>
+    ///  Данная функция возвращает первый найденный компонент необходимого типа.
+    /// </summary>
     public TComp GetComponent<TComp>() where TComp : Component, new()
     {
         foreach (var component in components)
@@ -53,7 +75,9 @@ public class Actor
         return null;
     }
 
-
+    /*
+     * Данная функция создаёт игровой объект переданного типа, присваивая его позицию к position, после чего возвращает его.
+    */
     public static TActor Create<TActor>(Vector2Int position) where TActor : Actor, new()
     {
         var actor = new TActor();
@@ -61,18 +85,36 @@ public class Actor
         return actor;
     }
 
+    /// <summary>
+    /// Данная функция создаёт игровой объект переданного типа, присваивая его позицию к Vector2Int(x, y), после чего возвращает его.
+    /// </summary>
     public static TActor Create<TActor>(int x, int y) where TActor : Actor, new()
         => Create<TActor>(new Vector2Int(x, y));
 
+    /// <summary>
+    /// Данная функция создаёт игровой объект переданного типа в начале координат, после чего возвращает его.
+    /// </summary>
     public static TActor Create<TActor>() where TActor : Actor, new() => Create<TActor>(Vector2Int.Zero);
 
+    /// <summary>
+    /// Данная функция создаёт пустой игровой объект, присваивая его позицию к position, после чего возвращает его.
+    /// </summary>
     public static Actor CreateEmpty(Vector2Int position) => Create<Actor>(position);
 
+    /// <summary>
+    /// Данная функция создаёт пустой игровой объект, присваивая его позицию к Vector2Int(x, y), после чего возвращает его.
+    /// </summary>
     public static Actor CreateEmpty(int x, int y) => Create<Actor>(x, y);
 
+    /// <summary>
+    /// Данная функция создаёт пустой игровой объект в начале координат, после чего возвращает его.
+    /// </summary>
     public static Actor CreateEmpty() => Create<Actor>();
 
-
+    /// <summary>
+    /// Данный метод вызывает инициализацию игрового объекта, создаёт компонент TransformComponent и добавляет
+    /// текущий игровой компонент в глобальный список игровых объектов.
+    /// </summary>
     public virtual void Initialize(Vector2Int position)
     {
         Transform = AddComponent<TransformComponent>();
@@ -81,25 +123,30 @@ public class Actor
         OnStart();
     }
 
+    /// <summary>
+    /// Данный виртуальный метод вызывается сразу после инициализации игрового обьекта.
+    /// </summary>
     public virtual void OnStart()
     {
     }
 
+    /// <summary>Данный виртуальный метод вызывается каждый кадр игровой логики.
+    /// Внутри этого метода вызывается метов Update у всех компонентов объекта, которые реализуют интерфейс IUpdateable.
+    /// </summary>
     public virtual void Update(float deltaTime)
     {
         foreach (var updateable in updatable)
             updateable.Update(deltaTime);
     }
 
-    public virtual void Draw(float delta)
-    {
-        foreach (var drawable in drawables)
-            drawable.Draw(delta);
-    }
-
+    /// <summary>
+    /// Данный виртуальный метод вызывается каждый кадр игровой логики.
+    /// Данный виртуальный метод вызывается при удалении объекта.
+    /// </summary>
     public virtual void Destroy()
     {
         ColliderManager.Remove(Transform.Position, this);
         RoguelikeGame.RemoveActor(this);
+        drawables.ForEach(x => RoguelikeGame.RemoveDrawable(x));
     }
 }

@@ -6,6 +6,9 @@ using Roguelike.VectorUtility;
 
 namespace Roguelike.Actors;
 
+/// <summary>
+/// Данный класс - класс игрового объекта, содержащего предмет. К такому объекту можно подойти и получить хранимый предмет.
+/// </summary>
 public class ItemHolder : Actor
 {
 
@@ -18,14 +21,14 @@ public class ItemHolder : Actor
         base.OnStart();
 
         spriteComponent = AddComponent<SpriteComponent>();
-        spriteComponent.LoadTexture("KFC");
+        spriteComponent.SetTexture("KFC");
 
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
         collider.OnTriggerEnter += OnTriggerEnter;
     }
 
-    public void OnTriggerEnter(ColliderComponent collider)
+    private void OnTriggerEnter(ColliderComponent collider)
     {
         if (collider.Owner.Tag == Hero.HeroTag)
         {
@@ -35,10 +38,5 @@ public class ItemHolder : Actor
                 Destroy();
             }
         }
-    }
-
-    public override void Draw(float delta)
-    {
-        base.Draw(delta);
     }
 }

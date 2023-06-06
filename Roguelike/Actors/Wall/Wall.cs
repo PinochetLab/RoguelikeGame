@@ -4,6 +4,9 @@ using Roguelike.Components.Sprites;
 
 namespace Roguelike.Actors;
 
+/// <summary>
+/// Данный класс - класс стены.
+/// </summary>
 public class Wall : Actor {
 
     private SpriteComponent spriteComponent;
@@ -15,14 +18,9 @@ public class Wall : Actor {
         base.OnStart();
 
         spriteComponent = AddComponent<SpriteComponent>();
-        spriteComponent.LoadTexture("Wall");
+        spriteComponent.SetTexture("Wall");
 
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Solid;
-    }
-
-    public override void Draw(float delta)
-    {
-        base.Draw(delta);
     }
 }
