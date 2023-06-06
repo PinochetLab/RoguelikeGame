@@ -21,8 +21,8 @@ public class Wall : Actor {
         collider.Type = ColliderType.Solid;
     }
 
-    public override void Draw()
+    public override void Draw(float delta)
     {
-        base.Draw();
+        base.Draw(delta);
     }
 }

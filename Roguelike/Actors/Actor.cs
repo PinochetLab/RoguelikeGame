@@ -17,9 +17,9 @@ public class Actor
 
     public TransformComponent Transform;
 
-    private readonly List<Component> components = new ();
+    private readonly List<Component> components = new();
     private readonly List<IUpdateable> updateables = new ();
-    private readonly List<IDrawable> drawables = new ();
+    private readonly List<IDrawable> drawables = new();
 
     public TComp AddComponent<TComp>() where TComp : Component, new()
     {
@@ -42,7 +42,7 @@ public class Actor
 
         if (drawable != null)
         {
-            drawables.Add(drawable);
+                drawables.Add(drawable);
         }
 
         return component;
@@ -63,7 +63,7 @@ public class Actor
     }
 
 
-    public static TActor Create<TActor>(Vector2Int position) where TActor : Actor, new ()
+    public static TActor Create<TActor>(Vector2Int position) where TActor : Actor, new()
     {
         var actor = new TActor();
         actor.Initialize(position);
@@ -93,21 +93,20 @@ public class Actor
 
     }
 
-    public virtual void Update() {
-        foreach (var updateable in updateables)
-        {
-            updateable.Update();
-        }
+    public virtual void Update(float deltaTime)
+    {
+        foreach (var updateable in updatable)
+            updateable.Update(deltaTime);
     }
 
-    public virtual void Draw() {
+    public virtual void Draw(float delta)
+    {
         foreach (var drawable in drawables)
-        {
-            drawable.Draw();
-        }
+            drawable.Draw(delta);
     }
 
-    public virtual void Destroy() {
+    public virtual void Destroy()
+    {
         ColliderManager.Remove(Transform.Position, this);
         RoguelikeGame.RemoveActor(this);
     }

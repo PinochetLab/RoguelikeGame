@@ -1,5 +1,5 @@
 ﻿namespace Roguelike.Components;
 public interface IDrawable
 {
-    public void Draw();
+    public void Draw(float delta);
 }

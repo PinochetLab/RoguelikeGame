@@ -36,7 +36,7 @@ public class SpriteComponent : Component, IDrawable
         texture = TextureLoader.LoadTexture(textureName);
     }
 
-    public void Draw()
+    public void Draw(float delta)
     {
         if (texture == null) return;
 

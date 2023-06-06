@@ -26,9 +26,9 @@ public class Hero : Actor
         collider.Type = ColliderType.Trigger;
     }
 
-    public override void Update()
+    public override void Update(float deltaTime)
     {
-        base.Update();
+        base.Update(deltaTime);
 
         var direction = Vector2Int.Zero;
         var state = KeyboardExtended.GetState();

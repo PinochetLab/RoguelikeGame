@@ -37,8 +37,8 @@ public class ItemHolder : Actor
         }
     }
 
-    public override void Draw()
+    public override void Draw(float delta)
     {
-        base.Draw();
+        base.Draw(delta);
     }
 }

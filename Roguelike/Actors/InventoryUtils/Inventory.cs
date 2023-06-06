@@ -80,7 +80,7 @@ public class Inventory : CanvasActor
         Cells[index].LoadTexture(Items[index].TextureName);
     }
 
-    public override void Update()
+    public override void Update(float deltaTime)
     {
         var state = MouseExtended.GetState();
         for (var i = 0; i < MaxElementsCount; i++)

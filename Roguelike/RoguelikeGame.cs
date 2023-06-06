@@ -26,8 +26,6 @@ public class RoguelikeGame : Game
     private static readonly List<CanvasActor> CanvasActors = new List<CanvasActor>();
     private static readonly List<CanvasActor> CanvasActorsForRemove = new List<CanvasActor>();
 
-    public static float Time { get; set; } = 0;
-    public static float DeltaTime { get; set; } = 0;
 
     public static RoguelikeGame Instance;
 
@@ -120,10 +118,7 @@ public class RoguelikeGame : Game
             || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        var deltaTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000;
-
-        DeltaTime = deltaTime;
-        Time += DeltaTime;
+        var deltaTime = GetDeltaTime(gameTime);
 
         base.Update(gameTime);
 
@@ -146,6 +141,7 @@ public class RoguelikeGame : Game
         base.Draw(gameTime);
 
         spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        var delta = GetDeltaTime(gameTime);
 
         var size = FieldInfo.ScreenWith;
         var cellCount = FieldInfo.CellCount;
@@ -161,7 +157,7 @@ public class RoguelikeGame : Game
         }
 
         foreach (var actor in Actors)
-            actor.Draw();
+            actor.Draw(delta);
 
         for (var i = 1; i < cellCount; i++)
         {
@@ -170,8 +166,10 @@ public class RoguelikeGame : Game
         }
 
         foreach (var actor in CanvasActors)
-            actor.Draw();
+            actor.Draw(delta);
 
         spriteBatch.End();
     }
+
+    private static float GetDeltaTime(GameTime gameTime) => (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000;
 }
