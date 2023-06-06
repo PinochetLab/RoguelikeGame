@@ -21,6 +21,8 @@ public class Hero : Actor
 
     private ColliderComponent collider;
 
+    private WeaponSlot weaponSlot;
+
     public override void OnStart()
     {
         base.OnStart();
@@ -30,6 +32,9 @@ public class Hero : Actor
 
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
+
+        weaponSlot = Create<WeaponSlot>(Transform.Position);
+        weaponSlot.Transform.Parent = Transform;
     }
 
     public override void Update(float deltaTime)
@@ -62,10 +67,12 @@ public class Hero : Actor
         if (direction == Vector2Int.Right)
         {
             spriteComponent.FlipX = false;
+            weaponSlot.Transform.FlipX = false;
         }
         else if (direction == Vector2Int.Left)
         {
             spriteComponent.FlipX = true;
+            weaponSlot.Transform.FlipX = true;
         }
     }
 }
