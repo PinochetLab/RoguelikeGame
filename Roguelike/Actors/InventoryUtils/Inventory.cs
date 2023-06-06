@@ -10,12 +10,21 @@ using Roguelike.Components.Sprites;
 
 namespace Roguelike.Actors.InventoryUtils;
 
-public class Inventory : CanvasActor
+/// <summary>
+/// Данный класс - класс инвенторя.
+/// </summary>
+public class Inventory : Actor
 {
+    /// <summary>
+    /// Строка, отвечающая за отсутствие предмета.
+    /// </summary>
     public const string NoneName = "None";
 
     private const int MaxElementsCount = 5;
 
+    /// <summary>
+    /// Размер клетки инвенторя в пикселях.
+    /// </summary>
     public const int CellSize = 100;
 
     private int selected = 0;
@@ -28,11 +37,17 @@ public class Inventory : CanvasActor
 
     private static readonly List<Rectangle> Rects = Enumerable.Repeat(new Rectangle(0, 0, 0, 0), MaxElementsCount).ToList();
 
+    /// <summary>
+    /// Данный метод возвращет true, если в инвентаре есть место, и false в противном случае.
+    /// </summary>
     public static bool HasFreePlace()
     {
         return Items.Any(x => x == null);
     }
 
+    /// <summary>
+    /// Данный метод добавляет предмет в инвентарь.
+    /// </summary>
     public static void Add(Item item)
     {
         var index = Items.FindIndex(x => x == null);
@@ -59,15 +74,19 @@ public class Inventory : CanvasActor
 
             var cellBorderActor = CreateEmpty(cellPosition);
             CellBorders[i] = cellBorderActor.AddComponent<SpriteComponent>();
-            CellBorders[i].LoadTexture("Cell3");
+            CellBorders[i].SetTexture("Cell3");
             CellBorders[i].Size = Vector2Int.One * CellSize;
             CellBorders[i].IsTile = false;
+            CellBorders[i].Canvas = true;
+            CellBorders[i].DrawOrder = 0;
 
             var cellActor = CreateEmpty(cellPosition);
             Cells[i] = cellActor.AddComponent<SpriteComponent>();
             Cells[i].Transform.Scale = Vector2.One * 0.5f;
             Cells[i].Size = Vector2Int.One * CellSize;
             Cells[i].IsTile = false;
+            Cells[i].Canvas = true;
+            Cells[i].DrawOrder = 1;
 
             if (Items[i] == null) continue;
 
@@ -75,9 +94,9 @@ public class Inventory : CanvasActor
         }
     }
 
-    public static void UpdateCell(int index)
+    private static void UpdateCell(int index)
     {
-        Cells[index].LoadTexture(Items[index].TextureName);
+        Cells[index].SetTexture(Items[index].TextureName);
     }
 
     public override void Update(float deltaTime)
@@ -92,12 +111,12 @@ public class Inventory : CanvasActor
                 cursorPosition.Y >= rect.Y &&
                 cursorPosition.Y <= rect.Y + rect.Height)
             {
-                CellBorders[selected].LoadTexture("Cell3");
-                CellBorders[i].LoadTexture("SelectedCell");
+                CellBorders[selected].SetTexture("Cell3");
+                CellBorders[i].SetTexture("SelectedCell");
                 selected = i;
                 return;
             }
         }
-        CellBorders[selected].LoadTexture("Cell3");
+        CellBorders[selected].SetTexture("Cell3");
     }
 }

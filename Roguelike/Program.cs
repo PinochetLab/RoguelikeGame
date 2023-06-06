@@ -1,3 +1,2 @@
-﻿
-using var game = new Roguelike.RoguelikeGame();
+﻿using var game = new Roguelike.RoguelikeGame();
 game.Run();
