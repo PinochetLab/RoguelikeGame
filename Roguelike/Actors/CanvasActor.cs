@@ -15,6 +15,6 @@ public class CanvasActor : Actor
 
     public override void Destroy()
     {
-        RoguelikeGame.RemoveCanvasActor(this);
+        RoguelikeGame.RemoveActor(this);
     }
 }

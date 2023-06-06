@@ -13,12 +13,12 @@ namespace Roguelike.Actors;
 
 public class Actor
 {
-    public virtual string Tag { get => "none"; }
+    public virtual string Tag => "none";
 
     public TransformComponent Transform;
 
     private readonly List<Component> components = new();
-    private readonly List<IUpdateable> updateables = new ();
+    private readonly List<IUpdateable> updatable = new();
     private readonly List<IDrawable> drawables = new();
 
     public TComp AddComponent<TComp>() where TComp : Component, new()
@@ -31,18 +31,14 @@ public class Actor
 
         components.Add(component);
 
-        var updateable = component as IUpdateable;
-
-        if (updateable != null)
+        switch (component)
         {
-            updateables.Add(updateable);
-        }
-
-        var drawable = component as IDrawable;
-
-        if (drawable != null)
-        {
+            case IUpdateable updateable:
+                updatable.Add(updateable);
+                break;
+            case IDrawable drawable:
                 drawables.Add(drawable);
+                break;
         }
 
         return component;
@@ -50,14 +46,9 @@ public class Actor
 
     public TComp GetComponent<TComp>() where TComp : Component, new()
     {
-        foreach (Component component in components)
-        {
-            var t = component as TComp;
-            if (t != null)
-            {
+        foreach (var component in components)
+            if (component is TComp t)
                 return t;
-            }
-        }
 
         return null;
     }
@@ -70,7 +61,8 @@ public class Actor
         return actor;
     }
 
-    public static TActor Create<TActor>(int x, int y) where TActor : Actor, new() => Create<TActor>(new(x, y));
+    public static TActor Create<TActor>(int x, int y) where TActor : Actor, new()
+        => Create<TActor>(new Vector2Int(x, y));
 
     public static TActor Create<TActor>() where TActor : Actor, new() => Create<TActor>(Vector2Int.Zero);
 
@@ -81,16 +73,16 @@ public class Actor
     public static Actor CreateEmpty() => Create<Actor>();
 
 
-
-    public virtual void Initialize(Vector2Int position) {
+    public virtual void Initialize(Vector2Int position)
+    {
         Transform = AddComponent<TransformComponent>();
         Transform.Position = position;
         RoguelikeGame.AddActor(this);
         OnStart();
     }
 
-    public virtual void OnStart() {
-
+    public virtual void OnStart()
+    {
     }
 
     public virtual void Update(float deltaTime)

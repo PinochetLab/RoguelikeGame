@@ -4,9 +4,7 @@ namespace Roguelike.Components;
 
 public abstract class Component
 {
-    private Actor owner = null;
-
-    public Actor Owner => owner;
+    public Actor Owner { get; private set; }
 
     public TransformComponent Transform => Owner?.Transform;
 
@@ -14,6 +12,6 @@ public abstract class Component
 
     public virtual void SetOwner(Actor actor)
     {
-        owner ??= actor;
+        Owner ??= actor;
     }
 }

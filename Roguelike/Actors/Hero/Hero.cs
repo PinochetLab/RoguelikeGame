@@ -9,7 +9,7 @@ namespace Roguelike.Actors;
 public class Hero : Actor
 {
     public const string HeroTag = "Hero";
-    public override string Tag { get => HeroTag; }
+    public override string Tag => HeroTag;
 
     private SpriteComponent spriteComponent;
 
@@ -63,10 +63,5 @@ public class Hero : Actor
         }
         collider.UpdatePosition();
 
-    }
-
-    public override void Draw()
-    {
-        base.Draw();
     }
 }
