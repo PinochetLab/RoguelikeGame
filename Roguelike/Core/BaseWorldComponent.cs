@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using Roguelike.Actors;
 using Roguelike.Components.Colliders;
 
@@ -12,6 +13,8 @@ public abstract class BaseWorldComponent : BaseGameSystem
 
     protected BaseWorldComponent(BaseGame game) : base(game)
     { }
+
+    public ColliderManager Colliders { get; protected set; } = new();
 
     /// <summary>
     /// Данная функция создаёт игровой объект переданного типа,
@@ -86,6 +89,8 @@ public abstract class BaseWorldComponent : BaseGameSystem
         foreach (var actor in actors)
             actor.Update(gameTime);
 
+        Colliders.Update(gameTime.GetElapsedSeconds());
+
         RemoveToRemoveMarked();
     }
 
@@ -107,7 +112,7 @@ public abstract class BaseWorldComponent : BaseGameSystem
         actorsToRemove.ForEach(x =>
         {
             actors.Remove(x);
-            ColliderManager.Remove(x.Transform.Position, x);
+            Colliders.Remove(x.Transform.Position, x);
         });
         actorsToRemove.Clear();
     }

@@ -23,17 +23,20 @@ public class Actor : DrawableGameComponent
     /// </summary>
     public TransformComponent Transform { get; protected set; }
 
+    public new BaseGame Game { get; private set; }
+
+    public BaseWorldComponent World { get; private set; }
+
     private readonly List<Component> components = new();
 
     private readonly List<IUpdateable> updatable = new();
 
     private readonly List<IDrawable> drawables = new();
 
-    public new BaseGame Game { get; private set; }
-
     public Actor(BaseGame game) : base(game)
     {
         Game = game;
+        World = game.World;
     }
 
     /// <summary>

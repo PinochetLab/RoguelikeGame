@@ -4,7 +4,6 @@ using MonoGame.Extended.Input;
 using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
 using Roguelike.Core;
-using Roguelike.World;
 
 namespace Roguelike.Actors;
 
@@ -61,7 +60,7 @@ public class Hero : Actor, IActorCreatable<Hero>
             direction = Vector2Int.Down;
         }
 
-        if (direction == Vector2Int.Zero || ColliderManager.ContainsSolid(Transform.Position + direction)) return;
+        if (direction == Vector2Int.Zero || World.Colliders.ContainsSolid(Transform.Position + direction)) return;
 
         Transform.Position += direction;
         if (direction == Vector2Int.Right)
