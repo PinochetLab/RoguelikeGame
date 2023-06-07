@@ -33,7 +33,7 @@ public class Arrow : Actor, IMovable, IActorCreatable<Arrow>
     {
         Vector2Int direction = new Vector2(MathF.Cos(Transform.Angle), MathF.Sin(Transform.Angle));
         Debug.WriteLine(Transform.Position);
-        Transform.Position += direction;
+        Transform.Position += direction * 2;
     }
 
     public void OnTriggerEnter(ColliderComponent other)
