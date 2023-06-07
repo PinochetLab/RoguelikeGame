@@ -15,7 +15,7 @@ public class WeaponSlot : Actor
         base.OnStart();
 
         spriteComponent = AddComponent<SpriteComponent>();
-        spriteComponent.SetTexture("Sword");
+        spriteComponent.SetTexture("Bow3");
         spriteComponent.DrawOrder = 1;
     }
 }

@@ -30,6 +30,18 @@ public static class ColliderManager
     }
 
     /// <summary>
+    /// Данный метод проверяет, есть ли в клетке игровой объект определённого типа.
+    /// </summary>
+    public static bool Contains<T>(Vector2Int v)
+    {
+        if (ColliderMap.TryGetValue(v, out var g))
+        {
+            return g.Any(x => x.Owner is T);
+        }
+        return false;
+    }
+
+    /// <summary>
     /// Данный метод удаляет коллайдер игрового объекта с поля, если он у него существует.
     /// </summary>
     public static void Remove(Vector2Int v, Actor actor)

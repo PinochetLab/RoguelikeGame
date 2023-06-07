@@ -15,6 +15,7 @@ using System.Runtime.CompilerServices;
 using Roguelike.Components;
 using IDrawable = Roguelike.Components.IDrawable;
 using System.Linq;
+using IMovable = Roguelike.Components.IMovable;
 
 namespace Roguelike;
 
@@ -34,6 +35,9 @@ public sealed class RoguelikeGame : Game
 
     private static readonly List<Actor> ActorsForRemove = new();
     private static readonly List<IDrawable> DrawablesForRemove = new();
+
+    private static readonly List<Actor> ActorsForAdd = new();
+    private static readonly List<IDrawable> DrawablesForAdd = new();
 
 
     private readonly GraphicsDeviceManager graphics;
@@ -116,10 +120,26 @@ public sealed class RoguelikeGame : Game
 
         base.Update(gameTime);
 
+        Debug.WriteLine(Actors.Count);
+
         foreach (var actor in Actors)
             actor.Update(deltaTime);
 
-        RemoveRemovedActors();
+        AddAndRemoveObjects();
+    }
+
+    /// <summary>
+    /// Метод, который вызывается при совершении главным героем хода. Двигает все подвижные игровые объекты.
+    /// </summary>
+    public static void MoveAll()
+    {
+        foreach (var actor in Actors)
+        {
+            if (actor is IMovable movable)
+            {
+                movable.Move();
+            }
+        }
     }
 
     /// <summary>
@@ -165,7 +185,7 @@ public sealed class RoguelikeGame : Game
     /// </summary>
     public static void AddDrawable(IDrawable drawable)
     {
-        _drawables.Add(drawable);
+        DrawablesForAdd.Add(drawable);
     }
 
     /// <summary>
@@ -173,7 +193,7 @@ public sealed class RoguelikeGame : Game
     /// </summary>
     public static void AddActor(Actor actor)
     {
-        Actors.Add(actor);
+        ActorsForAdd.Add(actor);
     }
 
     /// <summary>
@@ -192,13 +212,19 @@ public sealed class RoguelikeGame : Game
         ActorsForRemove.Add(actor);
     }
 
-    private static void RemoveRemovedActors()
+    private static void AddAndRemoveObjects()
     {
         ActorsForRemove.ForEach(x => Actors.Remove(x));
         ActorsForRemove.Clear();
 
         DrawablesForRemove.ForEach(x => _drawables.Remove(x));
         DrawablesForRemove.Clear();
+
+        ActorsForAdd.ForEach(x => Actors.Add(x));
+        ActorsForAdd.Clear();
+
+        DrawablesForAdd.ForEach(x => _drawables.Add(x));
+        DrawablesForAdd.Clear();
     }
 
     private static float GetDeltaTime(GameTime gameTime) => (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000;

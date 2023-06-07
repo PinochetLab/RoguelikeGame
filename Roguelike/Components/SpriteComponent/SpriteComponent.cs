@@ -69,7 +69,7 @@ public class SpriteComponent : Component, IDrawable
         var pos = Transform.Position * (IsTile ? FieldInfo.CellSize : 1);
         var size = IsTile ? Vector2Int.One * FieldInfo.CellSize : Size;
 
-        var position = pos + (size / 2 - size / 2 * Transform.Scale);
+        var position = pos + size / 2;
 
         var effect = SpriteEffects.None;
         if (FlipX) effect |= SpriteEffects.FlipHorizontally;
@@ -79,12 +79,20 @@ public class SpriteComponent : Component, IDrawable
 
         if (rect.Width < 0)
         {
-            rect.X -= rect.Width;
+            rect.X += rect.Width;
             rect.Width = -rect.Width;
+            effect |= SpriteEffects.FlipHorizontally;
+        }
+
+        if (rect.Height < 0)
+        {
+            rect.Y += rect.Height;
+            rect.Height = -rect.Height;
+            effect |= SpriteEffects.FlipVertically;
         }
 
         var rectSize = new Rectangle(0, 0, texture.Width, texture.Height);
 
-        spriteBatch.Draw(texture, rect, rectSize, Color.White, 0, Vector2.Zero, effect, 0);
+        spriteBatch.Draw(texture, rect, rectSize, Color.White, Transform.Angle, new Vector2(texture.Width / 2f, texture.Height / 2f), effect, 0);
     }
 }
