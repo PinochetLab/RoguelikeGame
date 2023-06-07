@@ -11,7 +11,7 @@ namespace Roguelike.Actors;
 /// <summary>
 /// Данный класс - класс главного персонажа.
 /// </summary>
-public class Hero : Actor
+public class Hero : Actor, IActorCreatable<Hero>
 {
     /// <summary>
     /// Тэг главного персонажа.
@@ -22,6 +22,9 @@ public class Hero : Actor
     private SpriteComponent spriteComponent;
 
     private ColliderComponent collider;
+
+    public Hero(BaseGame game) : base(game)
+    { }
 
     public override void OnStart()
     {
@@ -34,9 +37,9 @@ public class Hero : Actor
         collider.Type = ColliderType.Trigger;
     }
 
-    public override void Update(float deltaTime)
+    public override void Update(GameTime time)
     {
-        base.Update(deltaTime);
+        base.Update(time);
 
         var direction = Vector2Int.Zero;
         var state = KeyboardExtended.GetState();
@@ -70,4 +73,6 @@ public class Hero : Actor
             spriteComponent.FlipX = true;
         }
     }
+
+    public static Hero Create(BaseGame game) => new Hero(game);
 }
