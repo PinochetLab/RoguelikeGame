@@ -1,11 +1,12 @@
 ﻿using Roguelike.Field;
-using Roguelike.VectorUtility;
 using Roguelike.Actors.InventoryUtils.Items;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Input;
 using Roguelike.Components.Sprites;
+using Roguelike.Core;
+using Roguelike.World;
 
 
 namespace Roguelike.Actors.InventoryUtils;
@@ -13,7 +14,7 @@ namespace Roguelike.Actors.InventoryUtils;
 /// <summary>
 /// Данный класс - класс инвенторя.
 /// </summary>
-public class Inventory : Actor
+public class Inventory : BaseGameSystem
 {
     /// <summary>
     /// Строка, отвечающая за отсутствие предмета.
@@ -55,9 +56,12 @@ public class Inventory : Actor
         UpdateCell(index);
     }
 
-    public override void OnStart()
+    public Inventory(BaseGame game) : base(game)
+    { }
+
+    public override void Initialize()
     {
-        base.OnStart();
+        base.Initialize();
 
         Items[3] = new ItemCoin();
 
@@ -72,7 +76,7 @@ public class Inventory : Actor
 
             Rects[i] = new Rectangle(cellPosition, size);
 
-            var cellBorderActor = CreateEmpty(cellPosition);
+            var cellBorderActor = Game.World.CreateActor(cellPosition);
             CellBorders[i] = cellBorderActor.AddComponent<SpriteComponent>();
             CellBorders[i].SetTexture("Cell3");
             CellBorders[i].Size = Vector2Int.One * CellSize;
@@ -80,7 +84,7 @@ public class Inventory : Actor
             CellBorders[i].Canvas = true;
             CellBorders[i].DrawOrder = 0;
 
-            var cellActor = CreateEmpty(cellPosition);
+            var cellActor = Game.World.CreateActor(cellPosition);
             Cells[i] = cellActor.AddComponent<SpriteComponent>();
             Cells[i].Transform.Scale = Vector2.One * 0.5f;
             Cells[i].Size = Vector2Int.One * CellSize;
@@ -99,7 +103,7 @@ public class Inventory : Actor
         Cells[index].SetTexture(Items[index].TextureName);
     }
 
-    public override void Update(float deltaTime)
+    public override void Update(GameTime deltaTime)
     {
         var state = MouseExtended.GetState();
         for (var i = 0; i < MaxElementsCount; i++)

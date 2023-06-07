@@ -1,5 +1,6 @@
 ﻿using System;
-using Roguelike.VectorUtility;
+using System.Collections.Generic;
+using Roguelike.Core;
 
 namespace Roguelike.Components.Colliders;
 
@@ -13,19 +14,19 @@ public enum ColliderType { Solid, Trigger }
 /// <summary>
 /// Данный компонент - компонент коллайдера.
 /// </summary>
-public class ColliderComponent : Component, IUpdateable {
-
+public class ColliderComponent : Component, IUpdateable
+{
     /// <summary>
     /// Событие, вызывающееся, когда в текущей коллайдер попадает другой коллайдер.
     /// Другой коллайдер передаётся в событие в качестве параметра.
     /// </summary>
-    public event Action<ColliderComponent> OnTriggerEnter = delegate { };
+    public event Action<ColliderComponent> OnTriggerEnter;
 
     /// <summary>
     /// Событие, вызывающееся, когда из текущего коллайдера выходит другой коллайдер.
     /// Другой коллайдер передаётся в событие в качестве параметра.
     /// </summary>
-    public event Action<ColliderComponent> OnTriggerExit = delegate { };
+    public event Action<ColliderComponent> OnTriggerExit;
 
     /// <summary>
     /// Тип коллайдера.
@@ -40,39 +41,36 @@ public class ColliderComponent : Component, IUpdateable {
 
         CurrentPosition = Transform.Position;
 
-        if (!ColliderManager.ColliderMap.ContainsKey(CurrentPosition))
-        {
-            ColliderManager.ColliderMap[CurrentPosition] = new();
-        }
+        if (!Manager.ColliderMap.ContainsKey(CurrentPosition))
+            Manager.ColliderMap[CurrentPosition] = new List<ColliderComponent>();
 
-        ColliderManager.ColliderMap[CurrentPosition].Add(this);
+        Manager.ColliderMap[CurrentPosition].Add(this);
     }
 
     private void UpdatePosition()
     {
-        ColliderManager.Update();
-        if (ColliderManager.ColliderMap.TryGetValue(CurrentPosition, out var list))
-        { 
+        if (Manager.ColliderMap.TryGetValue(CurrentPosition, out var list))
+        {
             list.Remove(this);
             foreach (var collider in list)
             {
-                collider.OnTriggerExit(this);
-                OnTriggerExit(collider);
+                collider.OnTriggerExit?.Invoke(this);
+                OnTriggerExit?.Invoke(collider);
             }
         }
 
         var position = Transform.Position;
-            
-        if (!ColliderManager.ColliderMap.ContainsKey(position)) {
-            ColliderManager.ColliderMap[position] = new();
+
+        if (!Manager.ColliderMap.ContainsKey(position))
+            Manager.ColliderMap[position] = new();
+
+        foreach (var collider in Manager.ColliderMap[position])
+        {
+            collider.OnTriggerEnter?.Invoke(this);
+            OnTriggerEnter?.Invoke(collider);
         }
 
-        foreach (var collider in ColliderManager.ColliderMap[position]) {
-            collider.OnTriggerEnter(this);
-            OnTriggerEnter(collider);
-        }
-
-        ColliderManager.ColliderMap[position].Add(this);
+        Manager.ColliderMap[position].Add(this);
 
         CurrentPosition = position;
     }
@@ -83,4 +81,6 @@ public class ColliderComponent : Component, IUpdateable {
         UpdatePosition();
         CurrentPosition = Transform.Position;
     }
+
+    private ColliderManager Manager => Owner.World.Colliders;
 }

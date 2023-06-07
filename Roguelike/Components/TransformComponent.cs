@@ -1,8 +1,8 @@
-﻿using Roguelike.VectorUtility;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System;
+using Roguelike.Core;
 
 namespace Roguelike.Components;
 

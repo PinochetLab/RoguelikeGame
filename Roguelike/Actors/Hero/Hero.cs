@@ -1,4 +1,4 @@
-﻿using Roguelike.VectorUtility;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Input;
@@ -6,13 +6,14 @@ using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
 using System;
 using System.Diagnostics;
+using Roguelike.Core;
 
 namespace Roguelike.Actors;
 
 /// <summary>
 /// Данный класс - класс главного персонажа.
 /// </summary>
-public class Hero : Actor
+public class Hero : Actor, IActorCreatable<Hero>
 {
     /// <summary>
     /// Тэг главного персонажа.
@@ -30,6 +31,9 @@ public class Hero : Actor
 
     private KeyboardStateExtended keyState;
 
+    public Hero(BaseGame game) : base(game)
+    { }
+
     public override void OnStart()
     {
         base.OnStart();
@@ -44,9 +48,9 @@ public class Hero : Actor
         weaponSlot.Transform.Parent = Transform;
     }
 
-    public override void Update(float deltaTime)
+    public override void Update(GameTime time)
     {
-        base.Update(deltaTime);
+        base.Update(time);
 
         keyState = KeyboardExtended.GetState();
 
@@ -81,7 +85,7 @@ public class Hero : Actor
             weaponSlot.Transform.Angle = MathF.PI / 2;
         }
 
-        if (direction == Vector2Int.Zero || ColliderManager.ContainsSolid(Transform.Position + direction)) return;
+        if (direction == Vector2Int.Zero || World.Colliders.ContainsSolid(Transform.Position + direction)) return;
 
         currentDirection = direction;
 
@@ -116,4 +120,6 @@ public class Hero : Actor
             arrow.Transform.Angle = MathF.Atan2(currentDirection.Y, currentDirection.X);
         }
     }
+
+    public static Hero Create(BaseGame game) => new Hero(game);
 }
