@@ -12,6 +12,7 @@ public abstract class BaseGame : Game
     private List<IDrawable> drawables = new();
 
     private readonly List<IDrawable> drawablesForRemove = new();
+    private readonly List<IDrawable> drawablesForAdd = new();
 
     protected readonly GraphicsDeviceManager Graphics;
     private BaseWorldComponent world;
@@ -76,7 +77,7 @@ public abstract class BaseGame : Game
     {
         base.Update(gameTime);
 
-        RemoveToRemoveMarked();
+        UpdateStatesOfDrawables();
     }
 
     /// <summary>
@@ -100,7 +101,7 @@ public abstract class BaseGame : Game
     /// </summary>
     public void AddDrawable(IDrawable drawable)
     {
-        drawables.Add(drawable);
+        drawablesForAdd.Add(drawable);
     }
 
     /// <summary>
@@ -111,9 +112,12 @@ public abstract class BaseGame : Game
         drawablesForRemove.Add(drawable);
     }
 
-    private void RemoveToRemoveMarked()
+    private void UpdateStatesOfDrawables()
     {
         drawablesForRemove.ForEach(x => drawables.Remove(x));
         drawablesForRemove.Clear();
+
+        drawablesForAdd.ForEach(x => drawables.Add(x));
+        drawablesForAdd.Clear();
     }
 }

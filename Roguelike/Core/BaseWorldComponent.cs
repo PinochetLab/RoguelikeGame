@@ -12,6 +12,7 @@ public abstract class BaseWorldComponent : BaseGameSystem
 {
     private readonly List<Actor> actors = new();
     private readonly List<Actor> actorsToRemove = new();
+    private readonly List<Actor> actorsToAdd = new();
 
     protected BaseWorldComponent(BaseGame game) : base(game)
     {
@@ -32,7 +33,7 @@ public abstract class BaseWorldComponent : BaseGameSystem
         where TActor : Actor, IActorCreatable<TActor>
     {
         var actor = TActor.Create(Game);
-        actors.Add(actor);
+        actorsToAdd.Add(actor);
         actor.Initialize(position);
         return actor;
     }
@@ -66,7 +67,7 @@ public abstract class BaseWorldComponent : BaseGameSystem
     public Actor CreateActor(Vector2Int position)
     {
         var actor = new Actor(Game);
-        actors.Add(actor);
+        actorsToAdd.Add(actor);
         actor.Initialize(position);
         return actor;
     }
@@ -96,7 +97,7 @@ public abstract class BaseWorldComponent : BaseGameSystem
 
         Colliders.Update(gameTime.GetElapsedSeconds());
 
-        RemoveToRemoveMarked();
+        UpdateStatesOfActors();
     }
 
     public override void Draw(GameTime gameTime)
@@ -122,7 +123,7 @@ public abstract class BaseWorldComponent : BaseGameSystem
         actorsToRemove.Add(actor);
     }
 
-    private void RemoveToRemoveMarked()
+    private void UpdateStatesOfActors()
     {
         actorsToRemove.ForEach(x =>
         {
@@ -130,5 +131,8 @@ public abstract class BaseWorldComponent : BaseGameSystem
             Colliders.Remove(x.Transform.Position, x);
         });
         actorsToRemove.Clear();
+
+        actorsToAdd.ForEach(x => actors.Add(x));
+        actorsToAdd.Clear();
     }
 }
