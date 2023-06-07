@@ -2,7 +2,9 @@
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using Roguelike.Actors;
+using Roguelike.Actors.AI;
 using Roguelike.Components.Colliders;
+using IMovable = Roguelike.Components.IMovable;
 
 namespace Roguelike.Core;
 
@@ -10,11 +12,15 @@ public abstract class BaseWorldComponent : BaseGameSystem
 {
     private readonly List<Actor> actors = new();
     private readonly List<Actor> actorsToRemove = new();
+    private readonly List<Actor> actorsToAdd = new();
 
     protected BaseWorldComponent(BaseGame game) : base(game)
-    { }
+    {
+        Paths = new PathManager(Game);
+    }
 
     public ColliderManager Colliders { get; protected set; } = new();
+    public PathManager Paths { get; protected set; }
 
     /// <summary>
     /// Данная функция создаёт игровой объект переданного типа,
@@ -27,7 +33,7 @@ public abstract class BaseWorldComponent : BaseGameSystem
         where TActor : Actor, IActorCreatable<TActor>
     {
         var actor = TActor.Create(Game);
-        actors.Add(actor);
+        actorsToAdd.Add(actor);
         actor.Initialize(position);
         return actor;
     }
@@ -61,7 +67,7 @@ public abstract class BaseWorldComponent : BaseGameSystem
     public Actor CreateActor(Vector2Int position)
     {
         var actor = new Actor(Game);
-        actors.Add(actor);
+        actorsToAdd.Add(actor);
         actor.Initialize(position);
         return actor;
     }
@@ -91,7 +97,7 @@ public abstract class BaseWorldComponent : BaseGameSystem
 
         Colliders.Update(gameTime.GetElapsedSeconds());
 
-        RemoveToRemoveMarked();
+        UpdateStatesOfActors();
     }
 
     public override void Draw(GameTime gameTime)
@@ -102,12 +108,22 @@ public abstract class BaseWorldComponent : BaseGameSystem
             actor.Draw(gameTime);
     }
 
+    /// <summary>
+    /// Метод, который вызывается при совершении главным героем хода. Двигает все подвижные игровые объекты.
+    /// </summary>
+    public void MoveAll()
+    {
+        foreach (var actor in actors)
+            if (actor is IMovable movable)
+                movable.Move();
+    }
+
     public void RemoveActor(Actor actor)
     {
         actorsToRemove.Add(actor);
     }
 
-    private void RemoveToRemoveMarked()
+    private void UpdateStatesOfActors()
     {
         actorsToRemove.ForEach(x =>
         {
@@ -115,5 +131,8 @@ public abstract class BaseWorldComponent : BaseGameSystem
             Colliders.Remove(x.Transform.Position, x);
         });
         actorsToRemove.Clear();
+
+        actorsToAdd.ForEach(x => actors.Add(x));
+        actorsToAdd.Clear();
     }
 }

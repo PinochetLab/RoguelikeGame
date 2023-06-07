@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
 using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
+using System;
 using Roguelike.Core;
 
 namespace Roguelike.Actors;
@@ -22,6 +23,12 @@ public class Hero : Actor, IActorCreatable<Hero>
 
     private ColliderComponent collider;
 
+    private WeaponSlot weaponSlot;
+
+    private Vector2Int currentDirection = Vector2Int.Right;
+
+    private KeyboardStateExtended keyState;
+
     public Hero(BaseGame game) : base(game)
     { }
 
@@ -34,42 +41,81 @@ public class Hero : Actor, IActorCreatable<Hero>
 
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
+
+        weaponSlot = World.CreateActor<WeaponSlot>(Transform.Position);
+        weaponSlot.Transform.Parent = Transform;
     }
 
     public override void Update(GameTime time)
     {
         base.Update(time);
 
+        keyState = KeyboardExtended.GetState();
+
+        MoveLogic();
+
+        ShootLogic();
+    }
+
+    private void MoveLogic()
+    {
         var direction = Vector2Int.Zero;
-        var state = KeyboardExtended.GetState();
+        var state = keyState;
 
         if (state.WasKeyJustUp(Keys.D))
         {
             direction = Vector2Int.Right;
+            weaponSlot.Transform.Angle = 0;
         }
         else if (state.WasKeyJustUp(Keys.A))
         {
             direction = Vector2Int.Left;
+            weaponSlot.Transform.Angle = MathF.PI;
         }
         else if (state.WasKeyJustUp(Keys.W))
         {
             direction = Vector2Int.Up;
+            weaponSlot.Transform.Angle = -MathF.PI / 2;
         }
         else if (state.WasKeyJustUp(Keys.S))
         {
             direction = Vector2Int.Down;
+            weaponSlot.Transform.Angle = MathF.PI / 2;
         }
 
         if (direction == Vector2Int.Zero || World.Colliders.ContainsSolid(Transform.Position + direction)) return;
 
+        currentDirection = direction;
+
         Transform.Position += direction;
+
         if (direction == Vector2Int.Right)
         {
             spriteComponent.FlipX = false;
+            weaponSlot.Transform.FlipX = false;
         }
         else if (direction == Vector2Int.Left)
         {
             spriteComponent.FlipX = true;
+            weaponSlot.Transform.FlipX = true;
+        }
+
+        World.MoveAll();
+    }
+
+    private void ShootLogic()
+    {
+        var state = keyState;
+
+        if (!state.WasKeyJustUp(Keys.Space)) return;
+
+        var bulletPosition = Transform.Position + currentDirection;
+
+        if (!World.Colliders.ContainsSolid(bulletPosition) &&
+            !World.Colliders.Contains<Arrow>(bulletPosition))
+        {
+            var arrow = World.CreateActor<Arrow>(bulletPosition);
+            arrow.Transform.Angle = MathF.Atan2(currentDirection.Y, currentDirection.X);
         }
     }
 

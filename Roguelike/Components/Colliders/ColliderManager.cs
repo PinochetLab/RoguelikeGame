@@ -27,6 +27,14 @@ public class ColliderManager : IUpdateable
         ColliderMap.TryGetValue(v, out var g) && g.Any(x => x.Type == ColliderType.Solid);
 
     /// <summary>
+    /// Данный метод проверяет, есть ли в клетке игровой объект определённого типа.
+    /// </summary>
+    public bool Contains<T>(Vector2Int v)
+    {
+        return ColliderMap.TryGetValue(v, out var g) && g.Any(x => x.Owner is T);
+    }
+
+    /// <summary>
     /// Данный метод удаляет коллайдер игрового объекта с поля, если он у него существует.
     /// </summary>
     public void Remove(Vector2Int v, Actor actor)
