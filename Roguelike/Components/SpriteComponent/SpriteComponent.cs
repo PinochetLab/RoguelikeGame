@@ -1,17 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Roguelike.Core;
 using Roguelike.Field;
-using Roguelike.VectorUtility;
-using static System.Net.Mime.MediaTypeNames;
-using System.Diagnostics;
-using Roguelike.Texture;
+using IDrawable = Roguelike.Core.IDrawable;
 
 namespace Roguelike.Components.Sprites;
 
@@ -32,8 +23,6 @@ public class SpriteComponent : Component, IDrawable
     /// а размер будет браться за размер клетки.
     /// </summary>
     public bool IsTile { get; set; } = true;
-
-    private static SpriteBatch SpriteBatch => RoguelikeGame.Instance.SpriteBatch;
 
     /// <summary>
     /// Отзеркаливание по горизонтали.
@@ -58,10 +47,10 @@ public class SpriteComponent : Component, IDrawable
     /// </summary>
     public void SetTexture(string textureName)
     {
-        texture = TextureMaster.GetTexture(textureName);
+        texture = Owner.Game.GetTexture(textureName);
     }
 
-    public void Draw(float delta)
+    public void Draw(GameTime time, SpriteBatch batch)
     {
         if (!Visible) return;
         if (texture == null) return;
@@ -79,6 +68,6 @@ public class SpriteComponent : Component, IDrawable
 
         var rectSize = new Rectangle(0, 0, texture.Width, texture.Height);
 
-        SpriteBatch.Draw(texture, rect, rectSize, Color.White, 0, Vector2.Zero, effect, 0);
+        batch.Draw(texture, rect, rectSize, Color.White, 0, Vector2.Zero, effect, 0);
     }
 }

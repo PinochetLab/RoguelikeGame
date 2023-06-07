@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace Roguelike.VectorUtility;
+namespace Roguelike.Core;
 
 /// <summary>
 /// Структура, необходимая для работы с целочисленными двумерными векторами. Достойной альтернативы не нашлось, так как нужны касты в дробные

@@ -1,4 +1,4 @@
-﻿using Roguelike.VectorUtility;
+﻿using Roguelike.Core;
 
 namespace Roguelike.Field;
 

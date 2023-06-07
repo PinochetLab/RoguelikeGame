@@ -1,4 +1,4 @@
-﻿namespace Roguelike.Components;
+﻿namespace Roguelike.Core;
 
 /// <summary>
 /// Интерфейс, отвечающий за всё, что обновляется каждый кадр.
