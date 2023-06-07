@@ -90,10 +90,12 @@ public class Hero : Actor
         if (direction == Vector2Int.Right)
         {
             spriteComponent.FlipX = false;
+            weaponSlot.Transform.FlipX = false;
         }
         else if (direction == Vector2Int.Left)
         {
             spriteComponent.FlipX = true;
+            weaponSlot.Transform.FlipX = true;
         }
 
         RoguelikeGame.MoveAll();
