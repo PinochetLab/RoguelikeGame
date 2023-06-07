@@ -2,7 +2,9 @@
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using Roguelike.Actors;
+using Roguelike.Actors.AI;
 using Roguelike.Components.Colliders;
+using IMovable = Roguelike.Components.IMovable;
 
 namespace Roguelike.Core;
 
@@ -12,9 +14,12 @@ public abstract class BaseWorldComponent : BaseGameSystem
     private readonly List<Actor> actorsToRemove = new();
 
     protected BaseWorldComponent(BaseGame game) : base(game)
-    { }
+    {
+        Paths = new PathManager(Game);
+    }
 
     public ColliderManager Colliders { get; protected set; } = new();
+    public PathManager Paths { get; protected set; }
 
     /// <summary>
     /// Данная функция создаёт игровой объект переданного типа,
@@ -100,6 +105,16 @@ public abstract class BaseWorldComponent : BaseGameSystem
 
         foreach (var actor in actors)
             actor.Draw(gameTime);
+    }
+
+    /// <summary>
+    /// Метод, который вызывается при совершении главным героем хода. Двигает все подвижные игровые объекты.
+    /// </summary>
+    public void MoveAll()
+    {
+        foreach (var actor in actors)
+            if (actor is IMovable movable)
+                movable.Move();
     }
 
     public void RemoveActor(Actor actor)

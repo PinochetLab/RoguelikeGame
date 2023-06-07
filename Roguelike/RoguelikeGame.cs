@@ -46,20 +46,6 @@ public sealed class RoguelikeGame : BaseGame
     }
 
     /// <summary>
-    /// Метод, который вызывается при совершении главным героем хода. Двигает все подвижные игровые объекты.
-    /// </summary>
-    public static void MoveAll()
-    {
-        foreach (var actor in Actors)
-        {
-            if (actor is IMovable movable)
-            {
-                movable.Move();
-            }
-        }
-    }
-
-    /// <summary>
     /// Отрисовка.
     /// </summary>
     protected override void Draw(GameTime gameTime)

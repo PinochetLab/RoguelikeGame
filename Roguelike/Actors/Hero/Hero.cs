@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework;
 using MonoGame.Extended.Input;
 using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
 using System;
-using System.Diagnostics;
 using Roguelike.Core;
 
 namespace Roguelike.Actors;
@@ -44,7 +42,7 @@ public class Hero : Actor, IActorCreatable<Hero>
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
 
-        weaponSlot = Create<WeaponSlot>(Transform.Position);
+        weaponSlot = World.CreateActor<WeaponSlot>(Transform.Position);
         weaponSlot.Transform.Parent = Transform;
     }
 
@@ -102,7 +100,7 @@ public class Hero : Actor, IActorCreatable<Hero>
             weaponSlot.Transform.FlipX = true;
         }
 
-        RoguelikeGame.MoveAll();
+        World.MoveAll();
     }
 
     private void ShootLogic()
@@ -113,10 +111,10 @@ public class Hero : Actor, IActorCreatable<Hero>
 
         var bulletPosition = Transform.Position + currentDirection;
 
-        if (!ColliderManager.ContainsSolid(bulletPosition) &&
-            !ColliderManager.Contains<Arrow>(bulletPosition))
+        if (!World.Colliders.ContainsSolid(bulletPosition) &&
+            !World.Colliders.Contains<Arrow>(bulletPosition))
         {
-            var arrow = Create<Arrow>(bulletPosition);
+            var arrow = World.CreateActor<Arrow>(bulletPosition);
             arrow.Transform.Angle = MathF.Atan2(currentDirection.Y, currentDirection.X);
         }
     }

@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Roguelike.Components.Sprites;
+using Roguelike.Core;
 
 namespace Roguelike.Actors;
-public class WeaponSlot : Actor
+public class WeaponSlot : Actor, IActorCreatable<WeaponSlot>
 {
     private SpriteComponent spriteComponent;
+
+    public WeaponSlot(BaseGame game) : base(game)
+    { }
 
     public override void OnStart()
     {
@@ -18,4 +18,6 @@ public class WeaponSlot : Actor
         spriteComponent.SetTexture("Bow3");
         spriteComponent.DrawOrder = 1;
     }
+
+    public static WeaponSlot Create(BaseGame game) => new(game);
 }

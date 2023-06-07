@@ -1,24 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MonoGame.Extended;
 using Microsoft.Xna.Framework;
 using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
-using Roguelike.Components;
-using Roguelike.VectorUtility;
 using IMovable = Roguelike.Components.IMovable;
 using System.Diagnostics;
+using Roguelike.Core;
 
 namespace Roguelike.Actors;
-public class Arrow : Actor, IMovable
-{
 
+public class Arrow : Actor, IMovable, IActorCreatable<Arrow>
+{
     private SpriteComponent spriteComponent;
 
     private ColliderComponent collider;
+
+    public Arrow(BaseGame game) : base(game)
+    { }
 
     public override void Initialize(Vector2Int position)
     {
@@ -44,4 +41,6 @@ public class Arrow : Actor, IMovable
         if (other.Type == ColliderType.Trigger) return;
         Destroy();
     }
+
+    public static Arrow Create(BaseGame game) => new(game);
 }

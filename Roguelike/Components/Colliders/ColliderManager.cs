@@ -29,13 +29,9 @@ public class ColliderManager : IUpdateable
     /// <summary>
     /// Данный метод проверяет, есть ли в клетке игровой объект определённого типа.
     /// </summary>
-    public static bool Contains<T>(Vector2Int v)
+    public bool Contains<T>(Vector2Int v)
     {
-        if (ColliderMap.TryGetValue(v, out var g))
-        {
-            return g.Any(x => x.Owner is T);
-        }
-        return false;
+        return ColliderMap.TryGetValue(v, out var g) && g.Any(x => x.Owner is T);
     }
 
     /// <summary>
