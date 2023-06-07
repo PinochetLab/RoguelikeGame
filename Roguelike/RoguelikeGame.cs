@@ -12,18 +12,12 @@ namespace Roguelike;
 public sealed class RoguelikeGame : BaseGame
 {
     /// <summary>
-    /// Синглтон.
-    /// </summary>
-    public static RoguelikeGame Instance { get; private set; }
-
-    /// <summary>
     /// Констуктор. Здесь происходит инициализация игрового окна.
     /// </summary>
     public RoguelikeGame()
     {
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
-        Instance = this;
     }
 
     /// <summary>

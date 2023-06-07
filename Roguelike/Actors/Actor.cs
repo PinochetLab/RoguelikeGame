@@ -19,12 +19,19 @@ public class Actor : DrawableGameComponent
     public virtual string Tag => "none";
 
     /// <summary>
-    ///  Компонент TransformComponent существует у каждого игрового объекта для удобства получения информации о позиции/размере и т.д.
+    ///  Компонент TransformComponent существует у каждого игрового объекта
+    ///  для удобства получения информации о позиции/размере и т.д.
     /// </summary>
     public TransformComponent Transform { get; protected set; }
 
+    /// <summary>
+    /// Текущая игра, к которой принадлежит Actor
+    /// </summary>
     public new BaseGame Game { get; private set; }
 
+    /// <summary>
+    /// Игровой мир, в котором создан Actor
+    /// </summary>
     public BaseWorldComponent World { get; private set; }
 
     private readonly List<Component> components = new();
@@ -40,7 +47,7 @@ public class Actor : DrawableGameComponent
     }
 
     /// <summary>
-    ///  Данная функция создаёт у игрового объекта компонент необходимого типа, устанавливает текущий игровой 
+    ///  Данная функция создаёт у игрового объекта компонент необходимого типа, устанавливает текущий игровой
     ///  объект его владельцем, вызывает у компонента метод Initialize и возвращает созданный компонент.
     /// </summary>
     public TComp AddComponent<TComp>() where TComp : Component, new()

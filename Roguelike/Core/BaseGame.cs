@@ -16,7 +16,7 @@ public abstract class BaseGame : Game
     protected readonly GraphicsDeviceManager Graphics;
     private BaseWorldComponent world;
 
-    private static readonly ConcurrentDictionary<string, Texture2D> Textures = new();
+    private readonly ConcurrentDictionary<string, Texture2D> textures = new();
 
 
     /// <summary>
@@ -53,11 +53,11 @@ public abstract class BaseGame : Game
     /// </summary>
     public Texture2D GetTexture(string path)
     {
-        if (Textures.TryGetValue(path, out var texture))
+        if (textures.TryGetValue(path, out var texture))
             return texture;
 
         var value = Content.Load<Texture2D>(path);
-        Textures.AddOrUpdate(path, value, (_, x) => x);
+        textures.TryAdd(path, value);
         return value;
     }
 
