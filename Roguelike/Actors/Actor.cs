@@ -1,7 +1,10 @@
 ﻿using Roguelike.Components;
-using Roguelike.Components.Colliders;
-using Roguelike.VectorUtility;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using MonoGame.Extended;
+using Roguelike.Core;
+using IDrawable = Roguelike.Core.IDrawable;
+using IUpdateable = Roguelike.Core.IUpdateable;
 
 namespace Roguelike.Actors;
 

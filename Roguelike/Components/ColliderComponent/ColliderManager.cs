@@ -1,7 +1,7 @@
-﻿using Roguelike.VectorUtility;
-using Roguelike.Actors;
+﻿using Roguelike.Actors;
 using System.Collections.Generic;
 using System.Linq;
+using Roguelike.Core;
 
 namespace Roguelike.Components.Colliders;
 

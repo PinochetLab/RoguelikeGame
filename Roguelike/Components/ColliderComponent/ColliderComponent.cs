@@ -1,5 +1,5 @@
 ﻿using System;
-using Roguelike.VectorUtility;
+using Roguelike.Core;
 
 namespace Roguelike.Components.Colliders;
 

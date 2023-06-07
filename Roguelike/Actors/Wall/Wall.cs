@@ -1,6 +1,7 @@
 ﻿using Roguelike.Components.Colliders;
-using Roguelike.VectorUtility;
 using Roguelike.Components.Sprites;
+using Roguelike.Core;
+using Roguelike.World;
 
 namespace Roguelike.Actors;
 

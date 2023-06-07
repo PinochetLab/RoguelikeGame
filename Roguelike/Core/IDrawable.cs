@@ -1,4 +1,7 @@
-﻿namespace Roguelike.Components;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Roguelike.Core;
 
 /// <summary>
 /// Интерфейс, отвечающий за всё, что отрисовывается.
@@ -18,5 +21,5 @@ public interface IDrawable
     /// <summary>
     /// Метод, вызывающийся каждый кадр.
     /// </summary>
-    public void Draw(float delta);
+    public void Draw(GameTime time, SpriteBatch batch);
 }

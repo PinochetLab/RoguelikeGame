@@ -1,5 +1,5 @@
-﻿using Roguelike.VectorUtility;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Roguelike.Core;
 
 namespace Roguelike.Components;
 

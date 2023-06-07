@@ -2,7 +2,8 @@
 using Roguelike.Actors.InventoryUtils.Items;
 using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
-using Roguelike.VectorUtility;
+using Roguelike.Core;
+using Roguelike.World;
 
 namespace Roguelike.Actors;
 
