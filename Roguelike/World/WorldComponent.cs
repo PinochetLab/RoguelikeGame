@@ -2,37 +2,38 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using Roguelike.Actors;
+using Roguelike.Core;
 using Roguelike.Field;
 
 namespace Roguelike.World;
 
-public class WorldComponent : DrawableGameComponent
+public class WorldComponent : BaseWorldComponent
 {
     private SpriteBatch spriteBatch;
 
     private const string FloorTextureName = "GrassTile";
     private Texture2D floorTexture;
 
-    public WorldComponent(Game game) : base(game)
+    public WorldComponent(BaseGame game) : base(game)
     { }
 
     public override void Initialize()
     {
         base.Initialize();
-        Actor.Create<ItemHolder>(7, 3);
+        CreateActor<ItemHolder>(7, 3);
 
-        Actor.Create<Hero>(FieldInfo.Center);
+        CreateActor<Hero>(FieldInfo.Center);
 
 
         for (var i = 0; i < FieldInfo.CellCount; i++)
         {
-            Actor.Create<Wall>(0, i);
-            Actor.Create<Wall>(FieldInfo.CellCount - 1, i);
+            CreateActor<Wall>(0, i);
+            CreateActor<Wall>(FieldInfo.CellCount - 1, i);
 
             if (i <= 0 || i >= FieldInfo.CellCount - 1) continue;
 
-            Actor.Create<Wall>(i, 0);
-            Actor.Create<Wall>(i, FieldInfo.CellCount - 1);
+            CreateActor<Wall>(i, 0);
+            CreateActor<Wall>(i, FieldInfo.CellCount - 1);
         }
     }
 
@@ -44,6 +45,8 @@ public class WorldComponent : DrawableGameComponent
 
     public override void Draw(GameTime gameTime)
     {
+        base.Draw(gameTime);
+
         var size = FieldInfo.ScreenWith;
         var cellCount = FieldInfo.CellCount;
         var cellSize = FieldInfo.CellSize;
@@ -66,10 +69,5 @@ public class WorldComponent : DrawableGameComponent
         }
 
         spriteBatch.End();
-    }
-
-    public override void Update(GameTime gameTime)
-    {
-        base.Update(gameTime);
     }
 }
