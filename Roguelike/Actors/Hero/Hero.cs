@@ -92,12 +92,10 @@ public class Hero : Actor, IActorCreatable<Hero>
         if (direction == Vector2Int.Right)
         {
             spriteComponent.FlipX = false;
-            weaponSlot.Transform.FlipX = false;
         }
         else if (direction == Vector2Int.Left)
         {
             spriteComponent.FlipX = true;
-            weaponSlot.Transform.FlipX = true;
         }
 
         World.MoveAll();
