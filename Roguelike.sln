@@ -5,6 +5,8 @@ VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roguelike", "Roguelike\Roguelike.csproj", "{1EAD88DD-2B03-47AD-B46D-B3A78602C9DE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roguelike.Tests", "Roguelike.Tests\Roguelike.Tests.csproj", "{7DEC6FA8-1B25-4246-8A32-630350BBD27D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{1EAD88DD-2B03-47AD-B46D-B3A78602C9DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EAD88DD-2B03-47AD-B46D-B3A78602C9DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EAD88DD-2B03-47AD-B46D-B3A78602C9DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DEC6FA8-1B25-4246-8A32-630350BBD27D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DEC6FA8-1B25-4246-8A32-630350BBD27D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DEC6FA8-1B25-4246-8A32-630350BBD27D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DEC6FA8-1B25-4246-8A32-630350BBD27D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
