@@ -5,6 +5,10 @@ using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
 using System;
 using Roguelike.Core;
+using System.Collections;
+using System.Threading.Tasks;
+using System.Reflection;
+using Roguelike.Actors.InventoryUtils.Items;
 
 namespace Roguelike.Actors;
 
@@ -21,6 +25,8 @@ public class Hero : Actor, IActorCreatable<Hero>
 
     private SpriteComponent spriteComponent;
 
+    private SpriteComponent itemSpriteComponent;
+
     private ColliderComponent collider;
 
     private WeaponSlot weaponSlot;
@@ -29,8 +35,49 @@ public class Hero : Actor, IActorCreatable<Hero>
 
     private KeyboardStateExtended keyState;
 
+    public static Hero Instance;
+
+    private WeaponItem weaponItem = null;
+    private Item item = null;
+
+    public Item Item
+    {
+        get => item;
+        set
+        {
+            if (value == null)
+            {
+                weaponSlot.SpriteComponent.Visible = false;
+                itemSpriteComponent.Visible = false;
+                item = null;
+                weaponItem = null;
+            }
+            else
+            {
+                if (value is WeaponItem wi)
+                {
+                    weaponSlot.SpriteComponent.Visible = true;
+                    weaponSlot.SpriteComponent.SetTexture(value.TextureName);
+                    itemSpriteComponent.Visible = false;
+                    item = wi;
+                    weaponItem = wi;
+                }
+                else
+                {
+                    weaponSlot.SpriteComponent.Visible = false;
+                    itemSpriteComponent.Visible = true;
+                    itemSpriteComponent.SetTexture(value.TextureName);
+                    item = value;
+                    weaponItem = null;
+                }
+            }
+        }
+    }
+
     public Hero(BaseGame game) : base(game)
-    { }
+    {
+        Instance = this;
+    }
 
     public override void OnStart()
     {
@@ -38,6 +85,13 @@ public class Hero : Actor, IActorCreatable<Hero>
 
         spriteComponent = AddComponent<SpriteComponent>();
         spriteComponent.SetTexture("HeroSprite");
+        spriteComponent.DrawOrder = 2;
+
+        itemSpriteComponent = AddComponent<SpriteComponent>();
+        itemSpriteComponent.SetTexture("KFC");
+        itemSpriteComponent.DrawOrder = 1;
+        itemSpriteComponent.AdditionalScale = Vector2.One * 0.4f;
+        itemSpriteComponent.Offset = Vector2Int.One * (Field.FieldInfo.CellSize / 5);
 
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
@@ -54,7 +108,17 @@ public class Hero : Actor, IActorCreatable<Hero>
 
         MoveLogic();
 
-        ShootLogic();
+        if (weaponItem != null)
+        {
+            if (weaponItem.IsSword)
+            {
+                HitLogic();
+            }
+            else
+            {
+                ShootLogic();
+            }
+        }
     }
 
     private void MoveLogic()
@@ -82,20 +146,25 @@ public class Hero : Actor, IActorCreatable<Hero>
             direction = Vector2Int.Down;
             weaponSlot.Transform.Angle = MathF.PI / 2;
         }
+        
 
         if (direction == Vector2Int.Zero || World.Colliders.ContainsSolid(Transform.Position + direction)) return;
 
         currentDirection = direction;
+        
+        //weaponSlot.Offset = 30 * direction;
 
         Transform.Position += direction;
 
         if (direction == Vector2Int.Right)
         {
             spriteComponent.FlipX = false;
+            itemSpriteComponent.DrawOrder = 1;
         }
         else if (direction == Vector2Int.Left)
         {
             spriteComponent.FlipX = true;
+            itemSpriteComponent.DrawOrder = 3;
         }
 
         World.MoveAll();
@@ -114,6 +183,31 @@ public class Hero : Actor, IActorCreatable<Hero>
         {
             var arrow = World.CreateActor<Arrow>(bulletPosition);
             arrow.Transform.Angle = MathF.Atan2(currentDirection.Y, currentDirection.X);
+            arrow.Damage = weaponItem.Damage;
+        }
+    }
+
+    private async void HitLogic()
+    {
+        var state = keyState;
+
+        if (!state.WasKeyJustUp(Keys.Space)) return;
+
+        var p = Transform.Position + currentDirection;
+        var damageable = World.Colliders.Find<IDamageable>(p);
+        damageable?.TakeDamage(weaponItem.Damage);
+
+        Task.Run(Hit);
+    }
+
+    private async Task Hit()
+    {
+        for (var i = 0; i < 2; i++)
+        {
+            weaponSlot.Offset = currentDirection * 30;
+            await Task.Delay(50);
+            weaponSlot.Offset = Vector2Int.Zero;
+            await Task.Delay(50);
         }
     }
 

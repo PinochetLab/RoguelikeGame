@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using Roguelike.Core;
 using Roguelike.Field;
 using IDrawable = Roguelike.Core.IDrawable;
+using System.Dynamic;
+using System.Diagnostics;
 
 namespace Roguelike.Components.Sprites;
 
@@ -19,10 +21,9 @@ public class SpriteComponent : Component, IDrawable
     public Vector2Int Size { get; set; } = Vector2Int.One;
 
     /// <summary>
-    /// Если данное поле истино, объект является объектом на тайловом поле, его спрайт будет иметь позицию соответствующей клетки,
-    /// а размер будет браться за размер клетки.
+    /// Дополнительное масштабирование.
     /// </summary>
-    public bool IsTile { get; set; } = true;
+    public Vector2 AdditionalScale { get; set; } = Vector2.One;
 
     /// <summary>
     /// Отзеркаливание по горизонтали.
@@ -34,10 +35,23 @@ public class SpriteComponent : Component, IDrawable
     /// </summary>
     public bool FlipY { get; set; } = false;
 
+    public Vector2Int Offset { get; set; } = Vector2Int.Zero;
+
+    /// <summary>
+    /// Центр спрайта относительно повророта и масштабирования.
+    /// </summary>
+    public Vector2 Pivot { get; set; } = Vector2.One / 2;
+
+    /// <summary>
+    /// Цвет спрайта.
+    /// </summary>
+    public Color Color { get; set; } = Color.White;
+
     /// <summary>
     /// Видимость.
     /// </summary>
     public bool Visible { get; set; } = true;
+
     public bool Canvas { get; set; } = false;
 
     public int DrawOrder { get; set; } = 0;
@@ -55,16 +69,20 @@ public class SpriteComponent : Component, IDrawable
         if (!Visible) return;
         if (texture == null) return;
 
-        var pos = Transform.Position * (IsTile ? FieldInfo.CellSize : 1);
-        var size = IsTile ? Vector2Int.One * FieldInfo.CellSize : Size;
+        Vector2 scale = AdditionalScale * Transform.Scale;
 
-        var position = pos + size / 2;
+        var pos = Transform.Position * (Transform.IsTile ? FieldInfo.CellSize : 1);
+        var size = Transform.IsTile ? Vector2Int.One * FieldInfo.CellSize : Size;
+
+        var position = pos + (Transform.IsTile ? size * Pivot : Vector2Int.Zero);
+
+        
 
         var effect = SpriteEffects.None;
         if (FlipX) effect |= SpriteEffects.FlipHorizontally;
         if (FlipY) effect |= SpriteEffects.FlipVertically;
 
-        var rect = new Rectangle(position.X, position.Y, (int)(size.X * Transform.Scale.X), (int)(size.Y * Transform.Scale.Y));
+        var rect = new Rectangle(position.X, position.Y, (int)(size.X * scale.X), (int)(size.Y * scale.Y));
 
         if (rect.Width < 0)
         {
@@ -79,9 +97,14 @@ public class SpriteComponent : Component, IDrawable
             rect.Height = -rect.Height;
             effect |= SpriteEffects.FlipVertically;
         }
+        
+        rect.X += Offset.X;
+        rect.Y += Offset.Y;
+
+        //Debug.WriteLine(texture);
 
         var rectSize = new Rectangle(0, 0, texture.Width, texture.Height);
 
-        batch.Draw(texture, rect, rectSize, Color.White, Transform.Angle, new Vector2(texture.Width / 2f, texture.Height / 2f), effect, 0);
+        batch.Draw(texture, rect, rectSize, Color, Transform.Angle, new Vector2(texture.Width, texture.Height) * Pivot, effect, 0);
     }
 }

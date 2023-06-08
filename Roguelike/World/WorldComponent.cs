@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using Roguelike.Actors;
+using Roguelike.Actors.AI;
 using Roguelike.Core;
 using Roguelike.Field;
 
@@ -23,6 +24,8 @@ public class WorldComponent : BaseWorldComponent
         CreateActor<ItemHolder>(7, 3);
 
         CreateActor<Hero>(FieldInfo.Center);
+
+        CreateActor<Enemy>(11, 2);
 
 
         for (var i = 0; i < FieldInfo.CellCount; i++)

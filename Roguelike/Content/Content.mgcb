@@ -145,6 +145,18 @@
 /processorParam:TextureFormat=Color
 /build:floor.jpg;FloorTile
 
+#begin frog.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:frog.png;Frog
+
 #begin grass.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -204,4 +216,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:wall.png;Wall
+
+#begin white-cell.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:white-cell.png;WhiteCell
 
