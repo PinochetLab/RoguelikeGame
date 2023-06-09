@@ -130,11 +130,15 @@ public class Hero : Actor, IActorCreatable<Hero>
         {
             direction = Vector2Int.Right;
             weaponSlot.Transform.Angle = 0;
+            spriteComponent.FlipX = false;
+            itemSpriteComponent.DrawOrder = 1;
         }
         else if (state.WasKeyJustUp(Keys.A))
         {
             direction = Vector2Int.Left;
             weaponSlot.Transform.Angle = MathF.PI;
+            spriteComponent.FlipX = true;
+            itemSpriteComponent.DrawOrder = 3;
         }
         else if (state.WasKeyJustUp(Keys.W))
         {
@@ -148,24 +152,13 @@ public class Hero : Actor, IActorCreatable<Hero>
         }
         
 
-        if (direction == Vector2Int.Zero || World.Colliders.ContainsSolid(Transform.Position + direction)) return;
+        if (direction == Vector2Int.Zero || 
+            (World.Colliders.ContainsSolid(Transform.Position + direction) &&
+            !World.Colliders.ContainsSolid(Transform.Position))) return;
 
         currentDirection = direction;
-        
-        //weaponSlot.Offset = 30 * direction;
 
         Transform.Position += direction;
-
-        if (direction == Vector2Int.Right)
-        {
-            spriteComponent.FlipX = false;
-            itemSpriteComponent.DrawOrder = 1;
-        }
-        else if (direction == Vector2Int.Left)
-        {
-            spriteComponent.FlipX = true;
-            itemSpriteComponent.DrawOrder = 3;
-        }
 
         World.MoveAll();
     }
