@@ -91,7 +91,5 @@ public class Slider : Actor, IActorCreatable<Slider>
     public override void Update(GameTime time)
     {
         base.Update(time);
-
-        Debug.WriteLine(Transform.Position);
     }
 }

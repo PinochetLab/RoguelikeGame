@@ -52,23 +52,24 @@ public class Enemy : Actor, IDamageable, IActorCreatable<Enemy>
 
     private int t = 0;
 
+    private bool see = false;
+
     public override void Update(GameTime time)
     {
         base.Update(time);
 
         t++;
-        if (t > 20)
+
+        if (!see && Game.World.Paths.DoesSee(Transform.Position, Hero.Instance.Transform.Position))
+        {
+            see = true;
+        }
+
+        if (t > 50 && see)
         {
             t = 0;
-            var cells = new List<Vector2Int>() { Transform.Position + Vector2Int.Right, Transform.Position + Vector2Int.Left,
-                Transform.Position + Vector2Int.Up, Transform.Position + Vector2Int.Down};
-
-            foreach (Vector2Int c in cells)
-            {
-                if (World.Colliders.ContainsSolid(c)) continue;
-                Transform.Position = c;
-                break;
-            }
+            var nextCell = Game.World.Paths.NextCell(Transform.Position, Hero.Instance.Transform.Position);
+            Transform.Position = new Vector2Int(nextCell.X, nextCell.Y);
         }
     }
 

@@ -101,8 +101,6 @@ public class SpriteComponent : Component, IDrawable
         rect.X += Offset.X;
         rect.Y += Offset.Y;
 
-        //Debug.WriteLine(texture);
-
         var rectSize = new Rectangle(0, 0, texture.Width, texture.Height);
 
         batch.Draw(texture, rect, rectSize, Color, Transform.Angle, new Vector2(texture.Width, texture.Height) * Pivot, effect, 0);

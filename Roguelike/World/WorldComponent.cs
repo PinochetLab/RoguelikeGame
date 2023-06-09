@@ -27,6 +27,39 @@ public class WorldComponent : BaseWorldComponent
 
         CreateActor<Enemy>(11, 2);
 
+        CreateActor<Wall>(9, 1);
+        CreateActor<Wall>(9, 2);
+        CreateActor<Wall>(9, 3);
+        CreateActor<Wall>(9, 4);
+        CreateActor<Wall>(9, 5);
+        CreateActor<Wall>(9, 6);
+        CreateActor<Wall>(9, 7);
+        CreateActor<Wall>(9, 8);
+        CreateActor<Wall>(9, 9);
+        CreateActor<Wall>(9, 10);
+        CreateActor<Wall>(10, 10);
+        CreateActor<Wall>(11, 10);
+
+        CreateActor<Wall>(8, 9);
+        CreateActor<Wall>(7, 9);
+        CreateActor<Wall>(6, 9);
+        CreateActor<Wall>(5, 9);
+        CreateActor<Wall>(4, 9);
+        CreateActor<Wall>(3, 9);
+        CreateActor<Wall>(3, 10);
+        CreateActor<Wall>(3, 11);
+        CreateActor<Wall>(3, 12);
+
+        CreateActor<Wall>(5, 11);
+        CreateActor<Wall>(5, 12);
+        CreateActor<Wall>(5, 13);
+
+        CreateActor<Wall>(1, 4);
+        CreateActor<Wall>(2, 4);
+        CreateActor<Wall>(3, 4);
+        CreateActor<Wall>(4, 4);
+        CreateActor<Wall>(4, 4);
+
 
         for (var i = 0; i < FieldInfo.CellCount; i++)
         {
@@ -38,6 +71,9 @@ public class WorldComponent : BaseWorldComponent
             CreateActor<Wall>(i, 0);
             CreateActor<Wall>(i, FieldInfo.CellCount - 1);
         }
+
+        Paths = new PathFinder(Game);
+        Paths.Initialize();
     }
 
     protected override void LoadContent()
