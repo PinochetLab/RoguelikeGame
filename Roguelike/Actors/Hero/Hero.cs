@@ -106,7 +106,7 @@ public class Hero : Actor, IActorCreatable<Hero>
         itemSpriteComponent.SetTexture("KFC");
         itemSpriteComponent.DrawOrder = 1;
         itemSpriteComponent.AdditionalScale = Vector2.One * 0.4f;
-        itemSpriteComponent.Offset = Vector2Int.One * (Field.FieldInfo.CellSize / 5);
+        itemSpriteComponent.Offset = Vector2Int.One * (FieldInfo.CellSize / 5);
 
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
@@ -130,6 +130,7 @@ public class Hero : Actor, IActorCreatable<Hero>
     {
         if (other.Owner.Tag == Enemy.EnemyTag)
         {
+            //Debug.WriteLine(Guid + "---" + other.Owner.Guid);
             healthComponent.Health -= 20;
         }
     }

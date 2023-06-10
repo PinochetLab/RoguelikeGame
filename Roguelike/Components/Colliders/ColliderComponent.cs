@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using Microsoft.Xna.Framework.Graphics;
 using Roguelike.Core;
 
 namespace Roguelike.Components.Colliders;
@@ -64,8 +66,11 @@ public class ColliderComponent : Component, IUpdateable
         if (!Manager.ColliderMap.ContainsKey(position))
             Manager.ColliderMap[position] = new();
 
+        Debug.WriteLine("start-update: " + position + " - " + Manager.ColliderMap[position].Count);
+
         foreach (var collider in Manager.ColliderMap[position])
         {
+            Debug.WriteLine(Owner.Guid + " --- " + collider.Owner.Guid);
             collider.OnTriggerEnter?.Invoke(this);
             OnTriggerEnter?.Invoke(collider);
         }
@@ -78,6 +83,8 @@ public class ColliderComponent : Component, IUpdateable
     public void Update(float delta)
     {
         if (Transform.Position == CurrentPosition) return;
+        Debug.WriteLine("");
+        Debug.WriteLine(CurrentPosition + " -> " + Transform.Position);
         UpdatePosition();
         CurrentPosition = Transform.Position;
     }
