@@ -78,11 +78,13 @@ public class Inventory : BaseGameSystem
 
         Items[0] = new GenericSwordItem{Attacks =
         {
-            new SwordAttack{range = {Vector2Int.Up}, Damage = 10}
+            new SwordAttack{range = {Vector2Int.Zero, Vector2Int.Up}, Damage = 10}
         }};
         
         var genericArrow = Game.World.CreateActor<Arrow>();
+        genericArrow.Transform.Position = new(-1, -1);
         genericArrow.Damage = 10;
+        genericArrow.IsMoving = false;
         Items[1] = new GenericBowItem{Attacks =
         {
             new BowAttack<Arrow>{Arrow = genericArrow, range = { new(10, 0) }}

@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
 using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
 using Roguelike.Core;
@@ -8,7 +7,6 @@ namespace Roguelike.Actors;
 
 public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
 {
-    public override string Tag => "Arrow";
     private ColliderComponent collider;
     private SpriteComponent spriteComponent;
 
@@ -16,6 +14,9 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
     {
     }
 
+    public override string Tag => "Arrow";
+
+    public bool IsMoving { get; set; } = true;
     public int Damage { get; set; }
 
     public static Arrow Create(BaseGame game)
@@ -25,8 +26,7 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
 
     public object Clone()
     {
-        var clone = Create(Game);
-        clone.Initialize(Transform.Position);
+        var clone = Game.World.CreateActor<Arrow>();
         clone.Damage = Damage;
         return clone;
     }
@@ -46,20 +46,19 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
 
     public void Move()
     {
+        if (!IsMoving) return;
         Transform.Position += Transform.Direction;
     }
 
     public void OnTriggerEnter(ColliderComponent other)
     {
-        if (other.Type == ColliderType.Solid)
-        {
-            Dispose();
-            return;
-        }
-
         if (other.Owner is IDamageable damageable)
         {
             damageable.TakeDamage(Damage);
+        }
+        
+        if (other.Type == ColliderType.Solid)
+        {
             Dispose();
         }
     }
