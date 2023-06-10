@@ -6,6 +6,11 @@ using Roguelike.Actors.InventoryUtils.Items;
 using Roguelike.Actors.InventoryUtils.Items.Attacks;
 using Roguelike.Components.Sprites;
 using Roguelike.Core;
+using Roguelike.World;
+using System.Diagnostics;
+using static System.Net.Mime.MediaTypeNames;
+using System;
+using Roguelike.Commands;
 using Roguelike.Field;
 
 namespace Roguelike.Actors.InventoryUtils;
@@ -144,7 +149,15 @@ public class Inventory : BaseGameSystem
     public override void Update(GameTime deltaTime)
     {
         var state = MouseExtended.GetState();
-        var next = selected + state.DeltaScrollWheelValue / 120;
+        var count = state.DeltaScrollWheelValue / 120;
+        if (count == 0) return;
+        Game.World.Commands.SetCommand(new ScrollCommand(this, count));
+        Game.World.Commands.Invoke();
+    }
+
+    public void Scroll(int count)
+    {
+        var next = selected + count;
         if (next == selected) return;
         if (next >= MaxElementsCount) next = 0;
         else if (next < 0) next = MaxElementsCount - 1;

@@ -19,14 +19,14 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
     public override void Initialize()
     {
         base.Initialize();
-        World.onPlayerMove += Move;
+        World.onHeroCommand += Move;
 
         spriteComponent = AddComponent<SpriteComponent>();
         spriteComponent.SetTexture("Arrow");
 
         damagerComponent = AddComponent<DamagerComponent>();
         damagerComponent.Damages = new() { { Vector2Int.Zero, Damage } };
-        World.onPlayerMove += damagerComponent.Damage;
+        World.onHeroCommand += damagerComponent.Damage;
 
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
@@ -78,7 +78,7 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
 
     protected override void Dispose(bool isDisposing)
     {
-        World.onPlayerMove -= damagerComponent.Damage;
+        World.onHeroCommand -= damagerComponent.Damage;
         base.Dispose(isDisposing);
     }
 
