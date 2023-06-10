@@ -19,9 +19,9 @@ public class ItemHolder : Actor, IActorCreatable<ItemHolder>
     public ItemHolder(BaseGame game) : base(game)
     { }
 
-    public override void OnStart()
+    public override void Initialize()
     {
-        base.OnStart();
+        base.Initialize();
 
         spriteComponent = AddComponent<SpriteComponent>();
         spriteComponent.SetTexture("KFC");

@@ -16,9 +16,9 @@ public class WeaponSlot : Actor, IActorCreatable<WeaponSlot>
         set => SpriteComponent.Offset = value;
     }
 
-    public override void OnStart()
+    public override void Initialize()
     {
-        base.OnStart();
+        base.Initialize();
 
         SpriteComponent = AddComponent<SpriteComponent>();
         SpriteComponent.SetTexture("Sword");

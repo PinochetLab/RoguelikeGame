@@ -55,9 +55,9 @@ public class Slider : Actor, IActorCreatable<Slider>
     }
 
 
-    public override void OnStart()
+    public override void Initialize()
     {
-        base.OnStart();
+        base.Initialize();
 
         var offset = new Vector2Int(Offset.X, -Offset.Y);
 
@@ -86,10 +86,5 @@ public class Slider : Actor, IActorCreatable<Slider>
         Ratio = ratio;
         fillSC.Canvas = true;
         fillSC.DrawOrder = 1;
-    }
-
-    public override void Update(GameTime time)
-    {
-        base.Update(time);
     }
 }

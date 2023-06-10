@@ -96,14 +96,7 @@ public class Actor : DrawableGameComponent
     {
         Transform = AddComponent<TransformComponent>();
         Transform.Position = position;
-        OnStart();
-    }
-
-    /// <summary>
-    /// Данный виртуальный метод вызывается сразу после инициализации игрового обьекта.
-    /// </summary>
-    public virtual void OnStart()
-    {
+        Initialize();
     }
 
     /// <summary>Данный виртуальный метод вызывается каждый кадр игровой логики.

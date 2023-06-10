@@ -87,9 +87,9 @@ public class Hero : Actor, IActorCreatable<Hero>
         Instance = this;
     }
 
-    public override void OnStart()
+    public override void Initialize()
     {
-        base.OnStart();
+        base.Initialize();
 
         spriteComponent = AddComponent<SpriteComponent>();
         spriteComponent.SetTexture("HeroSprite");
