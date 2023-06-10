@@ -57,6 +57,15 @@ public class Inventory : BaseGameSystem
         UpdateCell(index);
     }
 
+    public static void Clear()
+    {
+        for (var i = 0; i < MaxElementsCount; i++)
+        {
+            Items[i] = null;
+            UpdateCell(i);
+        }
+    }
+
     public Inventory(BaseGame game) : base(game)
     { }
 
@@ -105,7 +114,11 @@ public class Inventory : BaseGameSystem
 
     private static void UpdateCell(int index)
     {
-        Cells[index].SetTexture(Items[index].TextureName);
+        Cells[index].Visible = Items[index] != null;
+        if (Items[index] != null)
+        {
+            Cells[index].SetTexture(Items[index].TextureName);
+        }
     }
 
     private void SelectCell(int i)

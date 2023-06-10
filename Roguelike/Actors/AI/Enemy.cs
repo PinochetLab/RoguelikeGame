@@ -15,6 +15,9 @@ using Roguelike.Core;
 namespace Roguelike.Actors.AI;
 public class Enemy : Actor, IDamageable, IActorCreatable<Enemy>
 {
+    public const string EnemyTag = "Enemy";
+    public override string Tag => EnemyTag;
+
     private SpriteComponent spriteComponent;
 
     private HealthComponent healthComponent;

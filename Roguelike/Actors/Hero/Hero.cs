@@ -7,8 +7,12 @@ using System;
 using Roguelike.Core;
 using System.Collections;
 using System.Threading.Tasks;
-using System.Reflection;
+using Roguelike.Field;
 using Roguelike.Actors.InventoryUtils.Items;
+using Roguelike.Components;
+using System.Runtime.CompilerServices;
+using Roguelike.Actors.AI;
+using Roguelike.Actors.InventoryUtils;
 
 namespace Roguelike.Actors;
 
@@ -38,7 +42,11 @@ public class Hero : Actor, IActorCreatable<Hero>
     public static Hero Instance;
 
     private WeaponItem weaponItem = null;
+
     private Item item = null;
+
+    private HealthComponent healthComponent;
+
 
     public Item Item
     {
@@ -95,9 +103,28 @@ public class Hero : Actor, IActorCreatable<Hero>
 
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
+        collider.OnTriggerEnter += OnTriggerEnter;
 
         weaponSlot = World.CreateActor<WeaponSlot>(Transform.Position);
         weaponSlot.Transform.Parent = Transform;
+
+        healthComponent = AddComponent<HealthComponent>();
+        healthComponent.OnDeath += GameOver;
+    }
+
+    private void OnTriggerEnter(ColliderComponent other)
+    {
+        if (other.Owner.Tag == Enemy.EnemyTag)
+        {
+            healthComponent.Health -= 20;
+        }
+    }
+
+    private void GameOver()
+    {
+        Game.World.CreateActor<Hero>(FieldInfo.Center);
+        Inventory.Clear();
+        Destroy();
     }
 
     public override void Update(GameTime time)

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 namespace Roguelike.Components;
 public class HealthComponent : Component
 {
-    public Action OnDeath { get; set; }
-    public Action OnHealthChange { get; set; }
+    public event Action OnDeath;
+    public event Action OnHealthChange;
 
     private float health = 100;
 
@@ -34,9 +34,9 @@ public class HealthComponent : Component
             if (health <= 0)
             {
                 health = 0;
-                OnDeath();
+                OnDeath?.Invoke();
             }
-            OnHealthChange();
+            OnHealthChange?.Invoke();
         }
     }
 }
