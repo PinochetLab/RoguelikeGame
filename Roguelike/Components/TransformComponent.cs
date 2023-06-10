@@ -14,13 +14,15 @@ public class TransformComponent : Component
 {
     private Vector2Int position = Vector2Int.Zero;
 
+    private bool positionSet = false;
+
     private TransformComponent parent;
 
     /// <summary>
     /// Если данное поле истино, объект является объектом на тайловом поле, его спрайт будет иметь позицию соответствующей клетки,
     /// а размер будет браться за размер клетки.
     /// </summary>
-    public bool IsTile { get; set; } = true;
+    public bool IsCanvas { get; set; } = false;
 
 
     /// <summary>
@@ -45,11 +47,17 @@ public class TransformComponent : Component
         get => position;
         set
         {
+            if (!positionSet)
+            {
+                positionSet = true;
+                position = value;
+                return;
+            }
             var offset = value - position;
             position = value;
             foreach (var child in Children)
             {
-                if (IsTile && !child.IsTile) child.Position += offset * FieldInfo.CellSizeVector;
+                if (!IsCanvas && child.IsCanvas) child.Position += offset * FieldInfo.CellSizeVector;
                 else child.Position += offset;
             }
         }

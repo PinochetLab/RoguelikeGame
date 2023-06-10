@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 namespace Roguelike.Actors;
 public interface IDamageable
 {
-    public void TakeDamage(float damage);
+    public void TakeDamage(int damage);
 }

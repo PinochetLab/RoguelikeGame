@@ -21,6 +21,9 @@ public abstract class BaseWorldComponent : BaseGameSystem
 
     public ColliderManager Colliders { get; protected set; } = new();
     public PathFinder Paths { get; protected set; }
+    public StatsManager Stats { get; protected set; }
+
+    public Hero Hero { get; protected set; }
 
     /// <summary>
     /// Данная функция создаёт игровой объект переданного типа,
