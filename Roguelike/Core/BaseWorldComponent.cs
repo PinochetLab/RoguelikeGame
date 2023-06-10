@@ -16,11 +16,11 @@ public abstract class BaseWorldComponent : BaseGameSystem
 
     protected BaseWorldComponent(BaseGame game) : base(game)
     {
-        Paths = new PathManager(Game);
+        Paths = new PathFinder(Game);
     }
 
     public ColliderManager Colliders { get; protected set; } = new();
-    public PathManager Paths { get; protected set; }
+    public PathFinder Paths { get; protected set; }
 
     /// <summary>
     /// Данная функция создаёт игровой объект переданного типа,

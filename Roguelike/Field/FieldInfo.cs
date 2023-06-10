@@ -28,6 +28,11 @@ public static class FieldInfo {
     public static int CellSize => ScreenWith / CellCount;
 
     /// <summary>
+    /// Размер клетки.
+    /// </summary>
+    public static Vector2Int CellSizeVector => new (CellSize, CellSize);
+
+    /// <summary>
     /// Центер поля.
     /// </summary>
     public static Vector2Int Center => Vector2Int.One * (CellCount / 2);

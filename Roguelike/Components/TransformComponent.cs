@@ -1,8 +1,9 @@
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System;
 using Roguelike.Core;
+using Roguelike.Field;
 
 namespace Roguelike.Components;
 
@@ -14,6 +15,12 @@ public class TransformComponent : Component
     private Vector2Int position = Vector2Int.Zero;
 
     private TransformComponent parent;
+
+    /// <summary>
+    /// Если данное поле истино, объект является объектом на тайловом поле, его спрайт будет иметь позицию соответствующей клетки,
+    /// а размер будет браться за размер клетки.
+    /// </summary>
+    public bool IsTile { get; set; } = true;
 
 
     /// <summary>
@@ -38,9 +45,13 @@ public class TransformComponent : Component
         get => position;
         set
         {
-            Vector2Int offset = value - position;
+            var offset = value - position;
             position = value;
-            Children.ForEach(child => child.Position += offset);
+            foreach (var child in Children)
+            {
+                if (IsTile && !child.IsTile) child.Position += offset * FieldInfo.CellSizeVector;
+                else child.Position += offset;
+            }
         }
     }
 
@@ -53,6 +64,12 @@ public class TransformComponent : Component
     /// Scale объекта (во сколько раз он больше, чем оригинальная версия).
     /// </summary>
     public Vector2 Scale { get; set; } = Vector2.One;
+
+
+    /// <summary>
+    /// Положение на экране.
+    /// </summary>
+    public Vector2 ScreenPosition => FieldInfo.CellSizeVector * Position + FieldInfo.CellSizeVector * 0.5f;
 
     /// <summary>
     /// Flip по горизонтали.

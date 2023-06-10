@@ -14,6 +14,8 @@ public class Arrow : Actor, IMovable, IActorCreatable<Arrow>
 
     private ColliderComponent collider;
 
+    public float Damage { get; set; } = 0;
+
     public Arrow(BaseGame game) : base(game)
     { }
 
@@ -32,14 +34,21 @@ public class Arrow : Actor, IMovable, IActorCreatable<Arrow>
     public void Move()
     {
         Vector2Int direction = new Vector2(MathF.Cos(Transform.Angle), MathF.Sin(Transform.Angle));
-        Debug.WriteLine(Transform.Position);
         Transform.Position += direction * 2;
     }
 
     public void OnTriggerEnter(ColliderComponent other)
     {
-        if (other.Type == ColliderType.Trigger) return;
-        Destroy();
+        if (other.Type == ColliderType.Solid)
+        {
+            Destroy();
+            return;
+        }
+        if (other.Owner is IDamageable damageable)
+        {
+            damageable.TakeDamage(Damage);
+            Destroy();
+        }
     }
 
     public static Arrow Create(BaseGame game) => new(game);

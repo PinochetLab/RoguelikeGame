@@ -121,6 +121,7 @@ public class Actor : DrawableGameComponent
     public virtual void Destroy()
     {
         Game.World.RemoveActor(this);
+        Transform.Children.ForEach(x => x.Owner.Destroy());
         drawables.ForEach(Game.RemoveDrawable);
     }
 }
