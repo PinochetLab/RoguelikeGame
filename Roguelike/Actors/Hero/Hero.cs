@@ -13,6 +13,8 @@ using Roguelike.Components;
 using System.Runtime.CompilerServices;
 using Roguelike.Actors.AI;
 using Roguelike.Actors.InventoryUtils;
+using Roguelike.Actors.UI;
+using System.Diagnostics;
 
 namespace Roguelike.Actors;
 
@@ -87,9 +89,14 @@ public class Hero : Actor, IActorCreatable<Hero>
         Instance = this;
     }
 
-    public override void OnStart()
+    public void UpdateHealth(int health)
     {
-        base.OnStart();
+        healthComponent.SetMaxHealth(health, true);
+    }
+
+    public override void Initialize()
+    {
+        base.Initialize();
 
         spriteComponent = AddComponent<SpriteComponent>();
         spriteComponent.SetTexture("HeroSprite");
@@ -110,6 +117,13 @@ public class Hero : Actor, IActorCreatable<Hero>
 
         healthComponent = AddComponent<HealthComponent>();
         healthComponent.OnDeath += GameOver;
+        healthComponent.OnHealthChange += OnHealthChange;
+        healthComponent.Initialize();
+    }
+
+    private void OnHealthChange()
+    {
+        World.Stats.SetHealth(healthComponent.Health);
     }
 
     private void OnTriggerEnter(ColliderComponent other)
@@ -122,9 +136,8 @@ public class Hero : Actor, IActorCreatable<Hero>
 
     private void GameOver()
     {
-        Game.World.CreateActor<Hero>(FieldInfo.Center);
         Inventory.Clear();
-        Destroy();
+        Transform.Position = FieldInfo.Center;
     }
 
     public override void Update(GameTime time)

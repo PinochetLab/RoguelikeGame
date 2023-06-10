@@ -23,7 +23,8 @@ public class WorldComponent : BaseWorldComponent
         base.Initialize();
         CreateActor<ItemHolder>(7, 3);
 
-        
+        Stats = new StatsManager(Game);
+        Stats.Initialize();
 
         CreateActor<Enemy>(11, 2);
 
@@ -39,8 +40,9 @@ public class WorldComponent : BaseWorldComponent
         CreateActor<Wall>(9, 10);
         CreateActor<Wall>(10, 10);
         CreateActor<Wall>(11, 10);
-        
-        CreateActor<Hero>(9, 7);
+
+        Hero = CreateActor<Hero>(9, 7);
+        Hero.Initialize();
 
         CreateActor<Wall>(8, 9);
         CreateActor<Wall>(7, 9);

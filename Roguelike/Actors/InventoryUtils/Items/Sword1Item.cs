@@ -13,5 +13,5 @@ public class Sword1Item : WeaponItem
 
     public override bool IsSword => true;
 
-    public override float Damage => 10;
+    public override int Damage => 10;
 }

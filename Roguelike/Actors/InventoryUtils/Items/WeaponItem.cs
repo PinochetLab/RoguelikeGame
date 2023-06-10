@@ -12,5 +12,5 @@ public abstract class WeaponItem : Item
 
     public abstract bool IsSword { get; }
 
-    public abstract float Damage { get; }
+    public abstract int Damage { get; }
 }

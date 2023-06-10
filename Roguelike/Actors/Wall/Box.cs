@@ -30,7 +30,7 @@ public class Box : Actor, IActorCreatable<Box>, IDamageable
 
     public static Box Create(BaseGame game) => new(game);
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(int damage)
     {
         Destroy();
     }

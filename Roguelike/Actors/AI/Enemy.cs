@@ -76,13 +76,14 @@ public class Enemy : Actor, IDamageable, IActorCreatable<Enemy>
         }
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(int damage)
     {
         healthComponent.Health -= damage;
     }
 
     private void OnDeath()
     {
+        Game.World.Stats.AddExperience(110);
         Destroy();
     }
 

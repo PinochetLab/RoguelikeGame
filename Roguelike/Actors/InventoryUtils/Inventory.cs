@@ -91,19 +91,19 @@ public class Inventory : BaseGameSystem
 
             var cellBorderActor = Game.World.CreateActor(cellPosition);
             CellBorders[i] = cellBorderActor.AddComponent<SpriteComponent>();
+            CellBorders[i].Transform.IsCanvas = true;
             CellBorders[i].SetTexture("Cell3");
             CellBorders[i].Size = Vector2Int.One * CellSize;
-            CellBorders[i].Transform.IsTile = false;
-            CellBorders[i].Canvas = true;
-            CellBorders[i].DrawOrder = 0;
+            CellBorders[i].Transform.IsCanvas = true;
+            CellBorders[i].DrawOrder = 5;
 
             var cellActor = Game.World.CreateActor(cellPosition);
             Cells[i] = cellActor.AddComponent<SpriteComponent>();
+            Cells[i].Transform.IsCanvas = true;
             Cells[i].Transform.Scale = Vector2.One * 0.5f;
             Cells[i].Size = Vector2Int.One * CellSize;
-            Cells[i].Transform.IsTile = false;
-            Cells[i].Canvas = true;
-            Cells[i].DrawOrder = 1;
+            Cells[i].Transform.IsCanvas = true;
+            Cells[i].DrawOrder = 6;
 
             if (Items[i] == null) continue;
 
@@ -132,7 +132,7 @@ public class Inventory : BaseGameSystem
     public override void Update(GameTime deltaTime)
     {
         var state = MouseExtended.GetState();
-        int next = selected + state.DeltaScrollWheelValue / 120;
+        var next = selected + state.DeltaScrollWheelValue / 120;
         if (next == selected) return;
         if (next >= MaxElementsCount) next = 0;
         else if (next < 0) next = MaxElementsCount - 1;

@@ -14,7 +14,7 @@ public class Arrow : Actor, IMovable, IActorCreatable<Arrow>
 
     private ColliderComponent collider;
 
-    public float Damage { get; set; } = 0;
+    public int Damage { get; set; } = 0;
 
     public Arrow(BaseGame game) : base(game)
     { }
