@@ -62,6 +62,8 @@ public class WorldComponent : BaseWorldComponent
         CreateActor<Wall>(4, 4);
         CreateActor<Wall>(4, 4);
 
+        CreateActor<Box>(2, 2);
+
 
         for (var i = 0; i < FieldInfo.CellCount; i++)
         {

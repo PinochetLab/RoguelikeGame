@@ -151,12 +151,11 @@ public class Hero : Actor, IActorCreatable<Hero>
             weaponSlot.Transform.Angle = MathF.PI / 2;
         }
         
+        if (direction != Vector2Int.Zero) currentDirection = direction;
 
         if (direction == Vector2Int.Zero || 
             (World.Colliders.ContainsSolid(Transform.Position + direction) &&
             !World.Colliders.ContainsSolid(Transform.Position))) return;
-
-        currentDirection = direction;
 
         Transform.Position += direction;
 
