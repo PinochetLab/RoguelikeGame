@@ -41,13 +41,13 @@ public class Arrow : Actor, IMovable, IActorCreatable<Arrow>
     {
         if (other.Type == ColliderType.Solid)
         {
-            Destroy();
+            Dispose();
             return;
         }
         if (other.Owner is IDamageable damageable)
         {
             damageable.TakeDamage(Damage);
-            Destroy();
+            Dispose();
         }
     }
 

@@ -29,7 +29,6 @@ public sealed class RoguelikeGame : BaseGame
 
         var inventory = new Inventory(this);
         Components.Add(inventory);
-
         base.Initialize();
     }
 

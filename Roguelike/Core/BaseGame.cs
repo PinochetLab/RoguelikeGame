@@ -31,7 +31,11 @@ public abstract class BaseGame : Game
         get => world;
         protected set
         {
-            Components.Remove(world);
+            if (world is not null)
+            {
+                world.Dispose();
+                Components.Remove(world);
+            }
             world = value;
             Components.Add(world);
         }

@@ -17,9 +17,9 @@ public class Wall : Actor, IActorCreatable<Wall>
     public Wall(BaseGame game) : base(game)
     { }
 
-    public override void OnStart()
+    public override void Initialize()
     {
-        base.OnStart();
+        base.Initialize();
 
         spriteComponent = AddComponent<SpriteComponent>();
         spriteComponent.SetTexture("Wall");

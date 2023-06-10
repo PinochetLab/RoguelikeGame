@@ -36,8 +36,8 @@ public abstract class BaseWorldComponent : BaseGameSystem
         where TActor : Actor, IActorCreatable<TActor>
     {
         var actor = TActor.Create(Game);
-        actorsToAdd.Add(actor);
         actor.Initialize(position);
+        actorsToAdd.Add(actor);
         return actor;
     }
 
@@ -70,8 +70,8 @@ public abstract class BaseWorldComponent : BaseGameSystem
     public Actor CreateActor(Vector2Int position)
     {
         var actor = new Actor(Game);
-        actorsToAdd.Add(actor);
         actor.Initialize(position);
+        actorsToAdd.Add(actor);
         return actor;
     }
 
@@ -124,6 +124,12 @@ public abstract class BaseWorldComponent : BaseGameSystem
     public void RemoveActor(Actor actor)
     {
         actorsToRemove.Add(actor);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        actors.ForEach(x => x.Dispose());
+        base.Dispose(disposing);
     }
 
     private void UpdateStatesOfActors()

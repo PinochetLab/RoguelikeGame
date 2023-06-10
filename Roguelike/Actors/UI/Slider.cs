@@ -78,9 +78,9 @@ public class Slider : Actor, IActorCreatable<Slider>
     }
 
 
-    public override void OnStart()
+    public override void Initialize()
     {
-        base.OnStart();
+        base.Initialize();
 
         Transform.IsCanvas = true;
 
@@ -106,10 +106,5 @@ public class Slider : Actor, IActorCreatable<Slider>
         fillSC.Pivot = new Vector2(0, 0.5f);
         Ratio = ratio;
         fillSC.DrawOrder = 1;
-    }
-
-    public override void Update(GameTime time)
-    {
-        base.Update(time);
     }
 }

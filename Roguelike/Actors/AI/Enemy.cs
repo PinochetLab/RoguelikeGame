@@ -33,9 +33,9 @@ public class Enemy : Actor, IDamageable, IActorCreatable<Enemy>
 
     public static Enemy Create(BaseGame game) => new Enemy(game);
 
-    public override void OnStart()
+    public override void Initialize()
     {
-        base.OnStart();
+        base.Initialize();
 
         spriteComponent = AddComponent<SpriteComponent>();
         spriteComponent.SetTexture("Frog");
@@ -84,7 +84,7 @@ public class Enemy : Actor, IDamageable, IActorCreatable<Enemy>
     private void OnDeath()
     {
         Game.World.Stats.AddExperience(110);
-        Destroy();
+        Dispose();
     }
 
     private void OnChangeHealth()

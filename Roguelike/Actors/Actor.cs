@@ -96,14 +96,7 @@ public class Actor : DrawableGameComponent
     {
         Transform = AddComponent<TransformComponent>();
         Transform.Position = position;
-        OnStart();
-    }
-
-    /// <summary>
-    /// Данный виртуальный метод вызывается сразу после инициализации игрового обьекта.
-    /// </summary>
-    public virtual void OnStart()
-    {
+        Initialize();
     }
 
     /// <summary>Данный виртуальный метод вызывается каждый кадр игровой логики.
@@ -115,13 +108,10 @@ public class Actor : DrawableGameComponent
             updateable.Update(time.GetElapsedSeconds());
     }
 
-    /// <summary>
-    /// Метод удаляет вызывает удаление Actor из текущей игры
-    /// </summary>
-    public virtual void Destroy()
+    protected override void Dispose(bool isDisposing)
     {
         Game.World.RemoveActor(this);
-        Transform.Children.ForEach(x => x.Owner.Destroy());
+        Transform.Children.ForEach(x => x.Owner.Dispose());
         drawables.ForEach(Game.RemoveDrawable);
     }
 }

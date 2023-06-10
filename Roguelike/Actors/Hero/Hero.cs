@@ -138,6 +138,7 @@ public class Hero : Actor, IActorCreatable<Hero>
     {
         Inventory.Clear();
         Transform.Position = FieldInfo.Center;
+        Dispose();
     }
 
     public override void Update(GameTime time)
