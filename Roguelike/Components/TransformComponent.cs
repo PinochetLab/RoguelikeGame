@@ -109,4 +109,10 @@ public class TransformComponent : Component
     /// Угол поворота, относительно оси Z.
     /// </summary>
     public float Angle { get; set; } = 0;
+
+    public Vector2Int Direction
+    {
+        get => new((int)MathF.Cos(Angle), (int)MathF.Sin(Angle));
+        set => Angle = MathF.Atan2(value.Y, value.X);
+    }
 }

@@ -1,53 +1,53 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
-using Roguelike.Components.Colliders;
-using Roguelike.Components.Sprites;
-using System;
-using Roguelike.Core;
-using System.Collections;
-using System.Threading.Tasks;
-using Roguelike.Field;
+using Roguelike.Actors.InventoryUtils;
 using Roguelike.Actors.InventoryUtils.Items;
 using Roguelike.Components;
-using System.Runtime.CompilerServices;
-using Roguelike.Actors.AI;
-using Roguelike.Actors.InventoryUtils;
-using Roguelike.Actors.UI;
-using System.Diagnostics;
+using Roguelike.Components.Colliders;
+using Roguelike.Components.Sprites;
+using Roguelike.Core;
+using Roguelike.Field;
 
 namespace Roguelike.Actors;
 
 /// <summary>
-/// Данный класс - класс главного персонажа.
+///     Данный класс - класс главного персонажа.
 /// </summary>
 public class Hero : Actor, IActorCreatable<Hero>
 {
-    /// <summary>
-    /// Тэг главного персонажа.
-    /// </summary>
-    public const string HeroTag = "Hero";
-    public override string Tag => HeroTag;
-
-    private SpriteComponent spriteComponent;
-
-    private SpriteComponent itemSpriteComponent;
+    public static Hero Instance;
 
     private ColliderComponent collider;
 
-    private WeaponSlot weaponSlot;
+    private HealthComponent healthComponent;
 
-    private Vector2Int currentDirection = Vector2Int.Right;
+    private Item item;
+
+    private SpriteComponent itemSpriteComponent;
 
     private KeyboardStateExtended keyState;
 
-    public static Hero Instance;
+    private SpriteComponent spriteComponent;
 
-    private WeaponItem weaponItem = null;
+    private WeaponItem weaponItem;
 
-    private Item item = null;
+    public WeaponSlot weaponSlot;
 
-    private HealthComponent healthComponent;
+    public Hero(BaseGame game) : base(game)
+    {
+        Instance = this;
+    }
+
+    /// <summary>
+    ///     Тэг главного персонажа.
+    /// </summary>
+
+    public override string Tag => Tags.HeroTag;
+
+    public Vector2Int CurrentDirection { get; private set; } = Vector2Int.Right;
 
 
     public Item Item
@@ -55,38 +55,35 @@ public class Hero : Actor, IActorCreatable<Hero>
         get => item;
         set
         {
-            if (value == null)
+            switch (value)
             {
-                weaponSlot.SpriteComponent.Visible = false;
-                itemSpriteComponent.Visible = false;
-                item = null;
-                weaponItem = null;
-            }
-            else
-            {
-                if (value is WeaponItem wi)
-                {
+                case null:
+                    weaponSlot.SpriteComponent.Visible = false;
+                    itemSpriteComponent.Visible = false;
+                    item = null;
+                    weaponItem = null;
+                    break;
+                case WeaponItem wi:
                     weaponSlot.SpriteComponent.Visible = true;
                     weaponSlot.SpriteComponent.SetTexture(value.TextureName);
                     itemSpriteComponent.Visible = false;
                     item = wi;
                     weaponItem = wi;
-                }
-                else
-                {
+                    break;
+                default:
                     weaponSlot.SpriteComponent.Visible = false;
                     itemSpriteComponent.Visible = true;
                     itemSpriteComponent.SetTexture(value.TextureName);
                     item = value;
                     weaponItem = null;
-                }
+                    break;
             }
         }
     }
 
-    public Hero(BaseGame game) : base(game)
+    public static Hero Create(BaseGame game)
     {
-        Instance = this;
+        return new Hero(game);
     }
 
     public void UpdateHealth(int health)
@@ -106,7 +103,7 @@ public class Hero : Actor, IActorCreatable<Hero>
         itemSpriteComponent.SetTexture("KFC");
         itemSpriteComponent.DrawOrder = 1;
         itemSpriteComponent.AdditionalScale = Vector2.One * 0.4f;
-        itemSpriteComponent.Offset = Vector2Int.One * (Field.FieldInfo.CellSize / 5);
+        itemSpriteComponent.Offset = Vector2Int.One * (FieldInfo.CellSize / 5);
 
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
@@ -128,10 +125,7 @@ public class Hero : Actor, IActorCreatable<Hero>
 
     private void OnTriggerEnter(ColliderComponent other)
     {
-        if (other.Owner.Tag == Enemy.EnemyTag)
-        {
-            healthComponent.Health -= 20;
-        }
+        if (other.Owner.Tag == Tags.EnemyTag) healthComponent.Health -= 20;
     }
 
     private void GameOver()
@@ -147,22 +141,10 @@ public class Hero : Actor, IActorCreatable<Hero>
 
         keyState = KeyboardExtended.GetState();
 
-        MoveLogic();
-
-        if (weaponItem != null)
-        {
-            if (weaponItem.IsSword)
-            {
-                HitLogic();
-            }
-            else
-            {
-                ShootLogic();
-            }
-        }
+        if (MoveLogic() || HitLogic()) World.TriggerOnPlayerMove();
     }
 
-    private void MoveLogic()
+    private bool MoveLogic()
     {
         var direction = Vector2Int.Zero;
         var state = keyState;
@@ -191,58 +173,27 @@ public class Hero : Actor, IActorCreatable<Hero>
             direction = Vector2Int.Down;
             weaponSlot.Transform.Angle = MathF.PI / 2;
         }
-        
-        if (direction != Vector2Int.Zero) currentDirection = direction;
 
-        if (direction == Vector2Int.Zero || 
+        if (direction != Vector2Int.Zero) CurrentDirection = direction;
+
+        if (direction == Vector2Int.Zero ||
             (World.Colliders.ContainsSolid(Transform.Position + direction) &&
-            !World.Colliders.ContainsSolid(Transform.Position))) return;
+             !World.Colliders.ContainsSolid(Transform.Position))) return false;
 
         Transform.Position += direction;
 
-        World.MoveAll();
+        return true;
     }
 
-    private void ShootLogic()
+    private bool HitLogic()
     {
         var state = keyState;
+        if (!state.WasKeyJustUp(Keys.Space)) return false;
 
-        if (!state.WasKeyJustUp(Keys.Space)) return;
 
-        var bulletPosition = Transform.Position + currentDirection;
-
-        if (!World.Colliders.ContainsSolid(bulletPosition) &&
-            !World.Colliders.Contains<Arrow>(bulletPosition))
-        {
-            var arrow = World.CreateActor<Arrow>(bulletPosition);
-            arrow.Transform.Angle = MathF.Atan2(currentDirection.Y, currentDirection.X);
-            arrow.Damage = weaponItem.Damage;
-        }
+        //TODO different attacks on different keys or something
+        var attack = weaponItem?.Attacks.FirstOrDefault();
+        attack?.Atack(this, CurrentDirection);
+        return true;
     }
-
-    private async void HitLogic()
-    {
-        var state = keyState;
-
-        if (!state.WasKeyJustUp(Keys.Space)) return;
-
-        var p = Transform.Position + currentDirection;
-        var damageable = World.Colliders.Find<IDamageable>(p);
-        damageable?.TakeDamage(weaponItem.Damage);
-
-        Task.Run(Hit);
-    }
-
-    private async Task Hit()
-    {
-        for (var i = 0; i < 2; i++)
-        {
-            weaponSlot.Offset = currentDirection * 30;
-            await Task.Delay(50);
-            weaponSlot.Offset = Vector2Int.Zero;
-            await Task.Delay(50);
-        }
-    }
-
-    public static Hero Create(BaseGame game) => new Hero(game);
 }

@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Collections;
 using Roguelike.Core;
 using Roguelike.Field;
 
-
-namespace Roguelike.Actors.AI;
+namespace Roguelike.Actors.Enemies.AI;
 
 public class Cell
 {
@@ -167,8 +164,8 @@ public class PathFinder : BaseGameSystem
 
     public bool DoesSee(Vector2Int start, Vector2Int end)
     {
-        Vector2 s = start;
-        Vector2 e = end;
+        Vector2 s = (Vector2)start+Vector2.One*0.5f;
+        Vector2 e = (Vector2)end;
         int acc = 100;
         for (var i = 1; i < acc; i++)
         {
