@@ -6,7 +6,7 @@ namespace Roguelike.Actors.InventoryUtils.Items.Attacks;
 
 public class SwordAttack : IMeleeAttack
 {
-    public float Damage { get; set; }
+    public int Damage { get; set; }
     public List<Vector2Int> range { get; set; } = new();
 
     public void Atack(Actor actor, Direction direction)

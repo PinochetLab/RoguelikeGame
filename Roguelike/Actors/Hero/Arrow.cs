@@ -21,7 +21,7 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
 
     public static Arrow Create(BaseGame game)
     {
-        return new(game);
+        return new Arrow(game);
     }
 
     public object Clone()
@@ -31,7 +31,7 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
         return clone;
     }
 
-    public static Arrow GetPrototype(BaseGame game, float damage)
+    public static Arrow GetPrototype(BaseGame game, int damage)
     {
         var prototype = game.World.CreateActor<Arrow>();
         prototype.Transform.Position = new Vector2Int(-1, -1);

@@ -15,7 +15,7 @@ public class Frogger : Enemy, IActorCreatable<Frogger>
 
     public static Frogger Create(BaseGame game)
     {
-        return new(game);
+        return new Frogger(game);
     }
 
     public override void Initialize()
@@ -40,7 +40,7 @@ public class Frogger : Enemy, IActorCreatable<Frogger>
         World.onPlayerMove += () => behaviour.Run();
     }
 
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(int damage)
     {
         healthComponent.Health -= damage;
         behaviour.IsAttacked = true;
@@ -48,7 +48,7 @@ public class Frogger : Enemy, IActorCreatable<Frogger>
 
     private void OnDeath()
     {
-        Destroy();
+        Dispose();
     }
 
     private void OnChangeHealth()

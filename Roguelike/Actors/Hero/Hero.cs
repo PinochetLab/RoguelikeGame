@@ -1,55 +1,53 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
-using Roguelike.Components.Colliders;
-using Roguelike.Components.Sprites;
-using System;
-using Roguelike.Core;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Roguelike.Field;
+using Roguelike.Actors.InventoryUtils;
 using Roguelike.Actors.InventoryUtils.Items;
 using Roguelike.Components;
-using System.Runtime.CompilerServices;
-using Roguelike.Actors.Enemies;
-using Roguelike.Actors.InventoryUtils;
-using Roguelike.Actors.UI;
-using System.Diagnostics;
+using Roguelike.Components.Colliders;
+using Roguelike.Components.Sprites;
+using Roguelike.Core;
+using Roguelike.Field;
 
 namespace Roguelike.Actors;
 
 /// <summary>
-/// Данный класс - класс главного персонажа.
+///     Данный класс - класс главного персонажа.
 /// </summary>
 public class Hero : Actor, IActorCreatable<Hero>
 {
+    public static Hero Instance;
+
+    private ColliderComponent collider;
+
+    private HealthComponent healthComponent;
+
+    private Item item;
+
+    private SpriteComponent itemSpriteComponent;
+
+    private KeyboardStateExtended keyState;
+
+    private SpriteComponent spriteComponent;
+
+    private WeaponItem weaponItem;
+
+    public WeaponSlot weaponSlot;
+
+    public Hero(BaseGame game) : base(game)
+    {
+        Instance = this;
+    }
+
     /// <summary>
-    /// Тэг главного персонажа.
+    ///     Тэг главного персонажа.
     /// </summary>
 
     public override string Tag => Tags.HeroTag;
 
-    private SpriteComponent spriteComponent;
-
-    private SpriteComponent itemSpriteComponent;
-
-    private ColliderComponent collider;
-
-    public WeaponSlot weaponSlot;
-
     public Vector2Int CurrentDirection { get; private set; } = Vector2Int.Right;
-
-    private KeyboardStateExtended keyState;
-
-    public static Hero Instance;
-
-    private WeaponItem weaponItem = null;
-
-    private Item item = null;
-
-    private HealthComponent healthComponent;
 
 
     public Item Item
@@ -83,9 +81,9 @@ public class Hero : Actor, IActorCreatable<Hero>
         }
     }
 
-    public Hero(BaseGame game) : base(game)
+    public static Hero Create(BaseGame game)
     {
-        Instance = this;
+        return new Hero(game);
     }
 
     public void UpdateHealth(int health)
@@ -127,10 +125,7 @@ public class Hero : Actor, IActorCreatable<Hero>
 
     private void OnTriggerEnter(ColliderComponent other)
     {
-        if (other.Owner.Tag == Tags.EnemyTag)
-        {
-            healthComponent.Health -= 20;
-        }
+        if (other.Owner.Tag == Tags.EnemyTag) healthComponent.Health -= 20;
     }
 
     private void GameOver()
@@ -146,11 +141,10 @@ public class Hero : Actor, IActorCreatable<Hero>
 
         keyState = KeyboardExtended.GetState();
 
-        MoveLogic();
-        HitLogic();
+        if (MoveLogic() || HitLogic()) World.TriggerOnPlayerMove();
     }
 
-    private void MoveLogic()
+    private bool MoveLogic()
     {
         var direction = Vector2Int.Zero;
         var state = keyState;
@@ -184,25 +178,22 @@ public class Hero : Actor, IActorCreatable<Hero>
 
         if (direction == Vector2Int.Zero ||
             (World.Colliders.ContainsSolid(Transform.Position + direction) &&
-             !World.Colliders.ContainsSolid(Transform.Position))) return;
+             !World.Colliders.ContainsSolid(Transform.Position))) return false;
 
         Transform.Position += direction;
 
-        World.TriggerOnPlayerMove();
+        return true;
     }
 
-    private void HitLogic()
+    private bool HitLogic()
     {
-        if (weaponItem is null) return;
-        
         var state = keyState;
-        if (!state.WasKeyJustUp(Keys.Space)) return;
-        
-        
-        //TODO different attacks on different keys or something
-        var attack = weaponItem.Attacks.FirstOrDefault();
-        attack?.Atack(this, CurrentDirection);
-    }
+        if (!state.WasKeyJustUp(Keys.Space)) return false;
 
-    public static Hero Create(BaseGame game) => new (game);
+
+        //TODO different attacks on different keys or something
+        var attack = weaponItem?.Attacks.FirstOrDefault();
+        attack?.Atack(this, CurrentDirection);
+        return true;
+    }
 }
