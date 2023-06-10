@@ -6,12 +6,14 @@ using Roguelike.Components.Sprites;
 using System;
 using Roguelike.Core;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Roguelike.Field;
 using Roguelike.Actors.InventoryUtils.Items;
 using Roguelike.Components;
 using System.Runtime.CompilerServices;
-using Roguelike.Actors.AI;
+using Roguelike.Actors.Enemies;
 using Roguelike.Actors.InventoryUtils;
 using Roguelike.Actors.UI;
 using System.Diagnostics;
@@ -26,8 +28,8 @@ public class Hero : Actor, IActorCreatable<Hero>
     /// <summary>
     /// Тэг главного персонажа.
     /// </summary>
-    public const string HeroTag = "Hero";
-    public override string Tag => HeroTag;
+
+    public override string Tag => Tags.HeroTag;
 
     private SpriteComponent spriteComponent;
 
@@ -35,9 +37,9 @@ public class Hero : Actor, IActorCreatable<Hero>
 
     private ColliderComponent collider;
 
-    private WeaponSlot weaponSlot;
+    public WeaponSlot weaponSlot;
 
-    private Vector2Int currentDirection = Vector2Int.Right;
+    public Vector2Int CurrentDirection { get; private set; } = Vector2Int.Right;
 
     private KeyboardStateExtended keyState;
 
@@ -55,31 +57,28 @@ public class Hero : Actor, IActorCreatable<Hero>
         get => item;
         set
         {
-            if (value == null)
+            switch (value)
             {
-                weaponSlot.SpriteComponent.Visible = false;
-                itemSpriteComponent.Visible = false;
-                item = null;
-                weaponItem = null;
-            }
-            else
-            {
-                if (value is WeaponItem wi)
-                {
+                case null:
+                    weaponSlot.SpriteComponent.Visible = false;
+                    itemSpriteComponent.Visible = false;
+                    item = null;
+                    weaponItem = null;
+                    break;
+                case WeaponItem wi:
                     weaponSlot.SpriteComponent.Visible = true;
                     weaponSlot.SpriteComponent.SetTexture(value.TextureName);
                     itemSpriteComponent.Visible = false;
                     item = wi;
                     weaponItem = wi;
-                }
-                else
-                {
+                    break;
+                default:
                     weaponSlot.SpriteComponent.Visible = false;
                     itemSpriteComponent.Visible = true;
                     itemSpriteComponent.SetTexture(value.TextureName);
                     item = value;
                     weaponItem = null;
-                }
+                    break;
             }
         }
     }
@@ -106,7 +105,7 @@ public class Hero : Actor, IActorCreatable<Hero>
         itemSpriteComponent.SetTexture("KFC");
         itemSpriteComponent.DrawOrder = 1;
         itemSpriteComponent.AdditionalScale = Vector2.One * 0.4f;
-        itemSpriteComponent.Offset = Vector2Int.One * (Field.FieldInfo.CellSize / 5);
+        itemSpriteComponent.Offset = Vector2Int.One * (FieldInfo.CellSize / 5);
 
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
@@ -128,7 +127,7 @@ public class Hero : Actor, IActorCreatable<Hero>
 
     private void OnTriggerEnter(ColliderComponent other)
     {
-        if (other.Owner.Tag == Enemy.EnemyTag)
+        if (other.Owner.Tag == Tags.EnemyTag)
         {
             healthComponent.Health -= 20;
         }
@@ -148,18 +147,7 @@ public class Hero : Actor, IActorCreatable<Hero>
         keyState = KeyboardExtended.GetState();
 
         MoveLogic();
-
-        if (weaponItem != null)
-        {
-            if (weaponItem.IsSword)
-            {
-                HitLogic();
-            }
-            else
-            {
-                ShootLogic();
-            }
-        }
+        HitLogic();
     }
 
     private void MoveLogic()
@@ -191,58 +179,30 @@ public class Hero : Actor, IActorCreatable<Hero>
             direction = Vector2Int.Down;
             weaponSlot.Transform.Angle = MathF.PI / 2;
         }
-        
-        if (direction != Vector2Int.Zero) currentDirection = direction;
 
-        if (direction == Vector2Int.Zero || 
+        if (direction != Vector2Int.Zero) CurrentDirection = direction;
+
+        if (direction == Vector2Int.Zero ||
             (World.Colliders.ContainsSolid(Transform.Position + direction) &&
-            !World.Colliders.ContainsSolid(Transform.Position))) return;
+             !World.Colliders.ContainsSolid(Transform.Position))) return;
 
         Transform.Position += direction;
 
-        World.MoveAll();
+        World.TriggerOnPlayerMove();
     }
 
-    private void ShootLogic()
+    private void HitLogic()
     {
+        if (weaponItem is null) return;
+        
         var state = keyState;
-
         if (!state.WasKeyJustUp(Keys.Space)) return;
-
-        var bulletPosition = Transform.Position + currentDirection;
-
-        if (!World.Colliders.ContainsSolid(bulletPosition) &&
-            !World.Colliders.Contains<Arrow>(bulletPosition))
-        {
-            var arrow = World.CreateActor<Arrow>(bulletPosition);
-            arrow.Transform.Angle = MathF.Atan2(currentDirection.Y, currentDirection.X);
-            arrow.Damage = weaponItem.Damage;
-        }
+        
+        
+        //TODO different attacks on different keys or something
+        var attack = weaponItem.Attacks.FirstOrDefault();
+        attack?.Atack(this, CurrentDirection);
     }
 
-    private async void HitLogic()
-    {
-        var state = keyState;
-
-        if (!state.WasKeyJustUp(Keys.Space)) return;
-
-        var p = Transform.Position + currentDirection;
-        var damageable = World.Colliders.Find<IDamageable>(p);
-        damageable?.TakeDamage(weaponItem.Damage);
-
-        Task.Run(Hit);
-    }
-
-    private async Task Hit()
-    {
-        for (var i = 0; i < 2; i++)
-        {
-            weaponSlot.Offset = currentDirection * 30;
-            await Task.Delay(50);
-            weaponSlot.Offset = Vector2Int.Zero;
-            await Task.Delay(50);
-        }
-    }
-
-    public static Hero Create(BaseGame game) => new Hero(game);
+    public static Hero Create(BaseGame game) => new (game);
 }

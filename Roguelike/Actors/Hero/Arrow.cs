@@ -2,26 +2,39 @@
 using Microsoft.Xna.Framework;
 using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
-using IMovable = Roguelike.Components.IMovable;
-using System.Diagnostics;
 using Roguelike.Core;
 
 namespace Roguelike.Actors;
 
-public class Arrow : Actor, IMovable, IActorCreatable<Arrow>
+public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
 {
+    public override string Tag => "Arrow";
+    private ColliderComponent collider;
     private SpriteComponent spriteComponent;
 
-    private ColliderComponent collider;
-
-    public int Damage { get; set; } = 0;
-
     public Arrow(BaseGame game) : base(game)
-    { }
+    {
+    }
+
+    public int Damage { get; set; }
+
+    public static Arrow Create(BaseGame game)
+    {
+        return new(game);
+    }
+
+    public object Clone()
+    {
+        var clone = Create(Game);
+        clone.Initialize(Transform.Position);
+        clone.Damage = Damage;
+        return clone;
+    }
 
     public override void Initialize(Vector2Int position)
     {
         base.Initialize(position);
+        World.onPlayerMove += Move;
 
         spriteComponent = AddComponent<SpriteComponent>();
         spriteComponent.SetTexture("Arrow");
@@ -33,8 +46,7 @@ public class Arrow : Actor, IMovable, IActorCreatable<Arrow>
 
     public void Move()
     {
-        Vector2Int direction = new Vector2(MathF.Cos(Transform.Angle), MathF.Sin(Transform.Angle));
-        Transform.Position += direction * 2;
+        Transform.Position += Transform.Direction;
     }
 
     public void OnTriggerEnter(ColliderComponent other)
@@ -44,12 +56,11 @@ public class Arrow : Actor, IMovable, IActorCreatable<Arrow>
             Dispose();
             return;
         }
+
         if (other.Owner is IDamageable damageable)
         {
             damageable.TakeDamage(Damage);
             Dispose();
         }
     }
-
-    public static Arrow Create(BaseGame game) => new(game);
 }

@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Collections;
 using Roguelike.Core;
 using Roguelike.Field;
 
-
-namespace Roguelike.Actors.AI;
+namespace Roguelike.Actors.Enemies.AI;
 
 public class Cell
 {

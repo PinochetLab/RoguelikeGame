@@ -8,6 +8,7 @@ using Roguelike.Components.Sprites;
 using Roguelike.Core;
 using Roguelike.World;
 using System.Diagnostics;
+using Roguelike.Actors.InventoryUtils.Items.Attacks;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Roguelike.Actors.InventoryUtils;
@@ -75,8 +76,17 @@ public class Inventory : BaseGameSystem
 
         Items[3] = new ItemCoin();
 
-        Items[0] = new Sword1Item();
-        Items[1] = new Bow1Item();
+        Items[0] = new GenericSwordItem{Attacks =
+        {
+            new SwordAttack{range = {Vector2Int.Up}, Damage = 10}
+        }};
+        
+        var genericArrow = Game.World.CreateActor<Arrow>();
+        genericArrow.Damage = 10;
+        Items[1] = new GenericBowItem{Attacks =
+        {
+            new BowAttack<Arrow>{Arrow = genericArrow, range = { new(10, 0) }}
+        }};
 
         for (var i = 0; i < MaxElementsCount; i++)
         {

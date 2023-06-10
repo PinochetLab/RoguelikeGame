@@ -2,7 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using Roguelike.Actors;
-using Roguelike.Actors.AI;
+using Roguelike.Actors.Enemies;
+using Roguelike.Actors.Enemies.AI;
 using Roguelike.Core;
 using Roguelike.Field;
 
@@ -26,7 +27,7 @@ public class WorldComponent : BaseWorldComponent
         Stats = new StatsManager(Game);
         Stats.Initialize();
 
-        CreateActor<Enemy>(11, 2);
+        CreateActor<Froggy>(11, 2);
 
         CreateActor<Wall>(9, 1);
         CreateActor<Wall>(9, 2);
