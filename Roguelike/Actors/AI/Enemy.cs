@@ -83,7 +83,7 @@ public class Enemy : Actor, IDamageable, IActorCreatable<Enemy>
 
     private void OnDeath()
     {
-        Destroy();
+        Dispose();
     }
 
     private void OnChangeHealth()

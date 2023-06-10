@@ -32,6 +32,6 @@ public class Box : Actor, IActorCreatable<Box>, IDamageable
 
     public void TakeDamage(float damage)
     {
-        Destroy();
+        Dispose();
     }
 }

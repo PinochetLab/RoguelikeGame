@@ -124,7 +124,7 @@ public class Hero : Actor, IActorCreatable<Hero>
     {
         Game.World.CreateActor<Hero>(FieldInfo.Center);
         Inventory.Clear();
-        Destroy();
+        Dispose();
     }
 
     public override void Update(GameTime time)

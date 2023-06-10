@@ -38,7 +38,7 @@ public class ItemHolder : Actor, IActorCreatable<ItemHolder>
             if (Inventory.HasFreePlace())
             {
                 Inventory.Add(new ItemKFC());
-                Destroy();
+                Dispose();
             }
         }
     }
