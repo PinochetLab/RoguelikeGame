@@ -14,9 +14,9 @@ public class AgressiveBehaviour:EnemyBehaviour
     {
         if (haveSeenHero)
         {
-            actor.Transform.Position = actor.Game.World.Paths.NextCell(actor.Transform.Position, Hero.Instance.Transform.Position);
+            Actor.Transform.Position = Actor.Game.World.Paths.NextCell(Actor.Transform.Position, Hero.Instance.Transform.Position);
         }
-        else if (seesHero)
+        else if (SeesHero)
         {
             haveSeenHero = true;
         }

@@ -7,13 +7,13 @@ using Roguelike.Core;
 
 namespace Roguelike.Actors.Enemies;
 
-public class Froggy : Enemy, IActorCreatable<Froggy>
+public class Frogger : Enemy, IActorCreatable<Frogger>
 {
-    public Froggy(BaseGame game) : base(game)
+    public Frogger(BaseGame game) : base(game)
     {
     }
 
-    public static Froggy Create(BaseGame game)
+    public static Frogger Create(BaseGame game)
     {
         return new(game);
     }
@@ -36,7 +36,7 @@ public class Froggy : Enemy, IActorCreatable<Froggy>
         healthSlider.Ratio = 1;
         healthSlider.Transform.Parent = Transform;
 
-        behaviour = new AgressiveBehaviour(this);
+        behaviour = new LazyBehaviour(this);
         World.onPlayerMove += () => behaviour.Run();
     }
 
