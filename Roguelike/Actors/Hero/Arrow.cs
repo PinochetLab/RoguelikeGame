@@ -31,6 +31,15 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
         return clone;
     }
 
+    public static Arrow GetPrototype(BaseGame game, float damage)
+    {
+        var prototype = game.World.CreateActor<Arrow>();
+        prototype.Transform.Position = new Vector2Int(-1, -1);
+        prototype.IsMoving = false;
+        prototype.Damage = damage;
+        return prototype;
+    }
+
     public override void Initialize(Vector2Int position)
     {
         base.Initialize(position);
@@ -52,14 +61,8 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
 
     public void OnTriggerEnter(ColliderComponent other)
     {
-        if (other.Owner is IDamageable damageable)
-        {
-            damageable.TakeDamage(Damage);
-        }
-        
-        if (other.Type == ColliderType.Solid)
-        {
-            Dispose();
-        }
+        if (other.Owner is IDamageable damageable) damageable.TakeDamage(Damage);
+
+        if (other.Type == ColliderType.Solid) Dispose();
     }
 }
