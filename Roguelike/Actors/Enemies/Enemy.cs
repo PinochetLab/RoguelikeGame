@@ -1,4 +1,5 @@
 ﻿using Roguelike.Actors.Enemies.AI.Behaivour;
+using Roguelike.Actors.Enemies.AI.StateMachine;
 using Roguelike.Actors.UI;
 using Roguelike.Components;
 using Roguelike.Components.Colliders;
@@ -9,7 +10,6 @@ namespace Roguelike.Actors.Enemies;
 
 public abstract class Enemy : Actor, IDamageable
 {
-    protected EnemyBehaviour Behaviour;
     protected ColliderComponent ColliderComponent;
     protected HealthComponent HealthComponent;
     protected DamagerComponent DamagerComponent;
@@ -17,6 +17,8 @@ public abstract class Enemy : Actor, IDamageable
     protected Slider HealthSlider;
 
     protected SpriteComponent SpriteComponent;
+
+    protected StateMachine<EnemyBehaviour> BehaviourStates;
 
     protected Enemy(BaseGame game) : base(game)
     {
@@ -43,12 +45,13 @@ public abstract class Enemy : Actor, IDamageable
         HealthSlider.Transform.Parent = Transform;
 
         World.onPlayerMove += RunBehaviour;
+
+        BehaviourStates = InitializeBehaviour();
     }
 
-    public void RunBehaviour()
-    {
-        Behaviour.Run();
-    }
+    public abstract StateMachine<EnemyBehaviour> InitializeBehaviour();
+
+    public void RunBehaviour() => BehaviourStates.Process(1);
 
     private void OnDeath()
     {
