@@ -19,9 +19,9 @@ public class Arrow : Actor, IMovable, IActorCreatable<Arrow>
     public Arrow(BaseGame game) : base(game)
     { }
 
-    public override void Initialize(Vector2Int position)
+    public override void Initialize()
     {
-        base.Initialize(position);
+        base.Initialize();
 
         spriteComponent = AddComponent<SpriteComponent>();
         spriteComponent.SetTexture("Arrow");
