@@ -33,7 +33,7 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
         collider.OnTriggerEnter += OnTriggerEnter;
     }
 
-    public override string Tag => "Arrow";
+    public override string Tag => Tags.ArrowTag;
 
     public bool IsMoving { get; set; } = true;
 
