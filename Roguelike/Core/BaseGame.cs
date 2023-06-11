@@ -26,7 +26,7 @@ public abstract class BaseGame : Game
     public BaseWorldComponent World
     {
         get => world;
-        protected set
+        set
         {
             if (world is not null)
             {
