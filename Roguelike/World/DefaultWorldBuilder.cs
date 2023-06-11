@@ -1,5 +1,6 @@
-﻿using System.Linq;
-using Roguelike.Actors.AI;
+﻿using System;
+using System.Linq;
+using Roguelike.Actors.Enemies;
 using Roguelike.Core;
 using Roguelike.World.Providers;
 
@@ -37,7 +38,10 @@ public class DefaultWorldBuilder : IWorldBuilder
             if (type.HasFlag(AttributeType.MobSpawn))
             {
                 //TODO: Add mobs spawn provider
-                component.CreateActor<Enemy>(x ,y);
+                if(Random.Shared.Next(0, 1) == 1)
+                    component.CreateActor<Froggy>(x ,y);
+                else
+                    component.CreateActor<Frogger>(x ,y);
             }
             else
                 objectsProvider.CreateActorInScene(component, tile, new Vector2Int(x, y));
