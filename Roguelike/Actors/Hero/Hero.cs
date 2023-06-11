@@ -112,6 +112,11 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         healthComponent.Initialize();
     }
 
+    private void OnHealthChange()
+    {
+        World.Stats.SetHealth(healthComponent.Health);
+    }
+
     private void GameOver()
     {
         Inventory.Clear();
@@ -179,11 +184,6 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         var attack = weaponItem?.Attacks.FirstOrDefault();
         attack?.Atack(this, CurrentDirection);
         return true;
-    }
-
-    private void OnHealthChange()
-    {
-        World.Stats.SetHealth(healthComponent.Health);
     }
 
     public void UpdateHealth(int health)

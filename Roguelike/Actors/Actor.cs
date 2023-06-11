@@ -5,6 +5,7 @@ using MonoGame.Extended;
 using Roguelike.Core;
 using DrawableComponent = Roguelike.Core.DrawableComponent;
 using IUpdateable = Roguelike.Core.IUpdateable;
+using System;
 
 namespace Roguelike.Actors;
 
@@ -28,6 +29,8 @@ public class Actor : DrawableGameComponent
     /// Текущая игра, к которой принадлежит Actor
     /// </summary>
     public new BaseGame Game { get; private set; }
+
+    public Guid Guid = Guid.NewGuid();
 
     /// <summary>
     /// Игровой мир, в котором создан Actor
