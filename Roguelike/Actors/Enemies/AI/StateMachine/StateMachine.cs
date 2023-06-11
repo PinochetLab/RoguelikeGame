@@ -10,7 +10,7 @@ namespace Roguelike.Actors.Enemies.AI.StateMachine;
 /// </summary>
 /// <typeparam name="T">A type which will be used as descriptors of the state. Usually this is an enum, string or an integral type,
 /// but any type can be used.</typeparam>
-public class StateMachine<T>
+public class StateMachine<T> : IStateMachine
 {
     private readonly Dictionary<T, StateBehaviour<T>> stateBehaviours = new();
     private readonly string name;
