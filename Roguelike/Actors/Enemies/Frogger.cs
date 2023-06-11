@@ -1,8 +1,6 @@
-﻿using Roguelike.Actors.Enemies.AI;
-using Roguelike.Actors.UI;
-using Roguelike.Components;
-using Roguelike.Components.Colliders;
-using Roguelike.Components.Sprites;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Roguelike.Actors.Enemies.AI;
 using Roguelike.Core;
 
 namespace Roguelike.Actors.Enemies;
@@ -21,38 +19,16 @@ public class Frogger : Enemy, IActorCreatable<Frogger>
     public override void Initialize()
     {
         base.Initialize();
-
-        spriteComponent = AddComponent<SpriteComponent>();
         spriteComponent.SetTexture("Frog");
-
-        healthComponent = AddComponent<HealthComponent>();
-        healthComponent.OnDeath += OnDeath;
-        healthComponent.OnHealthChange += OnChangeHealth;
-
-        colliderComponent = AddComponent<ColliderComponent>();
-        colliderComponent.Type = ColliderType.Trigger;
-
-        healthSlider = Game.World.CreateActor<Slider>(Transform.ScreenPosition);
-        healthSlider.Ratio = 1;
-        healthSlider.Transform.Parent = Transform;
-
+        spriteComponent.Color = Color.Yellow;
+        healthComponent.SetMaxHealth(20);
         behaviour = new LazyBehaviour(this);
-        World.onPlayerMove += () => behaviour.Run();
+        damagerComponent.Damages = new Dictionary<Vector2Int, int> { { Vector2Int.Up, 10 }, { Vector2Int.Zero, 15 } };
     }
 
     public override void TakeDamage(int damage)
     {
         healthComponent.Health -= damage;
         behaviour.IsAttacked = true;
-    }
-
-    private void OnDeath()
-    {
-        Dispose();
-    }
-
-    private void OnChangeHealth()
-    {
-        healthSlider.Ratio = healthComponent.HealthRatio;
     }
 }

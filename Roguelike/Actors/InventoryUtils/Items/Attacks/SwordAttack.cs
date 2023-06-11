@@ -15,7 +15,8 @@ public class SwordAttack : IMeleeAttack
         foreach (var attack in range)
         foreach (var damageable in actor.World.Colliders.FindAll<IDamageable>(actor.Transform.Position +
                                                                               attack.Rotate(direction)))
-            damageable.TakeDamage(Damage);
+            if (damageable != actor)
+                damageable.TakeDamage(Damage);
     }
 
     public async void Animation(Actor actor)

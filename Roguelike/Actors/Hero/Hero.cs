@@ -16,7 +16,7 @@ namespace Roguelike.Actors;
 /// <summary>
 ///     Данный класс - класс главного персонажа.
 /// </summary>
-public class Hero : Actor, IActorCreatable<Hero>
+public class Hero : Actor, IActorCreatable<Hero>, IDamageable
 {
     public static Hero Instance;
 
@@ -86,11 +86,6 @@ public class Hero : Actor, IActorCreatable<Hero>
         return new Hero(game);
     }
 
-    public void UpdateHealth(int health)
-    {
-        healthComponent.SetMaxHealth(health, true);
-    }
-
     public override void Initialize()
     {
         base.Initialize();
@@ -107,7 +102,6 @@ public class Hero : Actor, IActorCreatable<Hero>
 
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
-        collider.OnTriggerEnter += OnTriggerEnter;
 
         weaponSlot = World.CreateActor<WeaponSlot>(Transform.Position);
         weaponSlot.Transform.Parent = Transform;
@@ -116,16 +110,6 @@ public class Hero : Actor, IActorCreatable<Hero>
         healthComponent.OnDeath += GameOver;
         healthComponent.OnHealthChange += OnHealthChange;
         healthComponent.Initialize();
-    }
-
-    private void OnHealthChange()
-    {
-        World.Stats.SetHealth(healthComponent.Health);
-    }
-
-    private void OnTriggerEnter(ColliderComponent other)
-    {
-        if (other.Owner.Tag == Tags.EnemyTag) healthComponent.Health -= 20;
     }
 
     private void GameOver()
@@ -195,5 +179,20 @@ public class Hero : Actor, IActorCreatable<Hero>
         var attack = weaponItem?.Attacks.FirstOrDefault();
         attack?.Atack(this, CurrentDirection);
         return true;
+    }
+
+    private void OnHealthChange()
+    {
+        World.Stats.SetHealth(healthComponent.Health);
+    }
+
+    public void UpdateHealth(int health)
+    {
+        healthComponent.SetMaxHealth(health, true);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        healthComponent.Health -= damage;
     }
 }
