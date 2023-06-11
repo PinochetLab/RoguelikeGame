@@ -12,6 +12,7 @@ public abstract class Enemy : Actor, IDamageable
     protected EnemyBehaviour behaviour;
     protected ColliderComponent colliderComponent;
     protected HealthComponent healthComponent;
+    protected DamagerComponent damagerComponent;
 
     protected Slider healthSlider;
 
@@ -19,6 +20,46 @@ public abstract class Enemy : Actor, IDamageable
 
     protected Enemy(BaseGame game) : base(game)
     {
+    }
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        spriteComponent = AddComponent<SpriteComponent>();
+        
+        colliderComponent = AddComponent<ColliderComponent>();
+        colliderComponent.Type = ColliderType.Trigger;
+        
+        healthComponent = AddComponent<HealthComponent>();
+        healthComponent.OnDeath += OnDeath;
+        healthComponent.OnHealthChange += OnChangeHealth;
+
+        damagerComponent = AddComponent<DamagerComponent>();
+        World.onPlayerMove += damagerComponent.Damage;
+
+        healthSlider = Game.World.CreateActor<Slider>(Transform.ScreenPosition);
+        healthSlider.Ratio = 1;
+        healthSlider.Transform.Parent = Transform;
+        
+        World.onPlayerMove += RunBehaviour;
+    }
+
+    public void RunBehaviour()
+    {
+        behaviour.Run();
+    }
+
+    private void OnDeath()
+    {
+        World.onPlayerMove -= RunBehaviour;
+        World.onPlayerMove -= damagerComponent.Damage;
+        Dispose();
+    }
+
+    private void OnChangeHealth()
+    {
+        healthSlider.Ratio = healthComponent.HealthRatio;
     }
 
     public override string Tag => Tags.EnemyTag;

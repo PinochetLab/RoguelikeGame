@@ -1,4 +1,5 @@
 ﻿using System;
+using Roguelike.Components;
 using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
 using Roguelike.Core;
@@ -9,15 +10,44 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
 {
     private ColliderComponent collider;
     private SpriteComponent spriteComponent;
+    private DamagerComponent damagerComponent;
 
     public Arrow(BaseGame game) : base(game)
     {
     }
 
+    public override void Initialize(Vector2Int position)
+    {
+        base.Initialize(position);
+        World.onPlayerMove += Move;
+
+        spriteComponent = AddComponent<SpriteComponent>();
+        spriteComponent.SetTexture("Arrow");
+
+        damagerComponent = AddComponent<DamagerComponent>();
+        damagerComponent.Damages = new() { { Vector2Int.Zero, Damage } };
+        World.onPlayerMove += damagerComponent.Damage;
+
+        collider = AddComponent<ColliderComponent>();
+        collider.Type = ColliderType.Trigger;
+        collider.OnTriggerEnter += OnTriggerEnter;
+    }
+
     public override string Tag => "Arrow";
 
     public bool IsMoving { get; set; } = true;
-    public int Damage { get; set; }
+
+    private int damage;
+
+    public int Damage
+    {
+        get => damage;
+        set
+        {
+            damage = value;
+            damagerComponent.Damages[Vector2Int.Zero] = damage;
+        }
+    }
 
     public static Arrow Create(BaseGame game)
     {
@@ -40,29 +70,20 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
         return prototype;
     }
 
-    public override void Initialize(Vector2Int position)
-    {
-        base.Initialize(position);
-        World.onPlayerMove += Move;
-
-        spriteComponent = AddComponent<SpriteComponent>();
-        spriteComponent.SetTexture("Arrow");
-
-        collider = AddComponent<ColliderComponent>();
-        collider.Type = ColliderType.Trigger;
-        collider.OnTriggerEnter += OnTriggerEnter;
-    }
-
     public void Move()
     {
         if (!IsMoving) return;
         Transform.Position += Transform.Direction;
     }
 
+    protected override void Dispose(bool isDisposing)
+    {
+        World.onPlayerMove -= damagerComponent.Damage;
+        base.Dispose(isDisposing);
+    }
+
     public void OnTriggerEnter(ColliderComponent other)
     {
-        if (other.Owner is IDamageable damageable) damageable.TakeDamage(Damage);
-
         if (other.Type == ColliderType.Solid) Dispose();
     }
 }
