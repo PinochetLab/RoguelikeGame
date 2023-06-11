@@ -17,7 +17,7 @@ public class Actor : DrawableGameComponent
     /// <summary>
     ///  Tag используется для того, чтобы различать различные игровые объекты без кастов.
     /// </summary>
-    public virtual string Tag => "none";
+    public virtual string Tag => "";
 
     /// <summary>
     ///  Компонент TransformComponent существует у каждого игрового объекта

@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Collections;
+using System.Collections.Concurrent;
 using Roguelike.Actors;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,18 @@ public class ColliderManager : IUpdateable
             return g.Find(x => x?.Owner is T)?.Owner as T;
         }
         return null;
+    }
+    
+    /// <summary>
+    /// Данный метод возвращает все объекты необходимого типа в клетке, если такой присутствует, и null в противном случае.
+    /// </summary>
+    public IEnumerable<T> FindAll<T>(Vector2Int v) where T : class
+    {
+        if (ColliderMap.TryGetValue(v, out var g))
+        {
+            return g.FindAll(x => x?.Owner is T).Select(x=>x.Owner as T);
+        }
+        return new List<T>();
     }
 
     /// <summary>

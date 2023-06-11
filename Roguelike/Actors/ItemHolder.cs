@@ -33,7 +33,7 @@ public class ItemHolder : Actor, IActorCreatable<ItemHolder>
 
     private void OnTriggerEnter(ColliderComponent collider)
     {
-        if (collider.Owner.Tag == Hero.HeroTag)
+        if (collider.Owner.Tag == Tags.HeroTag)
         {
             if (Inventory.HasFreePlace())
             {
