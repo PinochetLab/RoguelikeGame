@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using Roguelike.Actors;
 using Roguelike.Actors.Enemies.AI;
+using Roguelike.Actors.Enemies.AI.Behaivour;
 using Roguelike.Components.Colliders;
 
 namespace Roguelike.Core;
