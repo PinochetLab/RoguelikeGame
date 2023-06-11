@@ -22,13 +22,6 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
-      - name: Setup Wine
-        run: |
-          sudo apt update
-          sudo apt install wine64 p7zip-full
-          wget -qO- https://raw.githubusercontent.com/MonoGame/MonoGame/master/Tools/MonoGame.Effect.Compiler/mgfxc_wine_setup.sh | sh
-      - name: Restore dotnet tools
-        run: dotnet tool restore
       - name: Install dependencies
         run: dotnet restore
       - name: Build
