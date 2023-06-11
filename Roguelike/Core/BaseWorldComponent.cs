@@ -33,7 +33,7 @@ public abstract class BaseWorldComponent : BaseGameSystem
         where TActor : Actor, IActorCreatable<TActor>
     {
         var actor = TActor.Create(Game);
-        actor.Initialize(position);
+        actor.Spawn(position);
         actorsToAdd.Add(actor);
         return actor;
     }
@@ -67,7 +67,7 @@ public abstract class BaseWorldComponent : BaseGameSystem
     public Actor CreateActor(Vector2Int position)
     {
         var actor = new Actor(Game);
-        actor.Initialize(position);
+        actor.Spawn(position);
         actorsToAdd.Add(actor);
         return actor;
     }
