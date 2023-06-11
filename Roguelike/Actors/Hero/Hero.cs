@@ -117,12 +117,6 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         World.Stats.SetHealth(healthComponent.Health);
     }
 
-    private void OnTriggerEnter(ColliderComponent other)
-    {
-        if (other.Owner.Tag == Enemy.EnemyTag)
-            healthComponent.Health -= 20;
-    }
-
     private void GameOver()
     {
         Inventory.Clear();
@@ -190,11 +184,6 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         var attack = weaponItem?.Attacks.FirstOrDefault();
         attack?.Atack(this, CurrentDirection);
         return true;
-    }
-
-    private void OnHealthChange()
-    {
-        World.Stats.SetHealth(healthComponent.Health);
     }
 
     public void UpdateHealth(int health)
