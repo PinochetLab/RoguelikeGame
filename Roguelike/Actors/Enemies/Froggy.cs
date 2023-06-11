@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Roguelike.Actors.Enemies.AI;
+using Roguelike.Actors.Enemies.AI.Behaivour;
 using Roguelike.Core;
 
 namespace Roguelike.Actors.Enemies;
@@ -19,7 +20,7 @@ public class Froggy : Enemy, IActorCreatable<Froggy>
     {
         base.Initialize();
         spriteComponent.SetTexture("Frog");
-        behaviour = new AgressiveBehaviour(this);
+        behaviour = new AggressiveBehaviour(this);
         damagerComponent.Damages = new Dictionary<Vector2Int, int> { { Vector2Int.Up, 5 }, { Vector2Int.Zero, 10 } };
     }
 

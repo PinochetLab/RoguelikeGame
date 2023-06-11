@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-
-namespace Roguelike.Actors.Enemies.AI;
+﻿namespace Roguelike.Actors.Enemies.AI.Behaivour;
 
 public abstract class EnemyBehaviour
 {

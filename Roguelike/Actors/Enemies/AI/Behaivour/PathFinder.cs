@@ -6,7 +6,7 @@ using MonoGame.Extended.Collections;
 using Roguelike.Core;
 using Roguelike.Field;
 
-namespace Roguelike.Actors.Enemies.AI;
+namespace Roguelike.Actors.Enemies.AI.Behaivour;
 
 public class Cell
 {

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Roguelike.Actors.Enemies.AI;
+using Roguelike.Actors.Enemies.AI.Behaivour;
 using Roguelike.Core;
 
 namespace Roguelike.Actors.Enemies;

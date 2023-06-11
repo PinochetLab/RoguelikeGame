@@ -1,4 +1,5 @@
 ﻿using Roguelike.Actors.Enemies.AI;
+using Roguelike.Actors.Enemies.AI.Behaivour;
 using Roguelike.Actors.UI;
 using Roguelike.Components;
 using Roguelike.Components.Colliders;
