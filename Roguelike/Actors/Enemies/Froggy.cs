@@ -19,14 +19,14 @@ public class Froggy : Enemy, IActorCreatable<Froggy>
     public override void Initialize()
     {
         base.Initialize();
-        spriteComponent.SetTexture("Frog");
-        behaviour = new AggressiveBehaviour(this);
-        damagerComponent.Damages = new Dictionary<Vector2Int, int> { { Vector2Int.Up, 5 }, { Vector2Int.Zero, 10 } };
+        SpriteComponent.SetTexture("Frog");
+        Behaviour = new AggressiveBehaviour(this);
+        DamagerComponent.Damages = new Dictionary<Vector2Int, int> { { Vector2Int.Up, 5 }, { Vector2Int.Zero, 10 } };
     }
 
     public override void TakeDamage(int damage)
     {
-        healthComponent.Health -= damage;
-        behaviour.IsAttacked = true;
+        HealthComponent.Health -= damage;
+        Behaviour.IsAttacked = true;
     }
 }
