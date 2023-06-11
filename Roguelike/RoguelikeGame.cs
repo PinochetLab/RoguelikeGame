@@ -1,8 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.IO;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Roguelike.Actors.InventoryUtils;
 using Roguelike.Core;
 using Roguelike.World;
+using Roguelike.World.Providers.Generator;
 
 namespace Roguelike;
 
@@ -11,12 +14,15 @@ namespace Roguelike;
 /// </summary>
 public sealed class RoguelikeGame : BaseGame
 {
+    private static readonly string ContentRoot = "Content";
+    private static readonly string MapsFolder = Path.Combine(ContentRoot, "Maps");
+
     /// <summary>
     /// Констуктор. Здесь происходит инициализация игрового окна.
     /// </summary>
     public RoguelikeGame()
     {
-        Content.RootDirectory = "Content";
+        Content.RootDirectory = ContentRoot;
         IsMouseVisible = true;
     }
 
@@ -25,7 +31,14 @@ public sealed class RoguelikeGame : BaseGame
     /// </summary>
     protected override void Initialize()
     {
-        World = new WorldComponent(this);
+        var builder = new DefaultWorldBuilder();
+        var generatorParams = GeneratorParams.Default;
+        generatorParams.RoomSize = 5;
+        generatorParams.Seed = (uint)Random.Shared.NextInt64();
+        builder.SetupSource(new GeneratedWorldSource(15, 15, generatorParams));
+        builder.SetupWorldObjects(new DefaultObjectsProvider());
+
+        World = builder.Build(this);
 
         var inventory = new Inventory(this);
         Components.Add(inventory);

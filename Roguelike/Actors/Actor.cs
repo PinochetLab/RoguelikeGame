@@ -89,17 +89,17 @@ public class Actor : DrawableGameComponent
     }
 
     /// <summary>
-    /// Данный метод вызывает инициализацию игрового объекта, создаёт компонент TransformComponent
-    /// и добавляет текущий игровой компонент в глобальный список игровых объектов.
+    /// Данный метод вызывает инициализацию игрового объекта и создаёт компонент TransformComponent
     /// </summary>
-    public virtual void Initialize(Vector2Int position)
+    public void Spawn(Vector2Int position)
     {
         Transform = AddComponent<TransformComponent>();
         Transform.Position = position;
         Initialize();
     }
 
-    /// <summary>Данный виртуальный метод вызывается каждый кадр игровой логики.
+    /// <summary>
+    /// Данный виртуальный метод вызывается каждый кадр игровой логики.
     /// Внутри этого метода вызывается метов Update у всех компонентов объекта, которые реализуют интерфейс IUpdateable.
     /// </summary>
     public override void Update(GameTime time)
