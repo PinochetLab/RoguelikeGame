@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using Roguelike.Core;
-using IDrawable = Roguelike.Core.IDrawable;
+using DrawableComponent = Roguelike.Core.DrawableComponent;
 using IUpdateable = Roguelike.Core.IUpdateable;
 
 namespace Roguelike.Actors;
@@ -16,7 +16,7 @@ public class Actor : DrawableGameComponent
     /// <summary>
     ///  Tag используется для того, чтобы различать различные игровые объекты без кастов.
     /// </summary>
-    public virtual string Tag => "none";
+    public virtual string Tag => "";
 
     /// <summary>
     ///  Компонент TransformComponent существует у каждого игрового объекта
@@ -38,7 +38,7 @@ public class Actor : DrawableGameComponent
 
     private readonly List<IUpdateable> updatable = new();
 
-    private readonly List<IDrawable> drawables = new();
+    private readonly List<DrawableComponent> drawables = new();
 
     public Actor(BaseGame game) : base(game)
     {
@@ -58,7 +58,7 @@ public class Actor : DrawableGameComponent
 
         component.Initialize();
 
-        if (component is IDrawable draw)
+        if (component is DrawableComponent draw)
             Game.AddDrawable(draw);
 
         components.Add(component);
@@ -68,7 +68,7 @@ public class Actor : DrawableGameComponent
             case IUpdateable updateable:
                 updatable.Add(updateable);
                 break;
-            case IDrawable drawable:
+            case DrawableComponent drawable:
                 drawables.Add(drawable);
                 break;
         }

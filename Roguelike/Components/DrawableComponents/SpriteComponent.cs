@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Roguelike.Core;
 using Roguelike.Field;
-using IDrawable = Roguelike.Core.IDrawable;
+using DrawableComponent = Roguelike.Core.DrawableComponent;
 using System.Dynamic;
 using System.Diagnostics;
 
@@ -11,7 +11,7 @@ namespace Roguelike.Components.Sprites;
 /// <summary>
 /// Данный компонент отвечает за отрисовку спрайта.
 /// </summary>
-public class SpriteComponent : Component, IDrawable
+public class SpriteComponent : DrawableComponent
 {
     private Texture2D texture = null;
 
@@ -52,9 +52,7 @@ public class SpriteComponent : Component, IDrawable
     /// </summary>
     public bool Visible { get; set; } = true;
 
-    public bool Canvas { get; set; } = false;
-
-    public int DrawOrder { get; set; } = 0;
+    public override int DrawOrder { get; set; } = 0;
 
     /// <summary>
     /// Данный метод устанавливает текстуру в текстуру, соответствующую названию.
@@ -64,17 +62,17 @@ public class SpriteComponent : Component, IDrawable
         texture = Owner.Game.GetTexture(textureName);
     }
 
-    public void Draw(GameTime time, SpriteBatch batch)
+    public override void Draw(GameTime time, SpriteBatch batch)
     {
         if (!Visible) return;
         if (texture == null) return;
 
         Vector2 scale = AdditionalScale * Transform.Scale;
 
-        var pos = Transform.Position * (Transform.IsTile ? FieldInfo.CellSize : 1);
-        var size = Transform.IsTile ? Vector2Int.One * FieldInfo.CellSize : Size;
+        var pos = Transform.Position * (!Transform.IsCanvas ? FieldInfo.CellSize : 1);
+        var size = !Transform.IsCanvas ? Vector2Int.One * FieldInfo.CellSize : Size;
 
-        var position = pos + (Transform.IsTile ? size * Pivot : Vector2Int.Zero);
+        var position = pos + (!Transform.IsCanvas ? size * Pivot : Vector2Int.Zero);
 
         
 

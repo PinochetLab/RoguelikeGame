@@ -1,31 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Roguelike.Components;
+
 public class HealthComponent : Component
 {
-    public event Action OnDeath;
-    public event Action OnHealthChange;
+    private int health = 100;
 
-    private float health = 100;
+    private int maxHealth = 100;
 
-    private float maxHealth = 100;
+    public float HealthRatio => (float)health / maxHealth;
 
-    public void SetMaxHealth(float maxHealth, bool updateHealth = false)
-    {
-        this.maxHealth = maxHealth;
-        if (updateHealth)
-        {
-            health = maxHealth;
-        }
-    }
-
-    public float HealthRatio => health / maxHealth;
-
-    public float Health
+    public int Health
     {
         get => health;
         set
@@ -36,7 +21,25 @@ public class HealthComponent : Component
                 health = 0;
                 OnDeath?.Invoke();
             }
+
             OnHealthChange?.Invoke();
         }
+    }
+
+    public event Action OnDeath;
+    public event Action OnHealthChange;
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        OnHealthChange?.Invoke();
+    }
+
+    public void SetMaxHealth(int maxHealth, bool updateHealth = false)
+    {
+        this.maxHealth = maxHealth;
+        if (updateHealth) health = maxHealth;
+        OnHealthChange?.Invoke();
     }
 }
