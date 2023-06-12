@@ -38,13 +38,13 @@ public abstract class Enemy : Actor, IDamageable
         HealthComponent.OnHealthChange += OnChangeHealth;
 
         DamagerComponent = AddComponent<DamagerComponent>();
-        World.onPlayerMove += DamagerComponent.Damage;
+        World.onHeroCommand += DamagerComponent.Damage;
 
         HealthSlider = Game.World.CreateActor<Slider>(Transform.ScreenPosition);
         HealthSlider.Ratio = 1;
         HealthSlider.Transform.Parent = Transform;
 
-        World.onPlayerMove += RunBehaviour;
+        World.onHeroCommand += RunBehaviour;
 
         BehaviourStates = InitializeBehaviour();
     }
@@ -55,8 +55,8 @@ public abstract class Enemy : Actor, IDamageable
 
     private void OnDeath()
     {
-        World.onPlayerMove -= RunBehaviour;
-        World.onPlayerMove -= DamagerComponent.Damage;
+        World.onHeroCommand -= RunBehaviour;
+        World.onHeroCommand -= DamagerComponent.Damage;
         Dispose();
     }
 

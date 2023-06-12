@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
@@ -10,6 +9,7 @@ using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
 using Roguelike.Core;
 using Roguelike.Field;
+using Roguelike.Commands;
 
 namespace Roguelike.Actors;
 
@@ -112,6 +112,7 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         healthComponent.Initialize();
     }
 
+
     private void GameOver()
     {
         Inventory.Clear();
@@ -119,66 +120,74 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         Dispose();
     }
 
-    public override void Update(GameTime time)
+    public void MoveDirection(Direction direction)
     {
-        base.Update(time);
+        weaponSlot.Transform.Direction = direction;
 
-        keyState = KeyboardExtended.GetState();
-
-        if (MoveLogic() || HitLogic()) World.TriggerOnPlayerMove();
-    }
-
-    private bool MoveLogic()
-    {
-        var direction = Vector2Int.Zero;
-        var state = keyState;
-
-        if (state.WasKeyJustUp(Keys.D))
+        switch (direction)
         {
-            direction = Vector2Int.Right;
-            weaponSlot.Transform.Angle = 0;
-            spriteComponent.FlipX = false;
-            itemSpriteComponent.DrawOrder = 1;
-        }
-        else if (state.WasKeyJustUp(Keys.A))
-        {
-            direction = Vector2Int.Left;
-            weaponSlot.Transform.Angle = MathF.PI;
-            spriteComponent.FlipX = true;
-            itemSpriteComponent.DrawOrder = 3;
-        }
-        else if (state.WasKeyJustUp(Keys.W))
-        {
-            direction = Vector2Int.Up;
-            weaponSlot.Transform.Angle = -MathF.PI / 2;
-        }
-        else if (state.WasKeyJustUp(Keys.S))
-        {
-            direction = Vector2Int.Down;
-            weaponSlot.Transform.Angle = MathF.PI / 2;
+            case Direction.Right:
+                spriteComponent.FlipX = false;
+                itemSpriteComponent.DrawOrder = 1;
+                break;
+            case Direction.Left:
+                spriteComponent.FlipX = true;
+                itemSpriteComponent.DrawOrder = 3;
+                break;
+            case Direction.Up:
+                break;
+            case Direction.Down:
+                break;
         }
 
         if (direction != Vector2Int.Zero) CurrentDirection = direction;
 
         if (direction == Vector2Int.Zero ||
             (World.Colliders.ContainsSolid(Transform.Position + direction) &&
-             !World.Colliders.ContainsSolid(Transform.Position))) return false;
+            !World.Colliders.ContainsSolid(Transform.Position))) return;
 
         Transform.Position += direction;
-
-        return true;
     }
 
-    private bool HitLogic()
+    public override void Update(GameTime time)
     {
+        base.Update(time);
+
+        var direction = Vector2Int.Zero;
+        keyState = KeyboardExtended.GetState();
         var state = keyState;
-        if (!state.WasKeyJustUp(Keys.Space)) return false;
 
 
+        if (state.WasKeyJustUp(Keys.Space))
+        {
+            Game.World.Commands.SetCommand(new AttackCommand(this));
+        }
+        Game.World.Commands.Invoke();
+
+        if (state.WasKeyJustUp(Keys.D))
+        {
+            Game.World.Commands.SetCommand(new MoveRightCommand(this));
+        }
+        else if (state.WasKeyJustUp(Keys.A))
+        {
+            Game.World.Commands.SetCommand(new MoveLeftCommand(this));
+        }
+        else if (state.WasKeyJustUp(Keys.W))
+        {
+            Game.World.Commands.SetCommand(new MoveUpCommand(this));
+        }
+        else if (state.WasKeyJustUp(Keys.S))
+        {
+            Game.World.Commands.SetCommand(new MoveDownCommand(this));
+        }
+        Game.World.Commands.Invoke();
+    }
+
+    public void TryAttack()
+    {
         //TODO different attacks on different keys or something
         var attack = weaponItem?.Attacks.FirstOrDefault();
         attack?.Atack(this, CurrentDirection);
-        return true;
     }
 
     private void OnHealthChange()
