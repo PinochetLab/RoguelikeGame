@@ -6,9 +6,5 @@ namespace Roguelike.Actors.InventoryUtils.Items.Attacks;
 public interface IAttack
 {
     public List<Vector2Int> range { get; set; }
-    void Atack(Actor actor, Direction direction);
-
-    void Animation(Actor actor)
-    {
-    }
+    void Attack(Actor actor, Direction direction);
 }
