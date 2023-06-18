@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Roguelike.Actors;
-using Roguelike.Actors.InventoryUtils.Items;
+﻿using Microsoft.Xna.Framework;
 using Roguelike.Actors.UI;
 using Roguelike.Components;
 using Roguelike.Components.Sprites;
@@ -14,32 +6,34 @@ using Roguelike.Core;
 using Roguelike.Field;
 
 namespace Roguelike;
+
 public class StatsManager : BaseGameSystem
 {
     private const int LevelCount = 5;
     private static readonly int[] Healths = new int[LevelCount] { 100, 120, 150, 200, 300 };
     private static readonly int[] Experiences = new int[LevelCount] { 100, 120, 150, 200, 300 };
+
     private static readonly Color[] ExpColors = new Color[LevelCount]
     {
         Color.Blue,
         Color.Yellow,
         Color.Magenta,
         Color.Red,
-        Color.Orange,
+        Color.Orange
     };
 
-    private int currentLevel = 0;
-    private int currentHealth = 0;
-    private int currentExp = 0;
+    private int currentExp;
+    private int currentHealth;
+
+    private int currentLevel;
+    private Slider experienceSlider;
 
     private Slider healthSlider;
-    private Slider experienceSlider;
-    private SpriteComponent starSpriteComponent;
     private TextComponent levelText;
+    private SpriteComponent starSpriteComponent;
 
     public StatsManager(BaseGame game) : base(game)
     {
-        
     }
 
     public void SetHealth(int health)
@@ -65,17 +59,13 @@ public class StatsManager : BaseGameSystem
 
     public bool TryUpgrade()
     {
-        
         if (currentLevel >= LevelCount - 1)
         {
             currentLevel = LevelCount - 1;
             return false;
         }
-        
-        if (currentExp < Experiences[currentLevel])
-        {
-            return false;
-        }
+
+        if (currentExp < Experiences[currentLevel]) return false;
         currentExp -= Experiences[currentLevel];
         currentLevel++;
         Game.World.Hero.UpdateHealth(Healths[currentLevel]);

@@ -18,7 +18,7 @@ namespace Roguelike.Actors;
 /// </summary>
 public class Hero : Actor, IActorCreatable<Hero>, IDamageable
 {
-    public static Hero Instance;
+    public static Hero Instance { get; private set; }
 
     private ColliderComponent collider;
 
@@ -34,7 +34,7 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
 
     private WeaponItem weaponItem;
 
-    public WeaponSlot weaponSlot;
+    public WeaponSlot WeaponSlot { get; set; }
 
     public Hero(BaseGame game) : base(game)
     {
@@ -58,20 +58,20 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
             switch (value)
             {
                 case null:
-                    weaponSlot.SpriteComponent.Visible = false;
+                    WeaponSlot.SpriteComponent.Visible = false;
                     itemSpriteComponent.Visible = false;
                     item = null;
                     weaponItem = null;
                     break;
                 case WeaponItem wi:
-                    weaponSlot.SpriteComponent.Visible = true;
-                    weaponSlot.SpriteComponent.SetTexture(value.TextureName);
+                    WeaponSlot.SpriteComponent.Visible = true;
+                    WeaponSlot.SpriteComponent.SetTexture(value.TextureName);
                     itemSpriteComponent.Visible = false;
                     item = wi;
                     weaponItem = wi;
                     break;
                 default:
-                    weaponSlot.SpriteComponent.Visible = false;
+                    WeaponSlot.SpriteComponent.Visible = false;
                     itemSpriteComponent.Visible = true;
                     itemSpriteComponent.SetTexture(value.TextureName);
                     item = value;
@@ -84,6 +84,11 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
     public static Hero Create(BaseGame game)
     {
         return new Hero(game);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        healthComponent.Health -= damage;
     }
 
     public override void Initialize()
@@ -103,8 +108,8 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
 
-        weaponSlot = World.CreateActor<WeaponSlot>(Transform.Position);
-        weaponSlot.Transform.Parent = Transform;
+        WeaponSlot = World.CreateActor<WeaponSlot>(Transform.Position);
+        WeaponSlot.Transform.Parent = Transform;
 
         healthComponent = AddComponent<HealthComponent>();
         healthComponent.OnDeath += GameOver;
@@ -136,26 +141,26 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         if (state.WasKeyJustUp(Keys.D))
         {
             direction = Vector2Int.Right;
-            weaponSlot.Transform.Angle = 0;
+            WeaponSlot.Transform.Angle = 0;
             spriteComponent.FlipX = false;
             itemSpriteComponent.DrawOrder = 1;
         }
         else if (state.WasKeyJustUp(Keys.A))
         {
             direction = Vector2Int.Left;
-            weaponSlot.Transform.Angle = MathF.PI;
+            WeaponSlot.Transform.Angle = MathF.PI;
             spriteComponent.FlipX = true;
             itemSpriteComponent.DrawOrder = 3;
         }
         else if (state.WasKeyJustUp(Keys.W))
         {
             direction = Vector2Int.Up;
-            weaponSlot.Transform.Angle = -MathF.PI / 2;
+            WeaponSlot.Transform.Angle = -MathF.PI / 2;
         }
         else if (state.WasKeyJustUp(Keys.S))
         {
             direction = Vector2Int.Down;
-            weaponSlot.Transform.Angle = MathF.PI / 2;
+            WeaponSlot.Transform.Angle = MathF.PI / 2;
         }
 
         if (direction != Vector2Int.Zero) CurrentDirection = direction;
@@ -177,7 +182,7 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
 
         //TODO different attacks on different keys or something
         var attack = weaponItem?.Attacks.FirstOrDefault();
-        attack?.Atack(this, CurrentDirection);
+        attack?.Attack(this, CurrentDirection);
         return true;
     }
 
@@ -189,10 +194,5 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
     public void UpdateHealth(int health)
     {
         healthComponent.SetMaxHealth(health, true);
-    }
-
-    public void TakeDamage(int damage)
-    {
-        healthComponent.Health -= damage;
     }
 }

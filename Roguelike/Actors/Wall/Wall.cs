@@ -1,21 +1,25 @@
 ﻿using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
 using Roguelike.Core;
-using Roguelike.World;
 
 namespace Roguelike.Actors;
 
 /// <summary>
-/// Данный класс - класс стены.
+///     Данный класс - класс стены.
 /// </summary>
 public class Wall : Actor, IActorCreatable<Wall>
 {
+    private ColliderComponent collider;
     private SpriteComponent spriteComponent;
 
-    private ColliderComponent collider;
-
     public Wall(BaseGame game) : base(game)
-    { }
+    {
+    }
+
+    public static Wall Create(BaseGame game)
+    {
+        return new Wall(game);
+    }
 
     public override void Initialize()
     {
@@ -27,6 +31,4 @@ public class Wall : Actor, IActorCreatable<Wall>
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Solid;
     }
-
-    public static Wall Create(BaseGame game) => new(game);
 }

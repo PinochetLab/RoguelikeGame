@@ -2,7 +2,7 @@
 
 public class LazyBehaviour : EnemyBehaviour
 {
-    public const int Cooldown = 3;
+    private const int Cooldown = 3;
     private int rage;
 
     public LazyBehaviour(Actor actor) : base(actor)
@@ -14,31 +14,28 @@ public class LazyBehaviour : EnemyBehaviour
         get => rage;
         set
         {
-            if (value >= 0 && value <= Cooldown) rage = value;
+            if (value is >= 0 and <= Cooldown) rage = value;
         }
     }
 
-
     public override void Run()
     {
-        if (IsAttacked)
+        if (!IsAttacked) return;
+        if (SeesHero)
         {
-            if (SeesHero)
-            {
-                Actor.Transform.Position =
-                    Actor.Game.World.Paths.NextCell(Actor.Transform.Position, Hero.Instance.Transform.Position);
-                Rage++;
-            }
-            else
-            {
-                Rage--;
-            }
+            Actor.Transform.Position =
+                Actor.Game.World.Paths.NextCell(Actor.Transform.Position, Hero.Instance.Transform.Position);
+            Rage++;
+        }
+        else
+        {
+            Rage--;
+        }
 
-            if (Rage == 0)
-            {
-                IsAttacked = false;
-                Rage = Cooldown;
-            }
+        if (Rage == 0)
+        {
+            IsAttacked = false;
+            Rage = Cooldown;
         }
     }
 }

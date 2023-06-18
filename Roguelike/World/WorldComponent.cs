@@ -9,10 +9,9 @@ namespace Roguelike.World;
 
 public class WorldComponent : BaseWorldComponent
 {
-    private SpriteBatch spriteBatch;
-
     private const string FloorTextureName = "GrassTile";
     private Texture2D floorTexture;
+    private SpriteBatch spriteBatch;
 
     private bool initialized = false;
 

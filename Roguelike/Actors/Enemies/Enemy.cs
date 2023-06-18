@@ -11,8 +11,8 @@ public abstract class Enemy : Actor, IDamageable
 {
     protected EnemyBehaviour behaviour;
     protected ColliderComponent colliderComponent;
-    protected HealthComponent healthComponent;
     protected DamagerComponent damagerComponent;
+    protected HealthComponent healthComponent;
 
     protected Slider healthSlider;
 
@@ -22,15 +22,19 @@ public abstract class Enemy : Actor, IDamageable
     {
     }
 
+    public override string Tag => Tags.EnemyTag;
+
+    public abstract void TakeDamage(int damage);
+
     public override void Initialize()
     {
         base.Initialize();
 
         spriteComponent = AddComponent<SpriteComponent>();
-        
+
         colliderComponent = AddComponent<ColliderComponent>();
         colliderComponent.Type = ColliderType.Trigger;
-        
+
         healthComponent = AddComponent<HealthComponent>();
         healthComponent.OnDeath += OnDeath;
         healthComponent.OnHealthChange += OnChangeHealth;
@@ -41,7 +45,7 @@ public abstract class Enemy : Actor, IDamageable
         healthSlider = Game.World.CreateActor<Slider>(Transform.ScreenPosition);
         healthSlider.Ratio = 1;
         healthSlider.Transform.Parent = Transform;
-        
+
         World.onPlayerMove += RunBehaviour;
     }
 
@@ -61,8 +65,4 @@ public abstract class Enemy : Actor, IDamageable
     {
         healthSlider.Ratio = healthComponent.HealthRatio;
     }
-
-    public override string Tag => Tags.EnemyTag;
-
-    public abstract void TakeDamage(int damage);
 }

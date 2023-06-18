@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Roguelike.Components;
 using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
@@ -9,8 +10,10 @@ namespace Roguelike.Actors;
 public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
 {
     private ColliderComponent collider;
-    private SpriteComponent spriteComponent;
+
+    private int damage;
     private DamagerComponent damagerComponent;
+    private SpriteComponent spriteComponent;
 
     public Arrow(BaseGame game) : base(game)
     {
@@ -37,8 +40,6 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
 
     public bool IsMoving { get; set; } = true;
 
-    private int damage;
-
     public int Damage
     {
         get => damage;
@@ -59,6 +60,23 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
         var clone = Game.World.CreateActor<Arrow>();
         clone.Damage = Damage;
         return clone;
+    }
+
+    public override void Initialize(Vector2Int position)
+    {
+        base.Initialize(position);
+        World.onPlayerMove += Move;
+
+        spriteComponent = AddComponent<SpriteComponent>();
+        spriteComponent.SetTexture("Arrow");
+
+        damagerComponent = AddComponent<DamagerComponent>();
+        damagerComponent.Damages = new Dictionary<Vector2Int, int> { { Vector2Int.Zero, Damage } };
+        World.onPlayerMove += damagerComponent.Damage;
+
+        collider = AddComponent<ColliderComponent>();
+        collider.Type = ColliderType.Trigger;
+        collider.OnTriggerEnter += OnTriggerEnter;
     }
 
     public static Arrow GetPrototype(BaseGame game, int damage)
