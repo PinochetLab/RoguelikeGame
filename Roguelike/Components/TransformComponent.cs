@@ -1,30 +1,34 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System;
+using Microsoft.Xna.Framework;
 using Roguelike.Core;
 using Roguelike.Field;
 
 namespace Roguelike.Components;
 
 /// <summary>
-/// Компонент, отвечающий за такие вещи, как позиция, размер и поворот объекта.
+///     Компонент, отвечающий за такие вещи, как позиция, размер и поворот объекта.
 /// </summary>
 public class TransformComponent : Component
 {
-    private Vector2Int position = Vector2Int.Zero;
+    /// <summary>
+    ///     Дочерние элементы.
+    /// </summary>
+    public List<TransformComponent> Children = new();
 
     private TransformComponent parent;
+    private Vector2Int position = Vector2Int.Zero;
 
     /// <summary>
-    /// Если данное поле истино, объект является объектом на тайловом поле, его спрайт будет иметь позицию соответствующей клетки,
-    /// а размер будет браться за размер клетки.
+    ///     Если данное поле истино, объект является объектом на тайловом поле, его спрайт будет иметь позицию соответствующей
+    ///     клетки,
+    ///     а размер будет браться за размер клетки.
     /// </summary>
     public bool IsTile { get; set; } = true;
 
 
     /// <summary>
-    /// Родительский элемент.
+    ///     Родительский элемент.
     /// </summary>
     public TransformComponent Parent
     {
@@ -38,7 +42,7 @@ public class TransformComponent : Component
     }
 
     /// <summary>
-    /// Позиция.
+    ///     Позиция.
     /// </summary>
     public Vector2Int Position
     {
@@ -48,31 +52,24 @@ public class TransformComponent : Component
             var offset = value - position;
             position = value;
             foreach (var child in Children)
-            {
                 if (IsTile && !child.IsTile) child.Position += offset * FieldInfo.CellSizeVector;
                 else child.Position += offset;
-            }
         }
     }
 
     /// <summary>
-    /// Дочерние элементы.
-    /// </summary>
-    public List<TransformComponent> Children = new();
-
-    /// <summary>
-    /// Scale объекта (во сколько раз он больше, чем оригинальная версия).
+    ///     Scale объекта (во сколько раз он больше, чем оригинальная версия).
     /// </summary>
     public Vector2 Scale { get; set; } = Vector2.One;
 
 
     /// <summary>
-    /// Положение на экране.
+    ///     Положение на экране.
     /// </summary>
     public Vector2 ScreenPosition => FieldInfo.CellSizeVector * Position + FieldInfo.CellSizeVector * 0.5f;
 
     /// <summary>
-    /// Flip по горизонтали.
+    ///     Flip по горизонтали.
     /// </summary>
     public bool FlipX
     {
@@ -85,7 +82,7 @@ public class TransformComponent : Component
     }
 
     /// <summary>
-    /// Flip по вертикали.
+    ///     Flip по вертикали.
     /// </summary>
     public bool FlipY
     {
@@ -98,7 +95,7 @@ public class TransformComponent : Component
     }
 
     /// <summary>
-    /// Угол поворота, относительно оси Z.
+    ///     Угол поворота, относительно оси Z.
     /// </summary>
     public float Angle { get; set; } = 0;
 }

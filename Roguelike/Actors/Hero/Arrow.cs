@@ -1,23 +1,33 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Roguelike.Components;
 using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
-using IMovable = Roguelike.Components.IMovable;
-using System.Diagnostics;
 using Roguelike.Core;
 
 namespace Roguelike.Actors;
 
 public class Arrow : Actor, IMovable, IActorCreatable<Arrow>
 {
+    private ColliderComponent collider;
     private SpriteComponent spriteComponent;
 
-    private ColliderComponent collider;
+    public Arrow(BaseGame game) : base(game)
+    {
+    }
 
     public float Damage { get; set; } = 0;
 
-    public Arrow(BaseGame game) : base(game)
-    { }
+    public static Arrow Create(BaseGame game)
+    {
+        return new(game);
+    }
+
+    public void Move()
+    {
+        Vector2Int direction = new Vector2(MathF.Cos(Transform.Angle), MathF.Sin(Transform.Angle));
+        Transform.Position += direction * 2;
+    }
 
     public override void Initialize(Vector2Int position)
     {
@@ -31,12 +41,6 @@ public class Arrow : Actor, IMovable, IActorCreatable<Arrow>
         collider.OnTriggerEnter += OnTriggerEnter;
     }
 
-    public void Move()
-    {
-        Vector2Int direction = new Vector2(MathF.Cos(Transform.Angle), MathF.Sin(Transform.Angle));
-        Transform.Position += direction * 2;
-    }
-
     public void OnTriggerEnter(ColliderComponent other)
     {
         if (other.Type == ColliderType.Solid)
@@ -44,12 +48,11 @@ public class Arrow : Actor, IMovable, IActorCreatable<Arrow>
             Dispose();
             return;
         }
+
         if (other.Owner is IDamageable damageable)
         {
             damageable.TakeDamage(Damage);
             Dispose();
         }
     }
-
-    public static Arrow Create(BaseGame game) => new(game);
 }

@@ -9,19 +9,29 @@ namespace Roguelike.Core;
 
 public abstract class BaseGame : Game
 {
-    private List<IDrawable> drawables = new();
-
-    private readonly List<IDrawable> drawablesForRemove = new();
     private readonly List<IDrawable> drawablesForAdd = new();
 
+    private readonly List<IDrawable> drawablesForRemove = new();
+
     protected readonly GraphicsDeviceManager Graphics;
-    private BaseWorldComponent world;
 
     private readonly ConcurrentDictionary<string, Texture2D> textures = new();
+    private List<IDrawable> drawables = new();
+    private BaseWorldComponent world;
+
+    /// <summary>
+    ///     Констуктор. Здесь происходит инициализация игрового окна.
+    /// </summary>
+    protected BaseGame()
+    {
+        Graphics = new GraphicsDeviceManager(this);
+        Graphics.PreferredBackBufferWidth = FieldInfo.ScreenWith;
+        Graphics.PreferredBackBufferHeight = FieldInfo.ScreenHeight;
+    }
 
 
     /// <summary>
-    /// Текущий игровой мир
+    ///     Текущий игровой мир
     /// </summary>
     public BaseWorldComponent World
     {
@@ -33,28 +43,19 @@ public abstract class BaseGame : Game
                 world.Dispose();
                 Components.Remove(world);
             }
+
             world = value;
             Components.Add(world);
         }
     }
 
     /// <summary>
-    /// SpriteBatch, необходимый для отрисовки.
+    ///     SpriteBatch, необходимый для отрисовки.
     /// </summary>
     public SpriteBatch SpriteBatch { get; private set; }
 
     /// <summary>
-    /// Констуктор. Здесь происходит инициализация игрового окна.
-    /// </summary>
-    protected BaseGame()
-    {
-        Graphics = new GraphicsDeviceManager(this);
-        Graphics.PreferredBackBufferWidth = FieldInfo.ScreenWith;
-        Graphics.PreferredBackBufferHeight = FieldInfo.ScreenHeight;
-    }
-
-    /// <summary>
-    /// Метод для получения текстуры по названию.
+    ///     Метод для получения текстуры по названию.
     /// </summary>
     public Texture2D GetTexture(string path)
     {
@@ -67,7 +68,7 @@ public abstract class BaseGame : Game
     }
 
     /// <summary>
-    /// Загрузка контента.
+    ///     Загрузка контента.
     /// </summary>
     protected override void LoadContent()
     {
@@ -75,7 +76,7 @@ public abstract class BaseGame : Game
     }
 
     /// <summary>
-    /// Обновление игровой логики. gameTime - текущее игровое время.
+    ///     Обновление игровой логики. gameTime - текущее игровое время.
     /// </summary>
     protected override void Update(GameTime gameTime)
     {
@@ -85,7 +86,7 @@ public abstract class BaseGame : Game
     }
 
     /// <summary>
-    /// Отрисовка.
+    ///     Отрисовка.
     /// </summary>
     protected override void Draw(GameTime gameTime)
     {
@@ -101,7 +102,7 @@ public abstract class BaseGame : Game
     }
 
     /// <summary>
-    /// Метод отвечающий за добавление нового объекта, требующего отрисовки, для последующей работы с ним.
+    ///     Метод отвечающий за добавление нового объекта, требующего отрисовки, для последующей работы с ним.
     /// </summary>
     public void AddDrawable(IDrawable drawable)
     {
@@ -109,7 +110,7 @@ public abstract class BaseGame : Game
     }
 
     /// <summary>
-    /// Метод, отвечающий за удаление (забывание) объекта, требующего отрисовки.
+    ///     Метод, отвечающий за удаление (забывание) объекта, требующего отрисовки.
     /// </summary>
     public void RemoveDrawable(IDrawable drawable)
     {

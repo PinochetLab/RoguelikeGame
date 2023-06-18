@@ -1,51 +1,55 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
-using Roguelike.Components.Colliders;
-using Roguelike.Components.Sprites;
-using System;
-using Roguelike.Core;
-using System.Collections;
-using System.Threading.Tasks;
-using Roguelike.Field;
-using Roguelike.Actors.InventoryUtils.Items;
-using Roguelike.Components;
-using System.Runtime.CompilerServices;
 using Roguelike.Actors.AI;
 using Roguelike.Actors.InventoryUtils;
+using Roguelike.Actors.InventoryUtils.Items;
+using Roguelike.Components;
+using Roguelike.Components.Colliders;
+using Roguelike.Components.Sprites;
+using Roguelike.Core;
+using Roguelike.Field;
 
 namespace Roguelike.Actors;
 
 /// <summary>
-/// Данный класс - класс главного персонажа.
+///     Данный класс - класс главного персонажа.
 /// </summary>
 public class Hero : Actor, IActorCreatable<Hero>
 {
     /// <summary>
-    /// Тэг главного персонажа.
+    ///     Тэг главного персонажа.
     /// </summary>
     public const string HeroTag = "Hero";
-    public override string Tag => HeroTag;
-
-    private SpriteComponent spriteComponent;
-
-    private SpriteComponent itemSpriteComponent;
-
-    private ColliderComponent collider;
-
-    private WeaponSlot weaponSlot;
-
-    private Vector2Int currentDirection = Vector2Int.Right;
-
-    private KeyboardStateExtended keyState;
 
     public static Hero Instance;
 
-    private WeaponItem weaponItem = null;
+    private ColliderComponent collider;
 
-    private Item item = null;
+    private Vector2Int currentDirection = Vector2Int.Right;
 
     private HealthComponent healthComponent;
+
+    private Item item;
+
+    private SpriteComponent itemSpriteComponent;
+
+    private KeyboardStateExtended keyState;
+
+    private SpriteComponent spriteComponent;
+
+    private WeaponItem weaponItem;
+
+    private WeaponSlot weaponSlot;
+
+    public Hero(BaseGame game) : base(game)
+    {
+        Instance = this;
+    }
+
+    public override string Tag => HeroTag;
 
 
     public Item Item
@@ -82,9 +86,9 @@ public class Hero : Actor, IActorCreatable<Hero>
         }
     }
 
-    public Hero(BaseGame game) : base(game)
+    public static Hero Create(BaseGame game)
     {
-        Instance = this;
+        return new(game);
     }
 
     public override void Initialize()
@@ -99,7 +103,7 @@ public class Hero : Actor, IActorCreatable<Hero>
         itemSpriteComponent.SetTexture("KFC");
         itemSpriteComponent.DrawOrder = 1;
         itemSpriteComponent.AdditionalScale = Vector2.One * 0.4f;
-        itemSpriteComponent.Offset = Vector2Int.One * (Field.FieldInfo.CellSize / 5);
+        itemSpriteComponent.Offset = Vector2Int.One * (FieldInfo.CellSize / 5);
 
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
@@ -114,10 +118,7 @@ public class Hero : Actor, IActorCreatable<Hero>
 
     private void OnTriggerEnter(ColliderComponent other)
     {
-        if (other.Owner.Tag == Enemy.EnemyTag)
-        {
-            healthComponent.Health -= 20;
-        }
+        if (other.Owner.Tag == Enemy.EnemyTag) healthComponent.Health -= 20;
     }
 
     private void GameOver()
@@ -138,13 +139,9 @@ public class Hero : Actor, IActorCreatable<Hero>
         if (weaponItem != null)
         {
             if (weaponItem.IsSword)
-            {
                 HitLogic();
-            }
             else
-            {
                 ShootLogic();
-            }
         }
     }
 
@@ -177,12 +174,12 @@ public class Hero : Actor, IActorCreatable<Hero>
             direction = Vector2Int.Down;
             weaponSlot.Transform.Angle = MathF.PI / 2;
         }
-        
+
         if (direction != Vector2Int.Zero) currentDirection = direction;
 
-        if (direction == Vector2Int.Zero || 
+        if (direction == Vector2Int.Zero ||
             (World.Colliders.ContainsSolid(Transform.Position + direction) &&
-            !World.Colliders.ContainsSolid(Transform.Position))) return;
+             !World.Colliders.ContainsSolid(Transform.Position))) return;
 
         Transform.Position += direction;
 
@@ -229,6 +226,4 @@ public class Hero : Actor, IActorCreatable<Hero>
             await Task.Delay(50);
         }
     }
-
-    public static Hero Create(BaseGame game) => new Hero(game);
 }
