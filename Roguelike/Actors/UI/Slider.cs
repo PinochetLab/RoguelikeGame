@@ -1,30 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
 using Roguelike.Components.Sprites;
 using Roguelike.Core;
 
 namespace Roguelike.Actors.UI;
+
 public class Slider : Actor, IActorCreatable<Slider>
 {
     private Actor backgroundActor;
-    private Actor fillActor;
     private SpriteComponent backgroundSC;
+    private Actor fillActor;
     private SpriteComponent fillSC;
 
-    private float ratio = 0;
+    private Vector2Int offset = new(0, -30);
+
+    private float ratio;
+
+    private Vector2Int sliderSize = new(60, 10);
 
     public Slider(BaseGame game) : base(game)
     {
     }
-
-    public static Slider Create(BaseGame game) => new Slider(game);
 
 
     public Color BackgroundColor
@@ -39,8 +36,6 @@ public class Slider : Actor, IActorCreatable<Slider>
         set => fillSC.Color = value;
     }
 
-    private Vector2Int offset = new (0, -30);
-
     public Vector2Int Offset
     {
         get => offset;
@@ -50,8 +45,6 @@ public class Slider : Actor, IActorCreatable<Slider>
             backgroundActor.Transform.Position = Transform.Position + offset;
         }
     }
-
-    private Vector2Int sliderSize = new (60, 10);
 
     public Vector2Int SliderSize
     {
@@ -75,6 +68,11 @@ public class Slider : Actor, IActorCreatable<Slider>
             ratio = value;
             fillSC.Transform.Scale = new Vector2(ratio, 1);
         }
+    }
+
+    public static Slider Create(BaseGame game)
+    {
+        return new(game);
     }
 
 

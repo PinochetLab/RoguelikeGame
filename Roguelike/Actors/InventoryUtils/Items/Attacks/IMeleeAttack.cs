@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using Roguelike.Core;
+﻿namespace Roguelike.Actors.InventoryUtils.Items.Attacks;
 
-namespace Roguelike.Actors.InventoryUtils.Items.Attacks;
-
-public interface IMeleeAttack:IAttack
+public interface IMeleeAttack : IAttack
 {
 }

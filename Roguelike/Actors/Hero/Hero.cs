@@ -86,6 +86,11 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         return new Hero(game);
     }
 
+    public void TakeDamage(int damage)
+    {
+        healthComponent.Health -= damage;
+    }
+
     public override void Initialize()
     {
         base.Initialize();
@@ -189,10 +194,5 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
     public void UpdateHealth(int health)
     {
         healthComponent.SetMaxHealth(health, true);
-    }
-
-    public void TakeDamage(int damage)
-    {
-        healthComponent.Health -= damage;
     }
 }

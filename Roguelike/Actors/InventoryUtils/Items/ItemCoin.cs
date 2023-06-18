@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Roguelike.Actors.InventoryUtils.Items;
 
-namespace Roguelike.Actors.InventoryUtils.Items
+public class ItemCoin : Item
 {
-    public class ItemCoin : Item
-    {
-        public override string Name { get => "Монеточка"; }
-        public override string TextureName { get => "Coin"; }
-    }
+    public override string Name => "Монеточка";
+    public override string TextureName => "Coin";
 }

@@ -1,44 +1,22 @@
-﻿using Roguelike.Components;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
+using Roguelike.Components;
 using Roguelike.Core;
-using DrawableComponent = Roguelike.Core.DrawableComponent;
 using IUpdateable = Roguelike.Core.IUpdateable;
 
 namespace Roguelike.Actors;
 
 /// <summary>
-///  Класс Actor - это класс игрового объекта.
+///     Класс Actor - это класс игрового объекта.
 /// </summary>
 public class Actor : DrawableGameComponent
 {
-    /// <summary>
-    ///  Tag используется для того, чтобы различать различные игровые объекты без кастов.
-    /// </summary>
-    public virtual string Tag => "";
-
-    /// <summary>
-    ///  Компонент TransformComponent существует у каждого игрового объекта
-    ///  для удобства получения информации о позиции/размере и т.д.
-    /// </summary>
-    public TransformComponent Transform { get; protected set; }
-
-    /// <summary>
-    /// Текущая игра, к которой принадлежит Actor
-    /// </summary>
-    public new BaseGame Game { get; private set; }
-
-    /// <summary>
-    /// Игровой мир, в котором создан Actor
-    /// </summary>
-    public BaseWorldComponent World { get; private set; }
-
     private readonly List<Component> components = new();
 
-    private readonly List<IUpdateable> updatable = new();
-
     private readonly List<DrawableComponent> drawables = new();
+
+    private readonly List<IUpdateable> updatable = new();
 
     public Actor(BaseGame game) : base(game)
     {
@@ -47,8 +25,29 @@ public class Actor : DrawableGameComponent
     }
 
     /// <summary>
-    ///  Данная функция создаёт у игрового объекта компонент необходимого типа, устанавливает текущий игровой
-    ///  объект его владельцем, вызывает у компонента метод Initialize и возвращает созданный компонент.
+    ///     Tag используется для того, чтобы различать различные игровые объекты без кастов.
+    /// </summary>
+    public virtual string Tag => "";
+
+    /// <summary>
+    ///     Компонент TransformComponent существует у каждого игрового объекта
+    ///     для удобства получения информации о позиции/размере и т.д.
+    /// </summary>
+    public TransformComponent Transform { get; protected set; }
+
+    /// <summary>
+    ///     Текущая игра, к которой принадлежит Actor
+    /// </summary>
+    public new BaseGame Game { get; }
+
+    /// <summary>
+    ///     Игровой мир, в котором создан Actor
+    /// </summary>
+    public BaseWorldComponent World { get; }
+
+    /// <summary>
+    ///     Данная функция создаёт у игрового объекта компонент необходимого типа, устанавливает текущий игровой
+    ///     объект его владельцем, вызывает у компонента метод Initialize и возвращает созданный компонент.
     /// </summary>
     public TComp AddComponent<TComp>() where TComp : Component, new()
     {
@@ -77,7 +76,7 @@ public class Actor : DrawableGameComponent
     }
 
     /// <summary>
-    ///  Данная функция возвращает первый найденный компонент необходимого типа.
+    ///     Данная функция возвращает первый найденный компонент необходимого типа.
     /// </summary>
     public TComp GetComponent<TComp>() where TComp : Component, new()
     {
@@ -89,8 +88,8 @@ public class Actor : DrawableGameComponent
     }
 
     /// <summary>
-    /// Данный метод вызывает инициализацию игрового объекта, создаёт компонент TransformComponent
-    /// и добавляет текущий игровой компонент в глобальный список игровых объектов.
+    ///     Данный метод вызывает инициализацию игрового объекта, создаёт компонент TransformComponent
+    ///     и добавляет текущий игровой компонент в глобальный список игровых объектов.
     /// </summary>
     public virtual void Initialize(Vector2Int position)
     {
@@ -99,8 +98,9 @@ public class Actor : DrawableGameComponent
         Initialize();
     }
 
-    /// <summary>Данный виртуальный метод вызывается каждый кадр игровой логики.
-    /// Внутри этого метода вызывается метов Update у всех компонентов объекта, которые реализуют интерфейс IUpdateable.
+    /// <summary>
+    ///     Данный виртуальный метод вызывается каждый кадр игровой логики.
+    ///     Внутри этого метода вызывается метов Update у всех компонентов объекта, которые реализуют интерфейс IUpdateable.
     /// </summary>
     public override void Update(GameTime time)
     {

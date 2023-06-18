@@ -7,12 +7,12 @@ using Roguelike.World;
 namespace Roguelike;
 
 /// <summary>
-/// Класс, отвечающий за игру. Здесь расположен так называемый главный цикл.
+///     Класс, отвечающий за игру. Здесь расположен так называемый главный цикл.
 /// </summary>
 public sealed class RoguelikeGame : BaseGame
 {
     /// <summary>
-    /// Констуктор. Здесь происходит инициализация игрового окна.
+    ///     Констуктор. Здесь происходит инициализация игрового окна.
     /// </summary>
     public RoguelikeGame()
     {
@@ -21,7 +21,7 @@ public sealed class RoguelikeGame : BaseGame
     }
 
     /// <summary>
-    /// Инициализация игры.
+    ///     Инициализация игры.
     /// </summary>
     protected override void Initialize()
     {
@@ -33,7 +33,7 @@ public sealed class RoguelikeGame : BaseGame
     }
 
     /// <summary>
-    /// Обновление игровой логики. gameTime - текущее игровое время.
+    ///     Обновление игровой логики. gameTime - текущее игровое время.
     /// </summary>
     protected override void Update(GameTime gameTime)
     {
@@ -45,7 +45,7 @@ public sealed class RoguelikeGame : BaseGame
     }
 
     /// <summary>
-    /// Отрисовка.
+    ///     Отрисовка.
     /// </summary>
     protected override void Draw(GameTime gameTime)
     {
