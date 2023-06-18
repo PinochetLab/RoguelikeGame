@@ -49,9 +49,9 @@ public class Actor : DrawableGameComponent
     ///     Данная функция создаёт у игрового объекта компонент необходимого типа, устанавливает текущий игровой
     ///     объект его владельцем, вызывает у компонента метод Initialize и возвращает созданный компонент.
     /// </summary>
-    public TComp AddComponent<TComp>() where TComp : Component, new()
+    public TComponent AddComponent<TComponent>() where TComponent : Component, new()
     {
-        var component = new TComp();
+        var component = new TComponent();
 
         component.SetOwner(this);
 

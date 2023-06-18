@@ -21,7 +21,7 @@ public class ItemHolder : Actor, IActorCreatable<ItemHolder>
 
     public static ItemHolder Create(BaseGame game)
     {
-        return new(game);
+        return new ItemHolder(game);
     }
 
     public override void Initialize()

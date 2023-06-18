@@ -72,7 +72,7 @@ public class Slider : Actor, IActorCreatable<Slider>
 
     public static Slider Create(BaseGame game)
     {
-        return new(game);
+        return new Slider(game);
     }
 
 

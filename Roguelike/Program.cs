@@ -1,4 +1,4 @@
-﻿global using static Roguelike.Consts;
+global using static Roguelike.Consts;
 using Roguelike;
 
 using var game = new RoguelikeGame();

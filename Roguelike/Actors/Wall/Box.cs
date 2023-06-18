@@ -18,7 +18,7 @@ public class Box : Actor, IActorCreatable<Box>, IDamageable
 
     public static Box Create(BaseGame game)
     {
-        return new(game);
+        return new Box(game);
     }
 
     public void TakeDamage(int damage)

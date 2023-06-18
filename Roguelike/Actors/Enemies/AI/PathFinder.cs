@@ -8,38 +8,6 @@ using Roguelike.Field;
 
 namespace Roguelike.Actors.Enemies.AI;
 
-public class Cell
-{
-    public int DistanceFromStart;
-    public int DistanceToEnd;
-    public bool IsWall;
-    public Cell Parent;
-    public bool Visited;
-    public int X, Y;
-
-    public Cell(int x, int y, bool isWall)
-    {
-        X = x;
-        Y = y;
-        IsWall = isWall;
-        Visited = false;
-        DistanceFromStart = int.MaxValue;
-        DistanceToEnd = int.MaxValue;
-    }
-
-    public Vector2Int V2 => new(X, Y);
-
-    public int Distance => DistanceFromStart + DistanceToEnd;
-
-    public void Reset()
-    {
-        Visited = false;
-        DistanceFromStart = int.MaxValue;
-        DistanceToEnd = int.MaxValue;
-        Parent = null;
-    }
-}
-
 public class PathFinder : BaseGameSystem
 {
     private Cell[,] grid;
@@ -158,5 +126,28 @@ public class PathFinder : BaseGameSystem
         }
 
         return true;
+    }
+
+    public record Cell(int X, int Y, bool IsWall)
+    {
+        public int DistanceFromStart { get; set; } = int.MaxValue;
+        public int DistanceToEnd { get; set; } = int.MaxValue;
+        public bool IsWall { get; } = IsWall;
+        public Cell Parent { get; set; }
+        public bool Visited { get; set; }
+        public int X { get; } = X;
+        public int Y { get; } = Y;
+
+        public Vector2Int V2 => new(X, Y);
+
+        public int Distance => DistanceFromStart + DistanceToEnd;
+
+        public void Reset()
+        {
+            Visited = false;
+            DistanceFromStart = int.MaxValue;
+            DistanceToEnd = int.MaxValue;
+            Parent = null;
+        }
     }
 }
