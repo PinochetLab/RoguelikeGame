@@ -17,6 +17,7 @@ public abstract class BaseWorldComponent : BaseGameSystem
     protected BaseWorldComponent(BaseGame game) : base(game)
     {
         Paths = new PathFinder(Game);
+        Stats = new StatsManager(Game);
     }
 
     public ColliderManager Colliders { get; protected set; } = new();
@@ -26,6 +27,12 @@ public abstract class BaseWorldComponent : BaseGameSystem
     public Hero Hero { get; protected set; }
 
     public event Action onPlayerMove;
+
+    public override void Initialize()
+    {
+        base.Initialize();
+        Stats.Initialize();
+    }
 
     /// <summary>
     ///     Данная функция создаёт игровой объект переданного типа,
@@ -38,7 +45,7 @@ public abstract class BaseWorldComponent : BaseGameSystem
         where TActor : Actor, IActorCreatable<TActor>
     {
         var actor = TActor.Create(Game);
-        actor.Initialize(position);
+        actor.Spawn(position);
         actorsToAdd.Add(actor);
         return actor;
     }
@@ -76,7 +83,7 @@ public abstract class BaseWorldComponent : BaseGameSystem
     public Actor CreateActor(Vector2Int position)
     {
         var actor = new Actor(Game);
-        actor.Initialize(position);
+        actor.Spawn(position);
         actorsToAdd.Add(actor);
         return actor;
     }

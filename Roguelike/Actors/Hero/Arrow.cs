@@ -45,9 +45,9 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
         return clone;
     }
 
-    public override void Initialize(Vector2Int position)
+    public override void Initialize()
     {
-        base.Initialize(position);
+        base.Initialize();
         World.onPlayerMove += Move;
 
         spriteComponent = AddComponent<SpriteComponent>();
