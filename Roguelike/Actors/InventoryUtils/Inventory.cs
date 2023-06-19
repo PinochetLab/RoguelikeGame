@@ -4,13 +4,9 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended.Input;
 using Roguelike.Actors.InventoryUtils.Items;
 using Roguelike.Actors.InventoryUtils.Items.Attacks;
+using Roguelike.Commands;
 using Roguelike.Components.Sprites;
 using Roguelike.Core;
-using Roguelike.World;
-using System.Diagnostics;
-using static System.Net.Mime.MediaTypeNames;
-using System;
-using Roguelike.Commands;
 using Roguelike.Field;
 
 namespace Roguelike.Actors.InventoryUtils;

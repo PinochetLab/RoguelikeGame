@@ -38,7 +38,7 @@ public class DefaultWorldBuilder : IWorldBuilder
             if (type.HasFlag(AttributeType.MobSpawn))
             {
                 //TODO: Add mobs spawn provider
-                if(Random.Shared.Next(0, 100) > 25)
+                if (Random.Shared.Next(0, 100) > 25)
                     component.CreateActor<Froggy>(x, y);
                 else
                     component.CreateActor<Frogger>(x, y);

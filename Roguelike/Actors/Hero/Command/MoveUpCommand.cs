@@ -2,10 +2,12 @@
 using Roguelike.Core;
 
 namespace Roguelike.Commands;
+
 public class MoveUpCommand : HeroCommand
 {
-
-    public MoveUpCommand(Hero hero) : base(hero) { }
+    public MoveUpCommand(Hero hero) : base(hero)
+    {
+    }
 
     public override void Execute()
     {

@@ -1,6 +1,7 @@
 ﻿using Roguelike.Actors;
 
 namespace Roguelike.Commands;
+
 public class HeroCommand : ICommand
 {
     protected Hero hero;
@@ -12,7 +13,6 @@ public class HeroCommand : ICommand
 
     public virtual void Execute()
     {
-
         hero.Game.World.TriggerOnHeroCommand();
     }
 }

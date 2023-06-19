@@ -14,7 +14,7 @@ public struct Cell
 
     public static Cell FourWayRoom()
     {
-        return new()
+        return new Cell
         {
             Type = CellType.Room,
             Openings = Direction.North | Direction.South | Direction.East | Direction.West

@@ -14,6 +14,11 @@ public class Froggy : Enemy, IActorCreatable<Froggy>
     {
     }
 
+    public static Froggy Create(BaseGame game)
+    {
+        return new(game);
+    }
+
     public override void Initialize()
     {
         base.Initialize();
@@ -56,6 +61,4 @@ public class Froggy : Enemy, IActorCreatable<Froggy>
         HealthComponent.Health -= damage;
         BehaviourStates.CurrentState.IsAttacked = true;
     }
-
-    public static Froggy Create(BaseGame game) => new(game);
 }

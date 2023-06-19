@@ -2,20 +2,22 @@
 using Roguelike.Core;
 
 namespace Roguelike.Commands;
+
 public class CommandInvoker : BaseGameSystem
 {
+    private readonly List<ICommand> commandHistory = new();
     private ICommand currentCommand;
 
-    private List<ICommand> commandHistory = new List<ICommand>();
+    public CommandInvoker(BaseGame game) : base(game)
+    {
+    }
 
-    public CommandInvoker(BaseGame game) : base(game) { }
+    public bool Valid => currentCommand != null;
 
     public void SetCommand(ICommand command)
     {
         currentCommand = command;
     }
-
-    public bool Valid => currentCommand != null;
 
     public void Invoke()
     {

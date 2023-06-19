@@ -4,12 +4,12 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
 using Roguelike.Actors.InventoryUtils;
 using Roguelike.Actors.InventoryUtils.Items;
+using Roguelike.Commands;
 using Roguelike.Components;
 using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
 using Roguelike.Core;
 using Roguelike.Field;
-using Roguelike.Commands;
 
 namespace Roguelike.Actors;
 
@@ -127,7 +127,7 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
 
     public void MoveDirection(Direction direction)
     {
-        weaponSlot.Transform.Direction = direction;
+        WeaponSlot.Transform.Direction = direction;
 
         switch (direction)
         {
@@ -149,7 +149,7 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
 
         if (direction == Vector2Int.Zero ||
             (World.Colliders.ContainsSolid(Transform.Position + direction) &&
-            !World.Colliders.ContainsSolid(Transform.Position))) return;
+             !World.Colliders.ContainsSolid(Transform.Position))) return;
 
         Transform.Position += direction;
     }
@@ -163,28 +163,16 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         var state = keyState;
 
 
-        if (state.WasKeyJustUp(Keys.Space))
-        {
-            Game.World.Commands.SetCommand(new AttackCommand(this));
-        }
+        if (state.WasKeyJustUp(Keys.Space)) Game.World.Commands.SetCommand(new AttackCommand(this));
         Game.World.Commands.Invoke();
 
         if (state.WasKeyJustUp(Keys.D))
-        {
             Game.World.Commands.SetCommand(new MoveRightCommand(this));
-        }
         else if (state.WasKeyJustUp(Keys.A))
-        {
             Game.World.Commands.SetCommand(new MoveLeftCommand(this));
-        }
         else if (state.WasKeyJustUp(Keys.W))
-        {
             Game.World.Commands.SetCommand(new MoveUpCommand(this));
-        }
-        else if (state.WasKeyJustUp(Keys.S))
-        {
-            Game.World.Commands.SetCommand(new MoveDownCommand(this));
-        }
+        else if (state.WasKeyJustUp(Keys.S)) Game.World.Commands.SetCommand(new MoveDownCommand(this));
         Game.World.Commands.Invoke();
     }
 
@@ -192,7 +180,7 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
     {
         //TODO different attacks on different keys or something
         var attack = weaponItem?.Attacks.FirstOrDefault();
-        attack?.Atack(this, CurrentDirection);
+        attack?.Attack(this, CurrentDirection);
     }
 
     private void OnHealthChange()

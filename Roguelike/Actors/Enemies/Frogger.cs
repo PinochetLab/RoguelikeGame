@@ -12,6 +12,11 @@ public class Frogger : Enemy, IActorCreatable<Frogger>
     {
     }
 
+    public static Frogger Create(BaseGame game)
+    {
+        return new(game);
+    }
+
     public override void Initialize()
     {
         base.Initialize();
@@ -38,6 +43,4 @@ public class Frogger : Enemy, IActorCreatable<Frogger>
         HealthComponent.Health -= damage;
         BehaviourStates.CurrentState.IsAttacked = true;
     }
-
-    public static Frogger Create(BaseGame game) => new(game);
 }

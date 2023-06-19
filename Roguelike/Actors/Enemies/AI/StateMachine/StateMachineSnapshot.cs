@@ -2,8 +2,8 @@
 
 public struct StateMachineSnapshot<T>
 {
-    internal T CurrentState { get; private set; }
-    internal float StateAge { get; private set; }
+    internal T CurrentState { get; }
+    internal float StateAge { get; }
 
     internal StateMachineSnapshot(float age, T currentState)
     {

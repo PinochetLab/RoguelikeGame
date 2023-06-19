@@ -19,23 +19,6 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
     {
     }
 
-    public override void Initialize()
-    {
-        base.Initialize();
-        World.onHeroCommand += Move;
-
-        spriteComponent = AddComponent<SpriteComponent>();
-        spriteComponent.SetTexture("Arrow");
-
-        damagerComponent = AddComponent<DamagerComponent>();
-        damagerComponent.Damages = new() { { Vector2Int.Zero, Damage } };
-        World.onHeroCommand += damagerComponent.Damage;
-
-        collider = AddComponent<ColliderComponent>();
-        collider.Type = ColliderType.Trigger;
-        collider.OnTriggerEnter += OnTriggerEnter;
-    }
-
     public override string Tag => Tags.ArrowTag;
 
     public bool IsMoving { get; set; } = true;
@@ -60,6 +43,23 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
         var clone = Game.World.CreateActor<Arrow>();
         clone.Damage = Damage;
         return clone;
+    }
+
+    public override void Initialize()
+    {
+        base.Initialize();
+        World.onHeroCommand += Move;
+
+        spriteComponent = AddComponent<SpriteComponent>();
+        spriteComponent.SetTexture("Arrow");
+
+        damagerComponent = AddComponent<DamagerComponent>();
+        damagerComponent.Damages = new Dictionary<Vector2Int, int> { { Vector2Int.Zero, Damage } };
+        World.onHeroCommand += damagerComponent.Damage;
+
+        collider = AddComponent<ColliderComponent>();
+        collider.Type = ColliderType.Trigger;
+        collider.OnTriggerEnter += OnTriggerEnter;
     }
 
     public static Arrow GetPrototype(BaseGame game, int damage)

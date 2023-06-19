@@ -10,15 +10,14 @@ namespace Roguelike.Actors.Enemies;
 
 public abstract class Enemy : Actor, IDamageable
 {
+    protected StateMachine<EnemyBehaviour> BehaviourStates;
     protected ColliderComponent ColliderComponent;
-    protected HealthComponent HealthComponent;
     protected DamagerComponent DamagerComponent;
+    protected HealthComponent HealthComponent;
 
     protected Slider HealthSlider;
 
     protected SpriteComponent SpriteComponent;
-
-    protected StateMachine<EnemyBehaviour> BehaviourStates;
 
     protected Enemy(BaseGame game) : base(game)
     {
@@ -55,7 +54,10 @@ public abstract class Enemy : Actor, IDamageable
 
     public abstract StateMachine<EnemyBehaviour> InitializeBehaviour();
 
-    public void RunBehaviour() => BehaviourStates.Process(1);
+    public void RunBehaviour()
+    {
+        BehaviourStates.Process(1);
+    }
 
     private void OnDeath()
     {
