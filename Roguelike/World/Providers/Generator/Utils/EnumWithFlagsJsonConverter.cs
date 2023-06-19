@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 namespace Roguelike.World.Providers.Generator.Utils;
 
 /// <summary>
-/// JSON serialization for `[Flags]` based `enum's` as `string[]`
+///     JSON serialization for `[Flags]` based `enum's` as `string[]`
 /// </summary>
 /// <see href="https://github.com/dotnet/runtime/issues/31081#issuecomment-848697673">based on this model</see>
 public class EnumWithFlagsJsonConverter<TEnum> : JsonConverter<TEnum>
@@ -49,7 +49,7 @@ public class EnumWithFlagsJsonConverter<TEnum> : JsonConverter<TEnum>
         switch (reader.TokenType)
         {
             case JsonTokenType.Null:
-                return default(TEnum);
+                return default;
             case JsonTokenType.StartArray:
                 var ret = default(TEnum);
                 while (reader.Read())
@@ -57,10 +57,7 @@ public class EnumWithFlagsJsonConverter<TEnum> : JsonConverter<TEnum>
                     if (reader.TokenType == JsonTokenType.EndArray)
                         break;
                     var stringValue = reader.GetString();
-                    if (stringToEnum.TryGetValue(stringValue, out var _enumValue))
-                    {
-                        ret = Or(ret, _enumValue);
-                    }
+                    if (stringToEnum.TryGetValue(stringValue, out var _enumValue)) ret = Or(ret, _enumValue);
                 }
 
                 return ret;
@@ -81,10 +78,7 @@ public class EnumWithFlagsJsonConverter<TEnum> : JsonConverter<TEnum>
             {
                 // handle "0" case which HasFlag matches to all values
                 // --> only write "0" case if it is the only value present
-                if (value.Equals(flag))
-                {
-                    writer.WriteStringValue(enumToString[flag]);
-                }
+                if (value.Equals(flag)) writer.WriteStringValue(enumToString[flag]);
             }
             else
             {
@@ -96,11 +90,13 @@ public class EnumWithFlagsJsonConverter<TEnum> : JsonConverter<TEnum>
     }
 
     /// <summary>
-    /// Combine two enum flag values into single enum value.
+    ///     Combine two enum flag values into single enum value.
     /// </summary>
     // <see href="https://stackoverflow.com/a/24172851/5219886">based on this SO</see>
-    private static TEnum Or(TEnum a, TEnum b) =>
-        Enum.GetUnderlyingType(a.GetType()) != typeof(ulong)
+    private static TEnum Or(TEnum a, TEnum b)
+    {
+        return Enum.GetUnderlyingType(a.GetType()) != typeof(ulong)
             ? (TEnum)Enum.ToObject(a.GetType(), Convert.ToInt64(a) | Convert.ToInt64(b))
             : (TEnum)Enum.ToObject(a.GetType(), Convert.ToUInt64(a) | Convert.ToUInt64(b));
+    }
 }

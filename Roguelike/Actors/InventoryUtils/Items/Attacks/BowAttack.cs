@@ -9,7 +9,7 @@ public class BowAttack<TAmmo> : IRangeAttack where TAmmo : Actor, ICloneable
     public TAmmo Arrow { get; set; }
     public List<Vector2Int> range { get; set; } = new();
 
-    public void Atack(Actor actor, Direction direction)
+    public void Attack(Actor actor, Direction direction)
     {
         var ammo = Arrow.Clone() as Actor;
         ammo.Transform.Position = actor.Transform.Position;

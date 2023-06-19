@@ -13,7 +13,8 @@ public class CellBasedGenerator : ILevelGenerator
     private Cell[,] cells;
 
     public CellBasedGenerator() : this(GeneratorParams.Default)
-    { }
+    {
+    }
 
     public CellBasedGenerator(GeneratorParams parameters)
     {
@@ -75,7 +76,9 @@ public class CellBasedGenerator : ILevelGenerator
                     secondExitPlaced = true;
                 }
                 else if (!spawnExit)
+                {
                     chance += (int)(chance * 0.25f);
+                }
             }
 
             cell.Fill(x, y, map, parameters);
@@ -112,7 +115,7 @@ public class CellBasedGenerator : ILevelGenerator
             {
                 Type = random.Chance(parameters.RoomChance) ? CellType.Room : CellType.Corridor,
                 Openings = FindValidConnections(direction, location),
-                Attributes = AttributeType.None,
+                Attributes = AttributeType.None
             };
 
         return default;

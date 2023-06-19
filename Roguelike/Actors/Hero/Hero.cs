@@ -18,8 +18,6 @@ namespace Roguelike.Actors;
 /// </summary>
 public class Hero : Actor, IActorCreatable<Hero>, IDamageable
 {
-    public static Hero Instance;
-
     private ColliderComponent collider;
 
     private HealthComponent healthComponent;
@@ -34,12 +32,14 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
 
     private WeaponItem weaponItem;
 
-    public WeaponSlot weaponSlot;
-
     public Hero(BaseGame game) : base(game)
     {
         Instance = this;
     }
+
+    public static Hero Instance { get; private set; }
+
+    public WeaponSlot WeaponSlot { get; set; }
 
     /// <summary>
     ///     Тэг главного персонажа.
@@ -58,20 +58,20 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
             switch (value)
             {
                 case null:
-                    weaponSlot.SpriteComponent.Visible = false;
+                    WeaponSlot.SpriteComponent.Visible = false;
                     itemSpriteComponent.Visible = false;
                     item = null;
                     weaponItem = null;
                     break;
                 case WeaponItem wi:
-                    weaponSlot.SpriteComponent.Visible = true;
-                    weaponSlot.SpriteComponent.SetTexture(value.TextureName);
+                    WeaponSlot.SpriteComponent.Visible = true;
+                    WeaponSlot.SpriteComponent.SetTexture(value.TextureName);
                     itemSpriteComponent.Visible = false;
                     item = wi;
                     weaponItem = wi;
                     break;
                 default:
-                    weaponSlot.SpriteComponent.Visible = false;
+                    WeaponSlot.SpriteComponent.Visible = false;
                     itemSpriteComponent.Visible = true;
                     itemSpriteComponent.SetTexture(value.TextureName);
                     item = value;
@@ -84,6 +84,11 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
     public static Hero Create(BaseGame game)
     {
         return new Hero(game);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        healthComponent.Health -= damage;
     }
 
     public override void Initialize()
@@ -103,8 +108,8 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
 
-        weaponSlot = World.CreateActor<WeaponSlot>(Transform.Position);
-        weaponSlot.Transform.Parent = Transform;
+        WeaponSlot = World.CreateActor<WeaponSlot>(Transform.Position);
+        WeaponSlot.Transform.Parent = Transform;
 
         healthComponent = AddComponent<HealthComponent>();
         healthComponent.OnDeath += GameOver;
@@ -198,10 +203,5 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
     public void UpdateHealth(int health)
     {
         healthComponent.SetMaxHealth(health, true);
-    }
-
-    public void TakeDamage(int damage)
-    {
-        healthComponent.Health -= damage;
     }
 }

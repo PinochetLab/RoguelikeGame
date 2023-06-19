@@ -1,61 +1,58 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Roguelike.Core;
 using Roguelike.Field;
-using DrawableComponent = Roguelike.Core.DrawableComponent;
-using System.Dynamic;
-using System.Diagnostics;
 
 namespace Roguelike.Components.Sprites;
 
 /// <summary>
-/// Данный компонент отвечает за отрисовку спрайта.
+///     Данный компонент отвечает за отрисовку спрайта.
 /// </summary>
 public class SpriteComponent : DrawableComponent
 {
-    private Texture2D texture = null;
+    private Texture2D texture;
 
     /// <summary>
-    /// Размер прямоугольника для отрисовки в пикселях.
+    ///     Размер прямоугольника для отрисовки в пикселях.
     /// </summary>
     public Vector2Int Size { get; set; } = Vector2Int.One;
 
     /// <summary>
-    /// Дополнительное масштабирование.
+    ///     Дополнительное масштабирование.
     /// </summary>
     public Vector2 AdditionalScale { get; set; } = Vector2.One;
 
     /// <summary>
-    /// Отзеркаливание по горизонтали.
+    ///     Отзеркаливание по горизонтали.
     /// </summary>
     public bool FlipX { get; set; } = false;
 
     /// <summary>
-    /// Отзеркаливание по вертикали.
+    ///     Отзеркаливание по вертикали.
     /// </summary>
     public bool FlipY { get; set; } = false;
 
     public Vector2Int Offset { get; set; } = Vector2Int.Zero;
 
     /// <summary>
-    /// Центр спрайта относительно повророта и масштабирования.
+    ///     Центр спрайта относительно повророта и масштабирования.
     /// </summary>
     public Vector2 Pivot { get; set; } = Vector2.One / 2;
 
     /// <summary>
-    /// Цвет спрайта.
+    ///     Цвет спрайта.
     /// </summary>
     public Color Color { get; set; } = Color.White;
 
     /// <summary>
-    /// Видимость.
+    ///     Видимость.
     /// </summary>
     public bool Visible { get; set; } = true;
 
     public override int DrawOrder { get; set; } = 0;
 
     /// <summary>
-    /// Данный метод устанавливает текстуру в текстуру, соответствующую названию.
+    ///     Данный метод устанавливает текстуру в текстуру, соответствующую названию.
     /// </summary>
     public void SetTexture(string textureName)
     {
@@ -67,14 +64,13 @@ public class SpriteComponent : DrawableComponent
         if (!Visible) return;
         if (texture == null) return;
 
-        Vector2 scale = AdditionalScale * Transform.Scale;
+        var scale = AdditionalScale * Transform.Scale;
 
         var pos = Transform.Position * (!Transform.IsCanvas ? FieldInfo.CellSize : 1);
         var size = !Transform.IsCanvas ? Vector2Int.One * FieldInfo.CellSize : Size;
 
         var position = pos + (!Transform.IsCanvas ? size * Pivot : Vector2Int.Zero);
 
-        
 
         var effect = SpriteEffects.None;
         if (FlipX) effect |= SpriteEffects.FlipHorizontally;
@@ -95,12 +91,13 @@ public class SpriteComponent : DrawableComponent
             rect.Height = -rect.Height;
             effect |= SpriteEffects.FlipVertically;
         }
-        
+
         rect.X += Offset.X;
         rect.Y += Offset.Y;
 
         var rectSize = new Rectangle(0, 0, texture.Width, texture.Height);
 
-        batch.Draw(texture, rect, rectSize, Color, Transform.Angle, new Vector2(texture.Width, texture.Height) * Pivot, effect, 0);
+        batch.Draw(texture, rect, rectSize, Color, Transform.Angle, new Vector2(texture.Width, texture.Height) * Pivot,
+            effect, 0);
     }
 }

@@ -12,7 +12,7 @@ internal class TileArrayMap : ITileMap
         Width = width;
         Height = height;
 
-        map = new Tile[Width,Height];
+        map = new Tile[Width, Height];
     }
 
     public Tile this[int x, int y]
@@ -28,10 +28,11 @@ internal class TileArrayMap : ITileMap
     {
         for (var x = 0; x < Width; x++)
         for (var y = 0; y < Height; y++)
-        {
             yield return (x, y, map[x, y]);
-        }
     }
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
 }

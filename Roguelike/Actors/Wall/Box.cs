@@ -1,21 +1,30 @@
 ﻿using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
 using Roguelike.Core;
-using Roguelike.World;
 
 namespace Roguelike.Actors;
 
 /// <summary>
-/// Данный класс - класс стены.
+///     Данный класс - класс стены.
 /// </summary>
 public class Box : Actor, IActorCreatable<Box>, IDamageable
 {
+    private ColliderComponent collider;
     private SpriteComponent spriteComponent;
 
-    private ColliderComponent collider;
-
     public Box(BaseGame game) : base(game)
-    { }
+    {
+    }
+
+    public static Box Create(BaseGame game)
+    {
+        return new Box(game);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        Dispose();
+    }
 
     public override void Initialize()
     {
@@ -26,12 +35,5 @@ public class Box : Actor, IActorCreatable<Box>, IDamageable
 
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Solid;
-    }
-
-    public static Box Create(BaseGame game) => new(game);
-
-    public void TakeDamage(int damage)
-    {
-        Dispose();
     }
 }

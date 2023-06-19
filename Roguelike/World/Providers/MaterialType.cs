@@ -3,25 +3,28 @@
 namespace Roguelike.World.Providers;
 
 /// <summary>
-/// The material of the tile
+///     The material of the tile
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum MaterialType : byte
 {
     /// <summary>
-    /// Nothing
+    ///     Nothing
     /// </summary>
     Air = 0x00,
+
     /// <summary>
-    /// Traversable ground
+    ///     Traversable ground
     /// </summary>
     Floor,
+
     /// <summary>
-    /// An impassable, indestructible wall
+    ///     An impassable, indestructible wall
     /// </summary>
     Wall,
+
     /// <summary>
-    /// A destructible will
+    ///     A destructible will
     /// </summary>
-    BreakableWall,
+    BreakableWall
 }

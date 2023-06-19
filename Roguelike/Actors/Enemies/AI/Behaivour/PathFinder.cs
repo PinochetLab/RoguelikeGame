@@ -8,47 +8,14 @@ using Roguelike.Field;
 
 namespace Roguelike.Actors.Enemies.AI.Behaivour;
 
-public class Cell
-{
-    public int X, Y;
-    public bool IsWall;
-    public bool Visited;
-    public int DistanceFromStart;
-    public int DistanceToEnd;
-    public Cell Parent;
-
-    public Cell(int x, int y, bool isWall)
-    {
-        X = x;
-        Y = y;
-        IsWall = isWall;
-        Visited = false;
-        DistanceFromStart = int.MaxValue;
-        DistanceToEnd = int.MaxValue;
-    }
-
-    public void Reset()
-    {
-        Visited = false;
-        DistanceFromStart = int.MaxValue;
-        DistanceToEnd = int.MaxValue;
-        Parent = null;
-    }
-
-    public Vector2Int V2 => new Vector2Int(X, Y);
-
-    public int Distance => DistanceFromStart + DistanceToEnd;
-}
-
 public class PathFinder : BaseGameSystem
 {
     private Cell[,] grid;
-    private int width = 0;
-    private int height = 0;
+    private int height;
+    private int width;
 
     public PathFinder(BaseGame game) : base(game)
     {
-        
     }
 
     public override void Initialize()
@@ -61,23 +28,15 @@ public class PathFinder : BaseGameSystem
         grid = new Cell[width, height];
 
         for (var i = 0; i < width; i++)
-        {
-            for (var j = 0; j < height; j++)
-            {
-                grid[i, j] = new Cell(i, j, Game.World.Colliders.ContainsSolid(new Vector2Int(i, j)));
-            }
-        }
+        for (var j = 0; j < height; j++)
+            grid[i, j] = new Cell(i, j, Game.World.Colliders.ContainsSolid(new Vector2Int(i, j)));
     }
 
     public void GeneratePath(Vector2Int s, Vector2Int e)
     {
         for (var i = 0; i < width; i++)
-        {
-            for (var j = 0; j < height; j++)
-            {
-                grid[i, j].Reset();
-            }
-        }
+        for (var j = 0; j < height; j++)
+            grid[i, j].Reset();
 
         var start = grid[s.X, s.Y];
         var end = grid[e.X, e.Y];
@@ -91,10 +50,7 @@ public class PathFinder : BaseGameSystem
         {
             var current = openList.Dequeue();
 
-            if (current == end)
-            {
-                break;
-            }
+            if (current == end) break;
 
             current.Visited = true;
 
@@ -109,10 +65,7 @@ public class PathFinder : BaseGameSystem
                     neighbor.DistanceToEnd = Heuristic(neighbor, end);
                     neighbor.Visited = true;
                     neighbor.Parent = current;
-                    if (!openList.Contains(neighbor))
-                    {
-                        openList.Enqueue(neighbor);
-                    }
+                    if (!openList.Contains(neighbor)) openList.Enqueue(neighbor);
                 }
             }
         }
@@ -123,12 +76,13 @@ public class PathFinder : BaseGameSystem
         GeneratePath(start, end);
         var path = new List<Vector2Int>();
         var current = grid[end.X, end.Y];
-        
+
         while (current.Parent != null)
         {
             path.Add(current.V2);
             current = current.Parent;
         }
+
         path.Reverse();
         return path;
     }
@@ -136,10 +90,7 @@ public class PathFinder : BaseGameSystem
     public Vector2Int NextCell(Vector2Int start, Vector2Int end)
     {
         var path = GetPath(start, end);
-        if (path.Count > 0)
-        {
-            return path[0];
-        }
+        if (path.Count > 0) return path[0];
         return start;
     }
 
@@ -164,18 +115,39 @@ public class PathFinder : BaseGameSystem
 
     public bool DoesSee(Vector2Int start, Vector2Int end)
     {
-        Vector2 s = (Vector2)start+Vector2.One*0.5f;
-        Vector2 e = (Vector2)end;
-        int acc = 100;
+        var s = (Vector2)start + Vector2.One * 0.5f;
+        Vector2 e = end;
+        var acc = 100;
         for (var i = 1; i < acc; i++)
         {
             var t = (float)i / acc;
             Vector2Int v = e * t + s * (1 - t);
-            if (grid[v.X, v.Y].IsWall)
-            {
-                return false;
-            }
+            if (grid[v.X, v.Y].IsWall) return false;
         }
+
         return true;
+    }
+
+    public record Cell(int X, int Y, bool IsWall)
+    {
+        public int DistanceFromStart { get; set; } = int.MaxValue;
+        public int DistanceToEnd { get; set; } = int.MaxValue;
+        public bool IsWall { get; } = IsWall;
+        public Cell Parent { get; set; }
+        public bool Visited { get; set; }
+        public int X { get; } = X;
+        public int Y { get; } = Y;
+
+        public Vector2Int V2 => new(X, Y);
+
+        public int Distance => DistanceFromStart + DistanceToEnd;
+
+        public void Reset()
+        {
+            Visited = false;
+            DistanceFromStart = int.MaxValue;
+            DistanceToEnd = int.MaxValue;
+            Parent = null;
+        }
     }
 }

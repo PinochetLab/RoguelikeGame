@@ -10,19 +10,18 @@ namespace Roguelike.World;
 
 public class WorldComponent : BaseWorldComponent
 {
-    private SpriteBatch spriteBatch;
-
     private const string FloorTextureName = "GrassTile";
     private Texture2D floorTexture;
 
-    private bool initialized = false;
-
-    public Vector2Int HeroSpawnPoint { get; protected set; }
+    private bool initialized;
+    private SpriteBatch spriteBatch;
 
     public WorldComponent(BaseGame game, Vector2Int heroSpawnPoint) : base(game)
     {
         HeroSpawnPoint = heroSpawnPoint;
     }
+
+    public Vector2Int HeroSpawnPoint { get; protected set; }
 
     public override void Initialize()
     {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Roguelike.Components;
 using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
@@ -9,8 +10,10 @@ namespace Roguelike.Actors;
 public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
 {
     private ColliderComponent collider;
-    private SpriteComponent spriteComponent;
+
+    private int damage;
     private DamagerComponent damagerComponent;
+    private SpriteComponent spriteComponent;
 
     public Arrow(BaseGame game) : base(game)
     {
@@ -36,8 +39,6 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
     public override string Tag => Tags.ArrowTag;
 
     public bool IsMoving { get; set; } = true;
-
-    private int damage;
 
     public int Damage
     {

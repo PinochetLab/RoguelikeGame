@@ -3,7 +3,7 @@
 namespace Roguelike.World.Providers.Generator.Dungeons;
 
 /// <summary>
-/// Direction flags. Laid out so that a right turn is the same as going up one flag
+///     Direction flags. Laid out so that a right turn is the same as going up one flag
 /// </summary>
 [Flags]
 public enum Direction : byte

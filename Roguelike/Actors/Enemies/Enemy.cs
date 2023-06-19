@@ -24,6 +24,10 @@ public abstract class Enemy : Actor, IDamageable
     {
     }
 
+    public override string Tag => Tags.EnemyTag;
+
+    public abstract void TakeDamage(int damage);
+
     public override void Initialize()
     {
         base.Initialize();
@@ -64,8 +68,4 @@ public abstract class Enemy : Actor, IDamageable
     {
         HealthSlider.Ratio = HealthComponent.HealthRatio;
     }
-
-    public override string Tag => Tags.EnemyTag;
-
-    public abstract void TakeDamage(int damage);
 }

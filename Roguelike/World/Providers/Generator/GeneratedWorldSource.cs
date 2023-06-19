@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Linq;
 using Roguelike.World.Providers.Generator.Dungeons;
 
 namespace Roguelike.World.Providers.Generator;
 
 public class GeneratedWorldSource : IWorldSource
 {
+    private readonly GeneratorParams parameters;
     private readonly int sizeX;
     private readonly int sizeY;
-    private readonly GeneratorParams parameters;
 
     public GeneratedWorldSource(int sizeX, int sizeY, GeneratorParams parameters)
     {
