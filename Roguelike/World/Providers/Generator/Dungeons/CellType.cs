@@ -4,5 +4,5 @@ public enum CellType : byte
 {
     None = 0,
     Room,
-    Corridor,
+    Corridor
 }

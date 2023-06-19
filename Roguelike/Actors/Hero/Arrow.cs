@@ -19,23 +19,6 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
     {
     }
 
-    public override void Initialize()
-    {
-        base.Initialize();
-        World.onPlayerMove += Move;
-
-        spriteComponent = AddComponent<SpriteComponent>();
-        spriteComponent.SetTexture("Arrow");
-
-        damagerComponent = AddComponent<DamagerComponent>();
-        damagerComponent.Damages = new() { { Vector2Int.Zero, Damage } };
-        World.onPlayerMove += damagerComponent.Damage;
-
-        collider = AddComponent<ColliderComponent>();
-        collider.Type = ColliderType.Trigger;
-        collider.OnTriggerEnter += OnTriggerEnter;
-    }
-
     public override string Tag => Tags.ArrowTag;
 
     public bool IsMoving { get; set; } = true;
@@ -62,9 +45,9 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
         return clone;
     }
 
-    public override void Initialize(Vector2Int position)
+    public override void Initialize()
     {
-        base.Initialize(position);
+        base.Initialize();
         World.onPlayerMove += Move;
 
         spriteComponent = AddComponent<SpriteComponent>();

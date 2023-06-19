@@ -18,8 +18,6 @@ namespace Roguelike.Actors;
 /// </summary>
 public class Hero : Actor, IActorCreatable<Hero>, IDamageable
 {
-    public static Hero Instance { get; private set; }
-
     private ColliderComponent collider;
 
     private HealthComponent healthComponent;
@@ -34,12 +32,14 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
 
     private WeaponItem weaponItem;
 
-    public WeaponSlot WeaponSlot { get; set; }
-
     public Hero(BaseGame game) : base(game)
     {
         Instance = this;
     }
+
+    public static Hero Instance { get; private set; }
+
+    public WeaponSlot WeaponSlot { get; set; }
 
     /// <summary>
     ///     Тэг главного персонажа.

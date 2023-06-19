@@ -7,7 +7,10 @@ public class FileProvidedWorldSource : IWorldSource
 {
     private readonly string templatePath;
 
-    public FileProvidedWorldSource(string templatePath) => this.templatePath = templatePath;
+    public FileProvidedWorldSource(string templatePath)
+    {
+        this.templatePath = templatePath;
+    }
 
     public ITileMap GetMapRepresentation()
     {

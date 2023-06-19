@@ -8,8 +8,8 @@ namespace Roguelike.World;
 
 public class DefaultWorldBuilder : IWorldBuilder
 {
-    private IWorldSource worldSource;
     private IObjectsProvider objectsProvider;
+    private IWorldSource worldSource;
 
     public IWorldBuilder SetupSource(IWorldSource source)
     {
@@ -38,13 +38,15 @@ public class DefaultWorldBuilder : IWorldBuilder
             if (type.HasFlag(AttributeType.MobSpawn))
             {
                 //TODO: Add mobs spawn provider
-                if(Random.Shared.Next(0, 1) == 1)
-                    component.CreateActor<Froggy>(x ,y);
+                if (Random.Shared.Next(0, 1) == 1)
+                    component.CreateActor<Froggy>(x, y);
                 else
-                    component.CreateActor<Frogger>(x ,y);
+                    component.CreateActor<Frogger>(x, y);
             }
             else
+            {
                 objectsProvider.CreateActorInScene(component, tile, new Vector2Int(x, y));
+            }
         }
 
         component.Initialize();

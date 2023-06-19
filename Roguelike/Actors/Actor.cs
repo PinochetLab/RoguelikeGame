@@ -88,7 +88,7 @@ public class Actor : DrawableGameComponent
     }
 
     /// <summary>
-    /// Данный метод вызывает инициализацию игрового объекта и создаёт компонент TransformComponent
+    ///     Данный метод вызывает инициализацию игрового объекта и создаёт компонент TransformComponent
     /// </summary>
     public void Spawn(Vector2Int position)
     {
