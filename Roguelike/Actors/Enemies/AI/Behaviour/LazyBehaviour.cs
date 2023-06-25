@@ -1,5 +1,7 @@
-﻿namespace Roguelike.Actors.Enemies.AI;
-
+﻿namespace Roguelike.Actors.Enemies.AI.Behaviour;
+/// <summary>
+///     Ленивое поведение - Не реагирует на игрока пока не атакован, потом преследует игрока если видит, дальше забывает об игроке
+/// </summary>
 public class LazyBehaviour : EnemyBehaviour
 {
     private const int Cooldown = 3;
@@ -9,7 +11,7 @@ public class LazyBehaviour : EnemyBehaviour
     {
     }
 
-    public int Rage
+    private int Rage
     {
         get => rage;
         set
@@ -18,9 +20,11 @@ public class LazyBehaviour : EnemyBehaviour
         }
     }
 
+
     public override void Run()
     {
         if (!IsAttacked) return;
+
         if (SeesHero)
         {
             Actor.Transform.Position =

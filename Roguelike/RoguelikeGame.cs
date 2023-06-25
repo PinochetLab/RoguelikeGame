@@ -26,6 +26,8 @@ public sealed class RoguelikeGame : BaseGame
         IsMouseVisible = true;
     }
 
+    public bool IsGameOver { get; private set; }
+
     /// <summary>
     ///     Инициализация игры.
     /// </summary>
@@ -64,5 +66,11 @@ public sealed class RoguelikeGame : BaseGame
     {
         GraphicsDevice.Clear(Color.Black);
         base.Draw(gameTime);
+    }
+
+    public void GameOver()
+    {
+        IsGameOver = true;
+        Exit();
     }
 }

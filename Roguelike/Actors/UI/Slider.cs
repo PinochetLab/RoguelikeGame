@@ -6,6 +6,9 @@ using Roguelike.Core;
 
 namespace Roguelike.Actors.UI;
 
+/// <summary>
+///     Полоска прогресса/опыта/жизней на экране
+/// </summary>
 public class Slider : Actor, IActorCreatable<Slider>
 {
     private Actor backgroundActor;
@@ -23,19 +26,18 @@ public class Slider : Actor, IActorCreatable<Slider>
     {
     }
 
-
-    public Color BackgroundColor
-    {
-        get => backgroundSC.Color;
-        set => backgroundSC.Color = value;
-    }
-
+    /// <summary>
+    ///     Цвет полоски
+    /// </summary>
     public Color FillColor
     {
         get => fillSC.Color;
         set => fillSC.Color = value;
     }
 
+    /// <summary>
+    ///     Расположение полоски
+    /// </summary>
     public Vector2Int Offset
     {
         get => offset;
@@ -46,6 +48,9 @@ public class Slider : Actor, IActorCreatable<Slider>
         }
     }
 
+    /// <summary>
+    ///     Размер полоски
+    /// </summary>
     public Vector2Int SliderSize
     {
         get => sliderSize;
@@ -58,7 +63,9 @@ public class Slider : Actor, IActorCreatable<Slider>
         }
     }
 
-
+    /// <summary>
+    ///     Заполненость полоски
+    /// </summary>
     public float Ratio
     {
         get => ratio;
