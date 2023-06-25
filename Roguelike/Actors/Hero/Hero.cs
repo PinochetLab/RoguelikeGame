@@ -125,9 +125,7 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
 
     private void GameOver()
     {
-        Inventory.Clear();
-        Transform.Position = FieldInfo.Center;
-        Dispose();
+        ((RoguelikeGame)Game).GameOver();
     }
 
     public void MoveDirection(Direction direction)
