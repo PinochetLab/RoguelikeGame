@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using MonoGame.Extended;
+using Roguelike.Actors.Enemies;
 using Roguelike.Components.AttackModifiers;
 using Roguelike.Core;
 
@@ -22,7 +24,10 @@ public class SwordAttack : IMeleeAttack
         foreach (var damageable in actor.World.Colliders.FindAll<IDamageable>(actor.Transform.Position +
                                                                               attack.Rotate(direction)))
             if (damageable != actor)
+            {
+                if (damageable is Enemy enemy && new FastRandom().Next(100) < 10) enemy.Confuse();
                 damageable.TakeDamage(currentAttackDamage);
+            }
     }
 
     private static async void Animation()

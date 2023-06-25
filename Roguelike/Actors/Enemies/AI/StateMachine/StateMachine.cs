@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Roguelike.Actors.Enemies.AI.StateMachine;
 
@@ -173,8 +174,8 @@ public class StateMachine<T> : IStateMachine
         stateAge = snap.StateAge;
     }
 
-    public StateBehaviour<T> GetBehaviour(T state)
+    public StateBehaviour<T> GetBehaviour<T1>(int index) where T1 : T
     {
-        return stateBehaviours[state];
+        return stateBehaviours.Where(x => x.Key is T1).ToList().ElementAtOrDefault(index).Value;
     }
 }

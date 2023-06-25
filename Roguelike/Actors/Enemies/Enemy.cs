@@ -61,10 +61,39 @@ public abstract class Enemy : Actor, IDamageable
         BehaviourStates.Process(1);
     }
 
+    public void Confuse()
+    {
+        var confusion = BehaviourStates.GetBehaviour<ConfusedBehaviour>(0);
+        if (confusion == null)
+            confusion = BehaviourStates.Add(new ConfusedBehaviour(this))
+                .Calls(x =>
+                {
+                    if (x.State is not ConfusedBehaviour state) return;
+
+                    state.Run();
+                    if (state.TimeLeft == 0)
+                    {
+                        state.TimeLeft = ConfusedBehaviour.MaxTimeLeft;
+                        x.Machine.CurrentState = state.PreviousBehaviour;
+                    }
+                });
+
+        if (confusion.State is not ConfusedBehaviour behaviour) return;
+        if (BehaviourStates.CurrentState is ConfusedBehaviour c)
+        {
+            c.TimeLeft = ConfusedBehaviour.MaxTimeLeft;
+            return;
+        }
+
+        behaviour.PreviousBehaviour = BehaviourStates.CurrentState;
+        BehaviourStates.CurrentState = behaviour;
+    }
+
     private void OnDeath()
     {
         World.onHeroCommand -= RunBehaviour;
         World.onHeroCommand -= DamagerComponent.Damage;
+        HealthComponent.OnDeath -= OnDeath;
         World.Stats.AddExperience(expInside);
         Dispose();
     }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MonoGame.Extended;
 using Roguelike.Actors.Enemies.AI.Behaviour;
 using Roguelike.Actors.Enemies.AI.StateMachine;
 using Roguelike.Core;
@@ -7,9 +8,6 @@ namespace Roguelike.Actors.Enemies;
 
 public class Froggy : Enemy, IActorCreatable<Froggy>
 {
-    private CowardlyBehaviour cowardlyBehaviour;
-    private EnemyBehaviour defaultBehaviour;
-
     public Froggy(BaseGame game) : base(game)
     {
     }
@@ -32,28 +30,30 @@ public class Froggy : Enemy, IActorCreatable<Froggy>
     {
         var machine = new StateMachine<EnemyBehaviour>(nameof(Froggy));
 
-        defaultBehaviour = new AggressiveBehaviour(this);
-        cowardlyBehaviour = new CowardlyBehaviour(this);
+        var defaultBehaviour = new AggressiveBehaviour(this);
+        var cowardlyBehaviour = new CowardlyBehaviour(this);
+        var confusedBehaviour = new ConfusedBehaviour(this);
+
+        var random = new FastRandom();
+
+
         machine.Add(defaultBehaviour)
             .GoesTo(cowardlyBehaviour)
             .Calls(x =>
             {
                 if (HealthComponent.HealthRatio < 0.5)
                     x.Next();
-                x.Behaviour.State.Run();
+                x.State.Run();
             });
 
         machine.Add(cowardlyBehaviour)
             .GoesTo(defaultBehaviour)
-            .OnEnter(() =>
-            {
-                cowardlyBehaviour.GenerateHidingSpot();
-            })
+            .OnEnter(() => { cowardlyBehaviour.GenerateHidingSpot(); })
             .Calls(x =>
             {
                 if (HealthComponent.HealthRatio >= 0.5)
                     x.Next();
-                x.Behaviour.State.Run();
+                x.State.Run();
                 HealthComponent.Health += 5;
             });
 
