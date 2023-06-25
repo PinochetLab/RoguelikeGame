@@ -81,14 +81,14 @@ public class Inventory : BaseGameSystem
         {
             Attacks =
             {
-                new SwordAttack { range = { Vector2Int.Zero, Vector2Int.Up }, Damage = 10 }
+                new SwordAttack { Range = { Vector2Int.Zero, Vector2Int.Up }, Damage = 10 }
             }
         };
         Items[1] = new GenericBowItem
         {
             Attacks =
             {
-                new BowAttack<Arrow> { Arrow = Arrow.GetPrototype(Game, 10), range = { new Vector2Int(10, 0) } }
+                new BowAttack<Arrow> { Arrow = Arrow.GetPrototype(Game, 10), Range = { new Vector2Int(10, 0) } }
             }
         };
 

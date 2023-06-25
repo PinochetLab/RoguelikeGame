@@ -12,6 +12,8 @@ public abstract class Enemy : Actor, IDamageable
     protected EnemyBehaviour behaviour;
     protected ColliderComponent colliderComponent;
     protected DamagerComponent damagerComponent;
+
+    protected int expInside;
     protected HealthComponent healthComponent;
 
     protected Slider healthSlider;
@@ -58,6 +60,7 @@ public abstract class Enemy : Actor, IDamageable
     {
         World.onPlayerMove -= RunBehaviour;
         World.onPlayerMove -= damagerComponent.Damage;
+        World.Stats.AddExperience(expInside);
         Dispose();
     }
 

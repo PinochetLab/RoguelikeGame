@@ -23,8 +23,6 @@ public abstract class BaseWorldComponent : BaseGameSystem
     public PathFinder Paths { get; protected set; }
     public StatsManager Stats { get; protected set; }
 
-    public Hero Hero { get; protected set; }
-
     public event Action onPlayerMove;
 
     /// <summary>

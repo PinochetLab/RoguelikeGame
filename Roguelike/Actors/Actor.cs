@@ -78,10 +78,10 @@ public class Actor : DrawableGameComponent
     /// <summary>
     ///     Данная функция возвращает первый найденный компонент необходимого типа.
     /// </summary>
-    public TComp GetComponent<TComp>() where TComp : Component, new()
+    public TComponent GetComponent<TComponent>() where TComponent : Component
     {
         foreach (var component in components)
-            if (component is TComp t)
+            if (component is TComponent t)
                 return t;
 
         return null;

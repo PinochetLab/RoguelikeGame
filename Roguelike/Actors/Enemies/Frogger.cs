@@ -24,6 +24,7 @@ public class Frogger : Enemy, IActorCreatable<Frogger>
         healthComponent.SetMaxHealth(20);
         behaviour = new LazyBehaviour(this);
         damagerComponent.Damages = new Dictionary<Vector2Int, int> { { Vector2Int.Up, 10 }, { Vector2Int.Zero, 15 } };
+        expInside = 75;
     }
 
     public override void TakeDamage(int damage)

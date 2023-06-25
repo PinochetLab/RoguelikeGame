@@ -6,6 +6,7 @@ using MonoGame.Extended.Input;
 using Roguelike.Actors.InventoryUtils;
 using Roguelike.Actors.InventoryUtils.Items;
 using Roguelike.Components;
+using Roguelike.Components.AttackModifiers;
 using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
 using Roguelike.Core;
@@ -18,7 +19,7 @@ namespace Roguelike.Actors;
 /// </summary>
 public class Hero : Actor, IActorCreatable<Hero>, IDamageable
 {
-    public static Hero Instance { get; private set; }
+    private AttackModifierComponent attackModifierComponentComponent;
 
     private ColliderComponent collider;
 
@@ -34,12 +35,14 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
 
     private WeaponItem weaponItem;
 
-    public WeaponSlot WeaponSlot { get; set; }
-
     public Hero(BaseGame game) : base(game)
     {
         Instance = this;
     }
+
+    public static Hero Instance { get; private set; }
+
+    public WeaponSlot WeaponSlot { get; set; }
 
     /// <summary>
     ///     Тэг главного персонажа.
@@ -115,6 +118,8 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         healthComponent.OnDeath += GameOver;
         healthComponent.OnHealthChange += OnHealthChange;
         healthComponent.Initialize();
+
+        attackModifierComponentComponent = AddComponent<HeroAttackModifierComponent>();
     }
 
     private void GameOver()
