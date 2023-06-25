@@ -6,7 +6,7 @@ using MonoGame.Extended.Collections;
 using Roguelike.Core;
 using Roguelike.Field;
 
-namespace Roguelike.Actors.AI;
+namespace Roguelike.Actors.Enemies.AI;
 
 public class PathFinder : BaseGameSystem
 {
@@ -115,7 +115,7 @@ public class PathFinder : BaseGameSystem
 
     public bool DoesSee(Vector2Int start, Vector2Int end)
     {
-        Vector2 s = start;
+        var s = (Vector2)start + Vector2.One * 0.5f;
         Vector2 e = end;
         var acc = 100;
         for (var i = 1; i < acc; i++)

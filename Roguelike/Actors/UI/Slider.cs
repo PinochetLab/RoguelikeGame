@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Roguelike.Components.Sprites;
 using Roguelike.Core;
 
@@ -11,7 +13,11 @@ public class Slider : Actor, IActorCreatable<Slider>
     private Actor fillActor;
     private SpriteComponent fillSC;
 
+    private Vector2Int offset = new(0, -30);
+
     private float ratio;
+
+    private Vector2Int sliderSize = new(60, 10);
 
     public Slider(BaseGame game) : base(game)
     {
@@ -30,9 +36,27 @@ public class Slider : Actor, IActorCreatable<Slider>
         set => fillSC.Color = value;
     }
 
-    public Vector2Int Offset { get; set; } = new(0, 30);
+    public Vector2Int Offset
+    {
+        get => offset;
+        set
+        {
+            offset = value;
+            backgroundActor.Transform.Position = Transform.Position + offset;
+        }
+    }
 
-    public Vector2Int SliderSize { get; set; } = new(60, 10);
+    public Vector2Int SliderSize
+    {
+        get => sliderSize;
+        set
+        {
+            sliderSize = value;
+            backgroundSC.Size = sliderSize;
+            fillSC.Size = sliderSize;
+            fillActor.Transform.Position = backgroundActor.Transform.Position - new Vector2Int(sliderSize.X / 2, 0);
+        }
+    }
 
 
     public float Ratio
@@ -40,6 +64,7 @@ public class Slider : Actor, IActorCreatable<Slider>
         get => ratio;
         set
         {
+            value = Math.Clamp(value, 0, 1);
             ratio = value;
             fillSC.Transform.Scale = new Vector2(ratio, 1);
         }
@@ -47,7 +72,7 @@ public class Slider : Actor, IActorCreatable<Slider>
 
     public static Slider Create(BaseGame game)
     {
-        return new(game);
+        return new Slider(game);
     }
 
 
@@ -55,23 +80,21 @@ public class Slider : Actor, IActorCreatable<Slider>
     {
         base.Initialize();
 
-        var offset = new Vector2Int(Offset.X, -Offset.Y);
-
-        Transform.IsTile = false;
+        Transform.IsCanvas = true;
 
         backgroundActor = Game.World.CreateActor(Transform.Position + offset);
 
         backgroundActor.Transform.Parent = Transform;
-        backgroundActor.Transform.IsTile = false;
+        backgroundActor.Transform.IsCanvas = true;
 
         backgroundSC = backgroundActor.AddComponent<SpriteComponent>();
         backgroundSC.SetTexture("WhiteCell");
         backgroundSC.Size = SliderSize;
-        backgroundSC.Canvas = true;
 
         fillActor = Game.World.CreateActor(Transform.Position + offset - new Vector2Int(SliderSize.X / 2, 0));
+        Debug.WriteLine("create: " + (Transform.Position + offset - new Vector2Int(SliderSize.X / 2, 0)));
         fillActor.Transform.Parent = backgroundActor.Transform;
-        fillActor.Transform.IsTile = false;
+        fillActor.Transform.IsCanvas = true;
 
 
         fillSC = fillActor.AddComponent<SpriteComponent>();
@@ -80,7 +103,6 @@ public class Slider : Actor, IActorCreatable<Slider>
         fillSC.Size = SliderSize;
         fillSC.Pivot = new Vector2(0, 0.5f);
         Ratio = ratio;
-        fillSC.Canvas = true;
         fillSC.DrawOrder = 1;
     }
 }

@@ -18,7 +18,7 @@ public class Wall : Actor, IActorCreatable<Wall>
 
     public static Wall Create(BaseGame game)
     {
-        return new(game);
+        return new Wall(game);
     }
 
     public override void Initialize()

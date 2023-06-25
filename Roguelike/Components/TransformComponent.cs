@@ -19,12 +19,14 @@ public class TransformComponent : Component
     private TransformComponent parent;
     private Vector2Int position = Vector2Int.Zero;
 
+    private bool positionSet;
+
     /// <summary>
     ///     Если данное поле истино, объект является объектом на тайловом поле, его спрайт будет иметь позицию соответствующей
     ///     клетки,
     ///     а размер будет браться за размер клетки.
     /// </summary>
-    public bool IsTile { get; set; } = true;
+    public bool IsCanvas { get; set; } = false;
 
 
     /// <summary>
@@ -49,10 +51,17 @@ public class TransformComponent : Component
         get => position;
         set
         {
+            if (!positionSet)
+            {
+                positionSet = true;
+                position = value;
+                return;
+            }
+
             var offset = value - position;
             position = value;
             foreach (var child in Children)
-                if (IsTile && !child.IsTile) child.Position += offset * FieldInfo.CellSizeVector;
+                if (!IsCanvas && child.IsCanvas) child.Position += offset * FieldInfo.CellSizeVector;
                 else child.Position += offset;
         }
     }
@@ -97,5 +106,11 @@ public class TransformComponent : Component
     /// <summary>
     ///     Угол поворота, относительно оси Z.
     /// </summary>
-    public float Angle { get; set; } = 0;
+    public float Angle { get; set; }
+
+    public Vector2Int Direction
+    {
+        get => new((int)MathF.Cos(Angle), (int)MathF.Sin(Angle));
+        set => Angle = MathF.Atan2(value.Y, value.X);
+    }
 }

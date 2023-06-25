@@ -19,7 +19,7 @@ public class WeaponSlot : Actor, IActorCreatable<WeaponSlot>
 
     public static WeaponSlot Create(BaseGame game)
     {
-        return new(game);
+        return new WeaponSlot(game);
     }
 
     public override void Initialize()

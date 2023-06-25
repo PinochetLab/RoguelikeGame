@@ -15,7 +15,7 @@ public static class FieldInfo
     /// <summary>
     ///     Высота экрана в пикселях.
     /// </summary>
-    public static int ScreenHeight { get; set; } = 850;
+    public static int ScreenHeight { get; set; } = 900;
 
     /// <summary>
     ///     Ширина поля в клетках (поле - квадратное).
