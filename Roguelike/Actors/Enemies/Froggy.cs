@@ -25,6 +25,7 @@ public class Froggy : Enemy, IActorCreatable<Froggy>
         SpriteComponent.SetTexture("Frog");
         HealthComponent.SetMaxHealth(40, true);
         DamagerComponent.Damages = new Dictionary<Vector2Int, int> { { Vector2Int.Up, 5 }, { Vector2Int.Zero, 10 } };
+        expInside = 100;
     }
 
     public override StateMachine<EnemyBehaviour> InitializeBehaviour()

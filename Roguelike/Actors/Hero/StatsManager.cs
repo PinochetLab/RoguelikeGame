@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
+using Roguelike.Actors;
 using Roguelike.Actors.UI;
 using Roguelike.Components;
 using Roguelike.Components.Sprites;
@@ -9,11 +11,19 @@ namespace Roguelike;
 
 public class StatsManager : BaseGameSystem
 {
-    private const int LevelCount = 5;
-    private static readonly int[] Healths = new int[LevelCount] { 100, 120, 150, 200, 300 };
-    private static readonly int[] Experiences = new int[LevelCount] { 100, 120, 150, 200, 300 };
+    private const int BaseHealth = 100;
+    private const int HealthIncrement = 50;
 
-    private static readonly Color[] ExpColors = new Color[LevelCount]
+    private const int BaseExp = 100;
+    private const int ExpIncrement = 100;
+
+    private const int BaseDamageModifier = 0;
+    private const float DamageModifierIncrement = 0.1f;
+
+    private const float BaseDamageMultiplier = 1;
+    private const float DamageMultiplierIncrement = 0.1f;
+
+    private static readonly Color[] ExpColors =
     {
         Color.Blue,
         Color.Yellow,
@@ -36,6 +46,14 @@ public class StatsManager : BaseGameSystem
     {
     }
 
+    public int MaxHealth => BaseHealth + HealthIncrement * currentLevel;
+    public int MaxExp => BaseExp + ExpIncrement * currentLevel;
+
+    public int DamageModifier => BaseDamageModifier + (int)(DamageModifierIncrement * currentLevel);
+    public float DamageMultiplier => BaseDamageMultiplier + DamageMultiplierIncrement * currentLevel;
+
+    public event Action onLevelUp;
+
     public void SetHealth(int health)
     {
         currentHealth = health;
@@ -51,25 +69,20 @@ public class StatsManager : BaseGameSystem
 
     private void UpdateInterface()
     {
-        healthSlider.Ratio = (float)currentHealth / Healths[currentLevel];
-        experienceSlider.Ratio = (float)currentExp / Experiences[currentLevel];
-        experienceSlider.FillColor = ExpColors[currentLevel];
+        healthSlider.Ratio = (float)currentHealth / MaxHealth;
+        experienceSlider.Ratio = (float)currentExp / MaxExp;
+        experienceSlider.FillColor = ExpColors[currentLevel % ExpColors.Length];
         levelText.Text = (currentLevel + 1).ToString();
     }
 
     public bool TryUpgrade()
     {
-        if (currentLevel >= LevelCount - 1)
-        {
-            currentLevel = LevelCount - 1;
-            return false;
-        }
-
-        if (currentExp < Experiences[currentLevel]) return false;
-        currentExp -= Experiences[currentLevel];
+        if (currentExp < MaxExp) return false;
+        currentExp -= MaxExp;
         currentLevel++;
-        Game.World.Hero.UpdateHealth(Healths[currentLevel]);
+        Hero.Instance.UpdateHealth(MaxHealth);
         UpdateInterface();
+        onLevelUp?.Invoke();
         return true;
     }
 

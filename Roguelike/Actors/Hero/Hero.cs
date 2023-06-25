@@ -6,6 +6,7 @@ using Roguelike.Actors.InventoryUtils;
 using Roguelike.Actors.InventoryUtils.Items;
 using Roguelike.Commands;
 using Roguelike.Components;
+using Roguelike.Components.AttackModifiers;
 using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
 using Roguelike.Core;
@@ -18,6 +19,8 @@ namespace Roguelike.Actors;
 /// </summary>
 public class Hero : Actor, IActorCreatable<Hero>, IDamageable
 {
+    private AttackModifierComponent attackModifierComponentComponent;
+
     private ColliderComponent collider;
 
     private HealthComponent healthComponent;
@@ -115,6 +118,8 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         healthComponent.OnDeath += GameOver;
         healthComponent.OnHealthChange += OnHealthChange;
         healthComponent.Initialize();
+
+        attackModifierComponentComponent = AddComponent<HeroAttackModifierComponent>();
     }
 
 

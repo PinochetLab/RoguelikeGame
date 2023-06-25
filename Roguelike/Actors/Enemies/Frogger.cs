@@ -24,6 +24,7 @@ public class Frogger : Enemy, IActorCreatable<Frogger>
         SpriteComponent.Color = Color.Yellow;
         HealthComponent.SetMaxHealth(20, true);
         DamagerComponent.Damages = new Dictionary<Vector2Int, int> { { Vector2Int.Up, 10 }, { Vector2Int.Zero, 15 } };
+        expInside = 75;
     }
 
     public override StateMachine<EnemyBehaviour> InitializeBehaviour()
