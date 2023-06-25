@@ -40,9 +40,15 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         Instance = this;
     }
 
+    /// <summary>
+    ///     Синглтон персонажа
+    /// </summary>
     public static Hero Instance { get; private set; }
 
-    public WeaponSlot WeaponSlot { get; set; }
+    /// <summary>
+    ///     Отображение выбранного персонажем предмета в мире
+    /// </summary>
+    public WeaponSlot WeaponSlot { get; private set; }
 
     /// <summary>
     ///     Тэг главного персонажа.
@@ -50,9 +56,14 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
 
     public override string Tag => Tags.HeroTag;
 
+    /// <summary>
+    ///     Направление в котором смотрит персонаж
+    /// </summary>
     public Vector2Int CurrentDirection { get; private set; } = Vector2Int.Right;
 
-
+    /// <summary>
+    ///     Предмет выбранный персонажем
+    /// </summary>
     public Item Item
     {
         get => item;
@@ -128,6 +139,9 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         ((RoguelikeGame)Game).GameOver();
     }
 
+    /// <summary>
+    ///     Сдвинуть персонажа в заданном направлении
+    /// </summary>
     public void MoveDirection(Direction direction)
     {
         WeaponSlot.Transform.Direction = direction;
@@ -179,19 +193,25 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         Game.World.Commands.Invoke();
     }
 
+    /// <summary>
+    ///     Использвоать текущий выбранный предмет если это возможно
+    /// </summary>
     public void TryAttack()
     {
         //TODO different attacks on different keys or something
         var attack = weaponItem?.Attacks.FirstOrDefault();
         attack?.Attack(this, CurrentDirection);
-        if (weaponItem is OneUseItem) Inventory.Remove(item);
+        if (weaponItem is OneUseItem) Inventory.Remove(Item);
     }
 
     private void OnHealthChange()
     {
-        World.Stats.SetHealth(healthComponent.Health);
+        World.Stats.Health = healthComponent.Health;
     }
 
+    /// <summary>
+    ///     Изменить максимальное здоровье игрока
+    /// </summary>
     public void UpdateHealth(int health)
     {
         healthComponent.SetMaxHealth(health, true);

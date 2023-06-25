@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
-using MonoGame.Extended;
 using Roguelike.Actors.Enemies.AI.Behaviour;
 using Roguelike.Actors.Enemies.AI.StateMachine;
 using Roguelike.Core;
 
 namespace Roguelike.Actors.Enemies;
 
+/// <summary>
+///     Агрессивная лягушка - враг
+/// </summary>
 public class Froggy : Enemy, IActorCreatable<Froggy>
 {
     public Froggy(BaseGame game) : base(game)
@@ -26,16 +28,12 @@ public class Froggy : Enemy, IActorCreatable<Froggy>
         expInside = 100;
     }
 
-    public override StateMachine<EnemyBehaviour> InitializeBehaviour()
+    protected override StateMachine<EnemyBehaviour> InitializeBehaviour()
     {
         var machine = new StateMachine<EnemyBehaviour>(nameof(Froggy));
 
         var defaultBehaviour = new AggressiveBehaviour(this);
         var cowardlyBehaviour = new CowardlyBehaviour(this);
-        var confusedBehaviour = new ConfusedBehaviour(this);
-
-        var random = new FastRandom();
-
 
         machine.Add(defaultBehaviour)
             .GoesTo(cowardlyBehaviour)

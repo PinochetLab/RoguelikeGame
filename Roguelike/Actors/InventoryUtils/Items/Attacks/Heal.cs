@@ -4,6 +4,9 @@ using Roguelike.Core;
 
 namespace Roguelike.Actors.InventoryUtils.Items.Attacks;
 
+/// <summary>
+///     Данный класс отвечает за лечение.
+/// </summary>
 public class Heal : ISpecialAttack
 {
     public Heal(int healAmount)
@@ -11,7 +14,11 @@ public class Heal : ISpecialAttack
         HealAmount = healAmount;
     }
 
+    /// <summary>
+    ///     Количество ислечиваемого здоровья
+    /// </summary>
     public int HealAmount { get; set; }
+
     public List<Vector2Int> Range { get; set; } = new();
 
     public void Attack(Actor actor, Direction direction)

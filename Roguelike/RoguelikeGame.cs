@@ -16,7 +16,6 @@ public sealed class RoguelikeGame : BaseGame
 {
     private static readonly string ContentRoot = "Content";
     private static readonly string MapsFolder = Path.Combine(ContentRoot, "Maps");
-    public bool IsGameOver { get; private set; }
 
     /// <summary>
     ///     Констуктор. Здесь происходит инициализация игрового окна.
@@ -26,6 +25,8 @@ public sealed class RoguelikeGame : BaseGame
         Content.RootDirectory = ContentRoot;
         IsMouseVisible = true;
     }
+
+    public bool IsGameOver { get; private set; }
 
     /// <summary>
     ///     Инициализация игры.

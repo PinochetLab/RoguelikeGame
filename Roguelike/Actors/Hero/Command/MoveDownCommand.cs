@@ -3,6 +3,9 @@ using Roguelike.Core;
 
 namespace Roguelike.Commands;
 
+/// <summary>
+///     Данный класс отвечает за команду игрока двигаться вниз
+/// </summary>
 public class MoveDownCommand : HeroCommand
 {
     public MoveDownCommand(Hero hero) : base(hero)

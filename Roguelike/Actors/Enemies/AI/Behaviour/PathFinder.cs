@@ -11,12 +11,13 @@ namespace Roguelike.Actors.Enemies.AI.Behaviour;
 public class PathFinder : BaseGameSystem
 {
     private Cell[,] grid;
-    public int WorldHeight { get; private set; }
-    public int WorldWidth { get; private set; }
 
     public PathFinder(BaseGame game) : base(game)
     {
     }
+
+    public int WorldHeight { get; private set; }
+    public int WorldWidth { get; private set; }
 
     public override void Initialize()
     {

@@ -8,6 +8,9 @@ using Roguelike.Core;
 
 namespace Roguelike.Actors.Enemies;
 
+/// <summary>
+///     Данный класс отвечает абстрактного врага
+/// </summary>
 public abstract class Enemy : Actor, IDamageable
 {
     protected StateMachine<EnemyBehaviour> BehaviourStates;
@@ -54,13 +57,16 @@ public abstract class Enemy : Actor, IDamageable
         BehaviourStates = InitializeBehaviour();
     }
 
-    public abstract StateMachine<EnemyBehaviour> InitializeBehaviour();
+    protected abstract StateMachine<EnemyBehaviour> InitializeBehaviour();
 
-    public void RunBehaviour()
+    private void RunBehaviour()
     {
         BehaviourStates.Process(1);
     }
 
+    /// <summary>
+    ///     Налагает на врага эффект конфузии
+    /// </summary>
     public void Confuse()
     {
         var confusion = BehaviourStates.GetBehaviour<ConfusedBehaviour>(0);
@@ -94,7 +100,7 @@ public abstract class Enemy : Actor, IDamageable
         World.onHeroCommand -= RunBehaviour;
         World.onHeroCommand -= DamagerComponent.Damage;
         HealthComponent.OnDeath -= OnDeath;
-        World.Stats.AddExperience(expInside);
+        World.Stats.Exp += expInside;
         Dispose();
     }
 

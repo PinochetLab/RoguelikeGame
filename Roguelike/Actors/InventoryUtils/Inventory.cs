@@ -73,6 +73,9 @@ public class Inventory : BaseGameSystem
         UpdateCell(index);
     }
 
+    /// <summary>
+    ///     Данный метод очищает инвентарь.
+    /// </summary>
     public static void Clear()
     {
         for (var i = 0; i < MaxElementsCount; i++)
@@ -82,6 +85,9 @@ public class Inventory : BaseGameSystem
         }
     }
 
+    /// <summary>
+    ///     Данный метод инициализирует начальный инвентарь игрока.
+    /// </summary>
     public override void Initialize()
     {
         base.Initialize();
@@ -161,6 +167,9 @@ public class Inventory : BaseGameSystem
         Game.World.Commands.Invoke();
     }
 
+    /// <summary>
+    ///     Данный метод меняет текущий выбранный предмет в инвентаре.
+    /// </summary>
     public void Scroll(int count)
     {
         var next = selected + count;

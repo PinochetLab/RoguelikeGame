@@ -7,9 +7,16 @@ using Roguelike.Core;
 
 namespace Roguelike.Actors.InventoryUtils.Items.Attacks;
 
+/// <summary>
+///     Данный класс отвечает за атаку мечом.
+/// </summary>
 public class SwordAttack : IMeleeAttack
 {
+    /// <summary>
+    ///     Урон наносимый мечом
+    /// </summary>
     public int Damage { get; set; }
+
     public List<Vector2Int> Range { get; set; } = new();
 
     public void Attack(Actor actor, Direction direction)

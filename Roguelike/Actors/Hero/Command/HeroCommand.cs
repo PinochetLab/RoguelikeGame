@@ -2,6 +2,9 @@
 
 namespace Roguelike.Commands;
 
+/// <summary>
+///     Данный класс отвечает за команду игрока персонажу
+/// </summary>
 public class HeroCommand : ICommand
 {
     protected Hero hero;

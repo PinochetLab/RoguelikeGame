@@ -6,6 +6,9 @@ using Roguelike.Core;
 
 namespace Roguelike.Actors.Enemies;
 
+/// <summary>
+///     Ленивая лягушка - враг
+/// </summary>
 public class Frogger : Enemy, IActorCreatable<Frogger>
 {
     public Frogger(BaseGame game) : base(game)
@@ -27,7 +30,7 @@ public class Frogger : Enemy, IActorCreatable<Frogger>
         expInside = 75;
     }
 
-    public override StateMachine<EnemyBehaviour> InitializeBehaviour()
+    protected override StateMachine<EnemyBehaviour> InitializeBehaviour()
     {
         var machine = new StateMachine<EnemyBehaviour>(nameof(Froggy));
 

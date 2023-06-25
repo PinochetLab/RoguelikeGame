@@ -3,6 +3,9 @@ using Roguelike.Actors.InventoryUtils.Items.Attacks;
 
 namespace Roguelike.Actors.InventoryUtils.Items;
 
+/// <summary>
+///     Курица из КФЦ, хилит при использовании
+/// </summary>
 public class ItemKFC : OneUseItem
 {
     public ItemKFC()

@@ -2,6 +2,9 @@
 
 namespace Roguelike.Commands;
 
+/// <summary>
+///     Данный класс отвечает за команду игрока поменять текущий предмет в инвентаре
+/// </summary>
 public class ScrollCommand : ICommand
 {
     private readonly int count;

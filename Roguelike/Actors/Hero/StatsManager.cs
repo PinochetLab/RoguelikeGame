@@ -9,6 +9,9 @@ using Roguelike.Field;
 
 namespace Roguelike;
 
+/// <summary>
+///     Данный класс отвечает за параменры персонажа, опыт и уровни
+/// </summary>
 public class StatsManager : BaseGameSystem
 {
     private const int BaseHealth = 100;
@@ -33,6 +36,7 @@ public class StatsManager : BaseGameSystem
     };
 
     private int currentExp;
+
     private int currentHealth;
 
     private int currentLevel;
@@ -46,26 +50,57 @@ public class StatsManager : BaseGameSystem
     {
     }
 
+    /// <summary>
+    ///     Текущий опыт игрока
+    /// </summary>
+    public int Exp
+    {
+        get => currentExp;
+        set
+        {
+            currentExp = value;
+            UpdateInterface();
+            TryUpgrade();
+        }
+    }
+
+    /// <summary>
+    ///     Текущее здоровье игрока
+    /// </summary>
+    public int Health
+    {
+        get => currentHealth;
+        set
+        {
+            currentHealth = value;
+            UpdateInterface();
+        }
+    }
+
+    /// <summary>
+    ///     Максимальное здоровье персонажа на текущем уровне
+    /// </summary>
     public int MaxHealth => BaseHealth + HealthIncrement * currentLevel;
+
+    /// <summary>
+    ///     Опыт необходимый для перехода на следующий уровень
+    /// </summary>
     public int MaxExp => BaseExp + ExpIncrement * currentLevel;
 
+    /// <summary>
+    ///     Модификатор урона на текущем уровне
+    /// </summary>
     public int DamageModifier => BaseDamageModifier + (int)(DamageModifierIncrement * currentLevel);
+
+    /// <summary>
+    ///     Мультипликатор урона на текущем уровне
+    /// </summary>
     public float DamageMultiplier => BaseDamageMultiplier + DamageMultiplierIncrement * currentLevel;
 
-    public event Action onLevelUp;
-
-    public void SetHealth(int health)
-    {
-        currentHealth = health;
-        UpdateInterface();
-    }
-
-    public void AddExperience(int exp)
-    {
-        currentExp += exp;
-        UpdateInterface();
-        TryUpgrade();
-    }
+    /// <summary>
+    ///     Запускается при повышении уровня игрока
+    /// </summary>
+    public event Action OnLevelUp;
 
     private void UpdateInterface()
     {
@@ -75,14 +110,14 @@ public class StatsManager : BaseGameSystem
         levelText.Text = (currentLevel + 1).ToString();
     }
 
-    public bool TryUpgrade()
+    private bool TryUpgrade()
     {
         if (currentExp < MaxExp) return false;
         currentExp -= MaxExp;
         currentLevel++;
         Hero.Instance.UpdateHealth(MaxHealth);
         UpdateInterface();
-        onLevelUp?.Invoke();
+        OnLevelUp?.Invoke();
         return true;
     }
 
