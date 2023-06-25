@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using Roguelike.Actors;
-using Roguelike.Actors.Enemies.AI.Behaivour;
+using Roguelike.Actors.Enemies.AI.Behaviour;
 using Roguelike.Commands;
 using Roguelike.Components.Colliders;
 

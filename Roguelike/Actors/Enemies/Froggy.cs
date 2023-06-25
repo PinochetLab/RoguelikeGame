@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Roguelike.Actors.Enemies.AI.Behaivour;
+using Roguelike.Actors.Enemies.AI.Behaviour;
 using Roguelike.Actors.Enemies.AI.StateMachine;
 using Roguelike.Core;
 
@@ -7,8 +7,8 @@ namespace Roguelike.Actors.Enemies;
 
 public class Froggy : Enemy, IActorCreatable<Froggy>
 {
-    private LazyBehaviour cowardBehaviour;
-    private AggressiveBehaviour defaultBehaviour;
+    private CowardlyBehaviour cowardlyBehaviour;
+    private EnemyBehaviour defaultBehaviour;
 
     public Froggy(BaseGame game) : base(game)
     {
@@ -16,7 +16,7 @@ public class Froggy : Enemy, IActorCreatable<Froggy>
 
     public static Froggy Create(BaseGame game)
     {
-        return new(game);
+        return new Froggy(game);
     }
 
     public override void Initialize()
@@ -33,9 +33,9 @@ public class Froggy : Enemy, IActorCreatable<Froggy>
         var machine = new StateMachine<EnemyBehaviour>(nameof(Froggy));
 
         defaultBehaviour = new AggressiveBehaviour(this);
-        cowardBehaviour = new LazyBehaviour(this);
+        cowardlyBehaviour = new CowardlyBehaviour(this);
         machine.Add(defaultBehaviour)
-            .GoesTo(cowardBehaviour)
+            .GoesTo(cowardlyBehaviour)
             .Calls(x =>
             {
                 if (HealthComponent.HealthRatio < 0.5)
@@ -43,8 +43,12 @@ public class Froggy : Enemy, IActorCreatable<Froggy>
                 x.Behaviour.State.Run();
             });
 
-        machine.Add(cowardBehaviour)
+        machine.Add(cowardlyBehaviour)
             .GoesTo(defaultBehaviour)
+            .OnEnter(() =>
+            {
+                cowardlyBehaviour.GenerateHidingSpot();
+            })
             .Calls(x =>
             {
                 if (HealthComponent.HealthRatio >= 0.5)

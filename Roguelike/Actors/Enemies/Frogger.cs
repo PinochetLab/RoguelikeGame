@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Roguelike.Actors.Enemies.AI.Behaivour;
+using Roguelike.Actors.Enemies.AI.Behaviour;
 using Roguelike.Actors.Enemies.AI.StateMachine;
 using Roguelike.Core;
 
@@ -14,7 +14,7 @@ public class Frogger : Enemy, IActorCreatable<Frogger>
 
     public static Frogger Create(BaseGame game)
     {
-        return new(game);
+        return new Frogger(game);
     }
 
     public override void Initialize()

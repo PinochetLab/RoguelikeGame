@@ -1,4 +1,4 @@
-﻿using Roguelike.Actors.Enemies.AI.Behaivour;
+﻿using Roguelike.Actors.Enemies.AI.Behaviour;
 using Roguelike.Actors.Enemies.AI.StateMachine;
 using Roguelike.Actors.UI;
 using Roguelike.Components;
@@ -13,10 +13,10 @@ public abstract class Enemy : Actor, IDamageable
     protected StateMachine<EnemyBehaviour> BehaviourStates;
     protected ColliderComponent ColliderComponent;
     protected DamagerComponent DamagerComponent;
-    protected HealthComponent HealthComponent;
 
     protected int expInside;
-    
+    protected HealthComponent HealthComponent;
+
     protected Slider HealthSlider;
 
     protected SpriteComponent SpriteComponent;

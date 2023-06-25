@@ -6,13 +6,13 @@ using MonoGame.Extended.Collections;
 using Roguelike.Core;
 using Roguelike.Field;
 
-namespace Roguelike.Actors.Enemies.AI.Behaivour;
+namespace Roguelike.Actors.Enemies.AI.Behaviour;
 
 public class PathFinder : BaseGameSystem
 {
     private Cell[,] grid;
-    private int height;
-    private int width;
+    public int WorldHeight { get; private set; }
+    public int WorldWidth { get; private set; }
 
     public PathFinder(BaseGame game) : base(game)
     {
@@ -22,20 +22,20 @@ public class PathFinder : BaseGameSystem
     {
         base.Initialize();
 
-        width = FieldInfo.CellCount;
-        height = FieldInfo.CellCount;
+        WorldWidth = FieldInfo.CellCount;
+        WorldHeight = FieldInfo.CellCount;
 
-        grid = new Cell[width, height];
+        grid = new Cell[WorldWidth, WorldHeight];
 
-        for (var i = 0; i < width; i++)
-        for (var j = 0; j < height; j++)
+        for (var i = 0; i < WorldWidth; i++)
+        for (var j = 0; j < WorldHeight; j++)
             grid[i, j] = new Cell(i, j, Game.World.Colliders.ContainsSolid(new Vector2Int(i, j)));
     }
 
     public void GeneratePath(Vector2Int s, Vector2Int e)
     {
-        for (var i = 0; i < width; i++)
-        for (var j = 0; j < height; j++)
+        for (var i = 0; i < WorldWidth; i++)
+        for (var j = 0; j < WorldHeight; j++)
             grid[i, j].Reset();
 
         var start = grid[s.X, s.Y];
@@ -104,11 +104,11 @@ public class PathFinder : BaseGameSystem
         var neighbors = new List<Cell>();
         if (current.X > 0)
             neighbors.Add(grid[current.X - 1, current.Y]);
-        if (current.X < width - 1)
+        if (current.X < WorldWidth - 1)
             neighbors.Add(grid[current.X + 1, current.Y]);
         if (current.Y > 0)
             neighbors.Add(grid[current.X, current.Y - 1]);
-        if (current.Y < height - 1)
+        if (current.Y < WorldHeight - 1)
             neighbors.Add(grid[current.X, current.Y + 1]);
         return neighbors.Shuffle(new Random()).ToList();
     }

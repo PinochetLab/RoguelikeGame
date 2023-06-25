@@ -1,4 +1,4 @@
-﻿namespace Roguelike.Actors.Enemies.AI.Behaivour;
+﻿namespace Roguelike.Actors.Enemies.AI.Behaviour;
 
 public abstract class EnemyBehaviour
 {
