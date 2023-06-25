@@ -184,6 +184,7 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         //TODO different attacks on different keys or something
         var attack = weaponItem?.Attacks.FirstOrDefault();
         attack?.Attack(this, CurrentDirection);
+        if (weaponItem is OneUseItem) Inventory.Remove(item);
     }
 
     private void OnHealthChange()

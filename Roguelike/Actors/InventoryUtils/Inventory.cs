@@ -63,6 +63,16 @@ public class Inventory : BaseGameSystem
         UpdateCell(index);
     }
 
+    /// <summary>
+    ///     Данный метод убирает предмет из инвентаря.
+    /// </summary>
+    public static void Remove(Item item)
+    {
+        var index = Items.FindIndex(x => x == item);
+        Items[index] = null;
+        UpdateCell(index);
+    }
+
     public static void Clear()
     {
         for (var i = 0; i < MaxElementsCount; i++)
