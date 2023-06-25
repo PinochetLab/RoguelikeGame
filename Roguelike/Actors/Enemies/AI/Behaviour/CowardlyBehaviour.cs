@@ -2,7 +2,9 @@
 using Roguelike.Core;
 
 namespace Roguelike.Actors.Enemies.AI.Behaviour;
-
+/// <summary>
+///     Трусливое поведение - бежит от игрока и регенерирует
+/// </summary>
 public class CowardlyBehaviour : EnemyBehaviour
 {
     private readonly FastRandom random = new();

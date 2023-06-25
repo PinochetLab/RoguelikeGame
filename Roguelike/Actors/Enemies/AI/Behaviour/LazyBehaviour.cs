@@ -1,15 +1,17 @@
 ﻿namespace Roguelike.Actors.Enemies.AI.Behaviour;
-
+/// <summary>
+///     Ленивое поведение - Не реагирует на игрока пока не атакован, потом преследует игрока если видит, дальше забывает об игроке
+/// </summary>
 public class LazyBehaviour : EnemyBehaviour
 {
-    public const int Cooldown = 3;
+    private const int Cooldown = 3;
     private int rage;
 
     public LazyBehaviour(Actor actor) : base(actor)
     {
     }
 
-    public int Rage
+    private int Rage
     {
         get => rage;
         set

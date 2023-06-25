@@ -7,7 +7,9 @@ using Roguelike.Core;
 using Roguelike.Field;
 
 namespace Roguelike.Actors.Enemies.AI.Behaviour;
-
+/// <summary>
+///     Класс отвечающий за карту и поиск пути по ней
+/// </summary>
 public class PathFinder : BaseGameSystem
 {
     private Cell[,] grid;
@@ -15,8 +17,13 @@ public class PathFinder : BaseGameSystem
     public PathFinder(BaseGame game) : base(game)
     {
     }
-
+    /// <summary>
+    ///     Высота мира
+    /// </summary>
     public int WorldHeight { get; private set; }
+    /// <summary>
+    ///     Ширина мира
+    /// </summary>
     public int WorldWidth { get; private set; }
 
     public override void Initialize()
@@ -32,8 +39,8 @@ public class PathFinder : BaseGameSystem
         for (var j = 0; j < WorldHeight; j++)
             grid[i, j] = new Cell(i, j, Game.World.Colliders.ContainsSolid(new Vector2Int(i, j)));
     }
-
-    public void GeneratePath(Vector2Int s, Vector2Int e)
+    
+    private void GeneratePath(Vector2Int s, Vector2Int e)
     {
         for (var i = 0; i < WorldWidth; i++)
         for (var j = 0; j < WorldHeight; j++)
@@ -72,7 +79,7 @@ public class PathFinder : BaseGameSystem
         }
     }
 
-    public List<Vector2Int> GetPath(Vector2Int start, Vector2Int end)
+    private List<Vector2Int> GetPath(Vector2Int start, Vector2Int end)
     {
         GeneratePath(start, end);
         var path = new List<Vector2Int>();
@@ -88,6 +95,9 @@ public class PathFinder : BaseGameSystem
         return path;
     }
 
+    /// <summary>
+    /// Выдает следующую клетку на пути из start в end
+    /// </summary>
     public Vector2Int NextCell(Vector2Int start, Vector2Int end)
     {
         var path = GetPath(start, end);
@@ -114,6 +124,9 @@ public class PathFinder : BaseGameSystem
         return neighbors.Shuffle(new Random()).ToList();
     }
 
+    /// <summary>
+    /// Проверяет, видно ли из одной точки другую
+    /// </summary>
     public bool DoesSee(Vector2Int start, Vector2Int end)
     {
         var s = (Vector2)start + Vector2.One * 0.5f;
@@ -129,7 +142,7 @@ public class PathFinder : BaseGameSystem
         return true;
     }
 
-    public record Cell(int X, int Y, bool IsWall)
+    private record Cell(int X, int Y, bool IsWall)
     {
         public int DistanceFromStart { get; set; } = int.MaxValue;
         public int DistanceToEnd { get; set; } = int.MaxValue;

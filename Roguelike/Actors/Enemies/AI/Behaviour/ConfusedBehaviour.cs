@@ -4,7 +4,9 @@ using System.Linq;
 using Roguelike.Core;
 
 namespace Roguelike.Actors.Enemies.AI.Behaviour;
-
+/// <summary>
+///     Замешательство - движется в случайных направлениях MaxTimeLeft ходов
+/// </summary>
 public class ConfusedBehaviour : EnemyBehaviour
 {
     public const int MaxTimeLeft = 4;
