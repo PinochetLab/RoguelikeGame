@@ -9,14 +9,16 @@ namespace Roguelike.Core;
 
 public abstract class BaseGame : Game
 {
-    private readonly List<IDrawable> drawablesForAdd = new();
+    private readonly List<DrawableComponent> drawablesForAdd = new();
 
-    private readonly List<IDrawable> drawablesForRemove = new();
+    private readonly List<DrawableComponent> drawablesForRemove = new();
+
+    private readonly ConcurrentDictionary<string, SpriteFont> fonts = new();
 
     protected readonly GraphicsDeviceManager Graphics;
 
     private readonly ConcurrentDictionary<string, Texture2D> textures = new();
-    private List<IDrawable> drawables = new();
+    private List<DrawableComponent> drawables = new();
     private BaseWorldComponent world;
 
     /// <summary>
@@ -36,7 +38,7 @@ public abstract class BaseGame : Game
     public BaseWorldComponent World
     {
         get => world;
-        protected set
+        set
         {
             if (world is not null)
             {
@@ -64,6 +66,16 @@ public abstract class BaseGame : Game
 
         var value = Content.Load<Texture2D>(path);
         textures.TryAdd(path, value);
+        return value;
+    }
+
+    public SpriteFont GetSpriteFont(string path)
+    {
+        if (fonts.TryGetValue(path, out var font))
+            return font;
+
+        var value = Content.Load<SpriteFont>(path);
+        fonts.TryAdd(path, font);
         return value;
     }
 
@@ -95,7 +107,7 @@ public abstract class BaseGame : Game
 
         SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-        drawables = drawables.OrderBy(x => x.Canvas ? 100 : 0 + x.DrawOrder).ToList();
+        drawables = drawables.OrderBy(x => (x.Transform.IsCanvas ? 100 : 0) + x.DrawOrder).ToList();
         drawables.ForEach(x => x.Draw(gameTime, SpriteBatch));
 
         SpriteBatch.End();
@@ -104,7 +116,7 @@ public abstract class BaseGame : Game
     /// <summary>
     ///     Метод отвечающий за добавление нового объекта, требующего отрисовки, для последующей работы с ним.
     /// </summary>
-    public void AddDrawable(IDrawable drawable)
+    public void AddDrawable(DrawableComponent drawable)
     {
         drawablesForAdd.Add(drawable);
     }
@@ -112,7 +124,7 @@ public abstract class BaseGame : Game
     /// <summary>
     ///     Метод, отвечающий за удаление (забывание) объекта, требующего отрисовки.
     /// </summary>
-    public void RemoveDrawable(IDrawable drawable)
+    public void RemoveDrawable(DrawableComponent drawable)
     {
         drawablesForRemove.Add(drawable);
     }

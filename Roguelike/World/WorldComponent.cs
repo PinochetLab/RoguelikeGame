@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using Roguelike.Actors;
-using Roguelike.Actors.AI;
+using Roguelike.Commands;
 using Roguelike.Core;
 using Roguelike.Field;
 
@@ -12,70 +12,30 @@ public class WorldComponent : BaseWorldComponent
 {
     private const string FloorTextureName = "GrassTile";
     private Texture2D floorTexture;
+
+    private bool initialized;
     private SpriteBatch spriteBatch;
 
-    public WorldComponent(BaseGame game) : base(game)
+    public WorldComponent(BaseGame game, Vector2Int heroSpawnPoint) : base(game)
     {
+        HeroSpawnPoint = heroSpawnPoint;
     }
+
+    public Vector2Int HeroSpawnPoint { get; protected set; }
 
     public override void Initialize()
     {
+        if (initialized)
+            return;
+        initialized = true;
         base.Initialize();
+
+        Commands = new CommandInvoker(Game);
+
         CreateActor<ItemHolder>(7, 3);
 
+        CreateActor<Hero>(HeroSpawnPoint);
 
-        CreateActor<Enemy>(11, 2);
-
-        CreateActor<Wall>(9, 1);
-        CreateActor<Wall>(9, 2);
-        CreateActor<Wall>(9, 3);
-        CreateActor<Wall>(9, 4);
-        CreateActor<Wall>(9, 5);
-        CreateActor<Wall>(9, 6);
-        CreateActor<Wall>(9, 7);
-        CreateActor<Wall>(9, 8);
-        CreateActor<Wall>(9, 9);
-        CreateActor<Wall>(9, 10);
-        CreateActor<Wall>(10, 10);
-        CreateActor<Wall>(11, 10);
-
-        CreateActor<Hero>(9, 7);
-
-        CreateActor<Wall>(8, 9);
-        CreateActor<Wall>(7, 9);
-        CreateActor<Wall>(6, 9);
-        CreateActor<Wall>(5, 9);
-        CreateActor<Wall>(4, 9);
-        CreateActor<Wall>(3, 9);
-        CreateActor<Wall>(3, 10);
-        CreateActor<Wall>(3, 11);
-        CreateActor<Wall>(3, 12);
-
-        CreateActor<Wall>(5, 11);
-        CreateActor<Wall>(5, 12);
-        CreateActor<Wall>(5, 13);
-
-        CreateActor<Wall>(1, 4);
-        CreateActor<Wall>(2, 4);
-        CreateActor<Wall>(3, 4);
-        CreateActor<Wall>(4, 4);
-        CreateActor<Wall>(4, 4);
-
-        CreateActor<Box>(2, 2);
-
-
-        for (var i = 0; i < FieldInfo.CellCount; i++)
-        {
-            CreateActor<Wall>(0, i);
-            CreateActor<Wall>(FieldInfo.CellCount - 1, i);
-
-            if (i <= 0 || i >= FieldInfo.CellCount - 1) continue;
-
-            CreateActor<Wall>(i, 0);
-            CreateActor<Wall>(i, FieldInfo.CellCount - 1);
-        }
-
-        Paths = new PathFinder(Game);
         Paths.Initialize();
     }
 

@@ -1,4 +1,10 @@
-﻿using Roguelike;
+global using static Roguelike.Consts;
+using Roguelike;
 
-using var game = new RoguelikeGame();
-game.Run();
+
+while (true)
+{
+    using var game = new RoguelikeGame();
+    game.Run();
+    if (!game.IsGameOver) break;
+}

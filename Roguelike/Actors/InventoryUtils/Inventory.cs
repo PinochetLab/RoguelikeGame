@@ -3,6 +3,8 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Input;
 using Roguelike.Actors.InventoryUtils.Items;
+using Roguelike.Actors.InventoryUtils.Items.Attacks;
+using Roguelike.Commands;
 using Roguelike.Components.Sprites;
 using Roguelike.Core;
 using Roguelike.Field;
@@ -61,6 +63,19 @@ public class Inventory : BaseGameSystem
         UpdateCell(index);
     }
 
+    /// <summary>
+    ///     Данный метод убирает предмет из инвентаря.
+    /// </summary>
+    public static void Remove(Item item)
+    {
+        var index = Items.FindIndex(x => x == item);
+        Items[index] = null;
+        UpdateCell(index);
+    }
+
+    /// <summary>
+    ///     Данный метод очищает инвентарь.
+    /// </summary>
     public static void Clear()
     {
         for (var i = 0; i < MaxElementsCount; i++)
@@ -70,14 +85,29 @@ public class Inventory : BaseGameSystem
         }
     }
 
+    /// <summary>
+    ///     Данный метод инициализирует начальный инвентарь игрока.
+    /// </summary>
     public override void Initialize()
     {
         base.Initialize();
 
         Items[3] = new ItemCoin();
 
-        Items[0] = new Sword1Item();
-        Items[1] = new Bow1Item();
+        Items[0] = new GenericSwordItem
+        {
+            Attacks =
+            {
+                new SwordAttack { Range = { Vector2Int.Zero, Vector2Int.Up }, Damage = 10 }
+            }
+        };
+        Items[1] = new GenericBowItem
+        {
+            Attacks =
+            {
+                new BowAttack<Arrow> { Arrow = Arrow.GetPrototype(Game, 10), Range = { new Vector2Int(10, 0) } }
+            }
+        };
 
         for (var i = 0; i < MaxElementsCount; i++)
         {
@@ -92,19 +122,19 @@ public class Inventory : BaseGameSystem
 
             var cellBorderActor = Game.World.CreateActor(cellPosition);
             CellBorders[i] = cellBorderActor.AddComponent<SpriteComponent>();
+            CellBorders[i].Transform.IsCanvas = true;
             CellBorders[i].SetTexture("Cell3");
             CellBorders[i].Size = Vector2Int.One * CellSize;
-            CellBorders[i].Transform.IsTile = false;
-            CellBorders[i].Canvas = true;
-            CellBorders[i].DrawOrder = 0;
+            CellBorders[i].Transform.IsCanvas = true;
+            CellBorders[i].DrawOrder = 5;
 
             var cellActor = Game.World.CreateActor(cellPosition);
             Cells[i] = cellActor.AddComponent<SpriteComponent>();
+            Cells[i].Transform.IsCanvas = true;
             Cells[i].Transform.Scale = Vector2.One * 0.5f;
             Cells[i].Size = Vector2Int.One * CellSize;
-            Cells[i].Transform.IsTile = false;
-            Cells[i].Canvas = true;
-            Cells[i].DrawOrder = 1;
+            Cells[i].Transform.IsCanvas = true;
+            Cells[i].DrawOrder = 6;
 
             if (Items[i] == null) continue;
 
@@ -131,7 +161,18 @@ public class Inventory : BaseGameSystem
     public override void Update(GameTime deltaTime)
     {
         var state = MouseExtended.GetState();
-        var next = selected + state.DeltaScrollWheelValue / 120;
+        var count = state.DeltaScrollWheelValue / 120;
+        if (count == 0) return;
+        Game.World.Commands.SetCommand(new ScrollCommand(this, count));
+        Game.World.Commands.Invoke();
+    }
+
+    /// <summary>
+    ///     Данный метод меняет текущий выбранный предмет в инвентаре.
+    /// </summary>
+    public void Scroll(int count)
+    {
+        var next = selected + count;
         if (next == selected) return;
         if (next >= MaxElementsCount) next = 0;
         else if (next < 0) next = MaxElementsCount - 1;

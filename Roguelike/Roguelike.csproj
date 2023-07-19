@@ -6,6 +6,7 @@
         <PublishReadyToRun>false</PublishReadyToRun>
         <TieredCompilation>false</TieredCompilation>
         <LangVersion>11</LangVersion>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
     <PropertyGroup>
         <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -22,7 +23,7 @@
     <ItemGroup>
         <Compile Remove="Actors\InterfaceActor.cs"/>
         <Compile Remove="Actors\InventoryUtils\Image.cs"/>
-        <Compile Remove="Components\SpriteComponent\ImageComponent.cs"/>
+        <Compile Remove="Components\DrawableComponents\ImageComponent.cs"/>
     </ItemGroup>
     <ItemGroup>
         <None Remove="Icon.ico"/>

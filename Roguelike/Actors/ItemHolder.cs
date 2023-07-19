@@ -13,6 +13,7 @@ namespace Roguelike.Actors;
 public class ItemHolder : Actor, IActorCreatable<ItemHolder>
 {
     private ColliderComponent collider;
+    private Item item;
     private SpriteComponent spriteComponent;
 
     public ItemHolder(BaseGame game) : base(game)
@@ -21,7 +22,7 @@ public class ItemHolder : Actor, IActorCreatable<ItemHolder>
 
     public static ItemHolder Create(BaseGame game)
     {
-        return new(game);
+        return new ItemHolder(game);
     }
 
     public override void Initialize()
@@ -30,6 +31,7 @@ public class ItemHolder : Actor, IActorCreatable<ItemHolder>
 
         spriteComponent = AddComponent<SpriteComponent>();
         spriteComponent.SetTexture("KFC");
+        item = new ItemKFC();
 
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
@@ -38,10 +40,10 @@ public class ItemHolder : Actor, IActorCreatable<ItemHolder>
 
     private void OnTriggerEnter(ColliderComponent collider)
     {
-        if (collider.Owner.Tag == Hero.HeroTag)
+        if (collider.Owner.Tag == Tags.HeroTag)
             if (Inventory.HasFreePlace())
             {
-                Inventory.Add(new ItemKFC());
+                Inventory.Add(item);
                 Dispose();
             }
     }

@@ -55,6 +55,15 @@ public class ColliderManager : IUpdateable
     }
 
     /// <summary>
+    ///     Данный метод возвращает все объекты необходимого типа в клетке, если такой присутствует, и null в противном случае.
+    /// </summary>
+    public IEnumerable<T> FindAll<T>(Vector2Int v) where T : class
+    {
+        if (ColliderMap.TryGetValue(v, out var g)) return g.FindAll(x => x?.Owner is T).Select(x => x.Owner as T);
+        return new List<T>();
+    }
+
+    /// <summary>
     ///     Данный метод удаляет коллайдер игрового объекта с поля, если он у него существует.
     /// </summary>
     public void Remove(Vector2Int v, Actor actor)

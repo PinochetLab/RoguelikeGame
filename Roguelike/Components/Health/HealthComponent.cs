@@ -2,15 +2,18 @@
 
 namespace Roguelike.Components;
 
+/// <summary>
+///     Данный компонент отвечает за наличие у актора здоровья
+/// </summary>
 public class HealthComponent : Component
 {
-    private float health = 100;
+    private int health = 100;
 
-    private float maxHealth = 100;
+    private int maxHealth = 100;
 
-    public float HealthRatio => health / maxHealth;
+    public float HealthRatio => (float)health / maxHealth;
 
-    public float Health
+    public int Health
     {
         get => health;
         set
@@ -26,12 +29,30 @@ public class HealthComponent : Component
         }
     }
 
+    /// <summary>
+    ///     Вызывается если здоровья достигает нуля
+    /// </summary>
     public event Action OnDeath;
+
+    /// <summary>
+    ///     Вызывается при изменении здоровья
+    /// </summary>
     public event Action OnHealthChange;
 
-    public void SetMaxHealth(float maxHealth, bool updateHealth = false)
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        OnHealthChange?.Invoke();
+    }
+
+    /// <summary>
+    ///     Установить максимальное здоровье
+    /// </summary>
+    public void SetMaxHealth(int maxHealth, bool updateHealth = false)
     {
         this.maxHealth = maxHealth;
         if (updateHealth) health = maxHealth;
+        OnHealthChange?.Invoke();
     }
 }

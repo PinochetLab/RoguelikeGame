@@ -5,7 +5,7 @@ using Roguelike.Core;
 namespace Roguelike.Actors;
 
 /// <summary>
-///     Данный класс - класс стены.
+///     Ящик. Разрушаемый.
 /// </summary>
 public class Box : Actor, IActorCreatable<Box>, IDamageable
 {
@@ -18,10 +18,10 @@ public class Box : Actor, IActorCreatable<Box>, IDamageable
 
     public static Box Create(BaseGame game)
     {
-        return new(game);
+        return new Box(game);
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(int damage)
     {
         Dispose();
     }
