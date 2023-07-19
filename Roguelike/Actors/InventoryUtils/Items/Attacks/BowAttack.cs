@@ -6,9 +6,19 @@ using Roguelike.Core;
 
 namespace Roguelike.Actors.InventoryUtils.Items.Attacks;
 
+/// <summary>
+///     Данный класс отвечает за атаку луком.
+/// </summary>
 public class BowAttack<TAmmo> : IRangeAttack where TAmmo : Actor, ICloneable
 {
+    /// <summary>
+    ///     Прототип снаряда
+    /// </summary>
     public TAmmo Arrow { get; set; }
+
+    /// <summary>
+    ///     Дистанция атаки
+    /// </summary>
     public List<Vector2Int> Range { get; set; } = new();
 
     public void Attack(Actor actor, Direction direction)

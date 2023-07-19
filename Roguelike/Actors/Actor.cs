@@ -88,10 +88,9 @@ public class Actor : DrawableGameComponent
     }
 
     /// <summary>
-    ///     Данный метод вызывает инициализацию игрового объекта, создаёт компонент TransformComponent
-    ///     и добавляет текущий игровой компонент в глобальный список игровых объектов.
+    ///     Данный метод вызывает инициализацию игрового объекта и создаёт компонент TransformComponent
     /// </summary>
-    public virtual void Initialize(Vector2Int position)
+    public void Spawn(Vector2Int position)
     {
         Transform = AddComponent<TransformComponent>();
         Transform.Position = position;

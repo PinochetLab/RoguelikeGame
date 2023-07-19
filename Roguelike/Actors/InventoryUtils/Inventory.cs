@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended.Input;
 using Roguelike.Actors.InventoryUtils.Items;
 using Roguelike.Actors.InventoryUtils.Items.Attacks;
+using Roguelike.Commands;
 using Roguelike.Components.Sprites;
 using Roguelike.Core;
 using Roguelike.Field;
@@ -62,6 +63,19 @@ public class Inventory : BaseGameSystem
         UpdateCell(index);
     }
 
+    /// <summary>
+    ///     Данный метод убирает предмет из инвентаря.
+    /// </summary>
+    public static void Remove(Item item)
+    {
+        var index = Items.FindIndex(x => x == item);
+        Items[index] = null;
+        UpdateCell(index);
+    }
+
+    /// <summary>
+    ///     Данный метод очищает инвентарь.
+    /// </summary>
     public static void Clear()
     {
         for (var i = 0; i < MaxElementsCount; i++)
@@ -71,6 +85,9 @@ public class Inventory : BaseGameSystem
         }
     }
 
+    /// <summary>
+    ///     Данный метод инициализирует начальный инвентарь игрока.
+    /// </summary>
     public override void Initialize()
     {
         base.Initialize();
@@ -144,7 +161,18 @@ public class Inventory : BaseGameSystem
     public override void Update(GameTime deltaTime)
     {
         var state = MouseExtended.GetState();
-        var next = selected + state.DeltaScrollWheelValue / 120;
+        var count = state.DeltaScrollWheelValue / 120;
+        if (count == 0) return;
+        Game.World.Commands.SetCommand(new ScrollCommand(this, count));
+        Game.World.Commands.Invoke();
+    }
+
+    /// <summary>
+    ///     Данный метод меняет текущий выбранный предмет в инвентаре.
+    /// </summary>
+    public void Scroll(int count)
+    {
+        var next = selected + count;
         if (next == selected) return;
         if (next >= MaxElementsCount) next = 0;
         else if (next < 0) next = MaxElementsCount - 1;
