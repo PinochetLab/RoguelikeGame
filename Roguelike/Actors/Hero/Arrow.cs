@@ -7,6 +7,9 @@ using Roguelike.Core;
 
 namespace Roguelike.Actors;
 
+/// <summary>
+///     Данный класс отвечает за стрелу, которой стреляет игрок
+/// </summary>
 public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
 {
     private ColliderComponent collider;
@@ -21,8 +24,14 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
 
     public override string Tag => Tags.ArrowTag;
 
+    /// <summary>
+    ///     Летит ли стрела
+    /// </summary>
     public bool IsMoving { get; set; } = true;
 
+    /// <summary>
+    ///     Урон наносимый стрелой при касании
+    /// </summary>
     public int Damage
     {
         get => damage;
@@ -48,20 +57,23 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
     public override void Initialize()
     {
         base.Initialize();
-        World.onPlayerMove += Move;
+        World.onHeroCommand += Move;
 
         spriteComponent = AddComponent<SpriteComponent>();
         spriteComponent.SetTexture("Arrow");
 
         damagerComponent = AddComponent<DamagerComponent>();
         damagerComponent.Damages = new Dictionary<Vector2Int, int> { { Vector2Int.Zero, Damage } };
-        World.onPlayerMove += damagerComponent.Damage;
+        World.onHeroCommand += damagerComponent.Damage;
 
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
         collider.OnTriggerEnter += OnTriggerEnter;
     }
 
+    /// <summary>
+    ///     Создает за пределами экрана неподвижную стрелу с заданным уроном
+    /// </summary>
     public static Arrow GetPrototype(BaseGame game, int damage)
     {
         var prototype = game.World.CreateActor<Arrow>();
@@ -71,7 +83,7 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
         return prototype;
     }
 
-    public void Move()
+    private void Move()
     {
         if (!IsMoving) return;
         Transform.Position += Transform.Direction;
@@ -79,11 +91,11 @@ public class Arrow : Actor, IActorCreatable<Arrow>, ICloneable
 
     protected override void Dispose(bool isDisposing)
     {
-        World.onPlayerMove -= damagerComponent.Damage;
+        World.onHeroCommand -= damagerComponent.Damage;
         base.Dispose(isDisposing);
     }
 
-    public void OnTriggerEnter(ColliderComponent other)
+    private void OnTriggerEnter(ColliderComponent other)
     {
         if (other.Type == ColliderType.Solid) Dispose();
     }

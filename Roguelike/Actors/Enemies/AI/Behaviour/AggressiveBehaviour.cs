@@ -1,10 +1,13 @@
-﻿namespace Roguelike.Actors.Enemies.AI;
+﻿namespace Roguelike.Actors.Enemies.AI.Behaviour;
 
-public class AgressiveBehaviour : EnemyBehaviour
+/// <summary>
+///     Агрессивное поведение - атакует и преследует игрока если видит
+/// </summary>
+public class AggressiveBehaviour : EnemyBehaviour
 {
     private bool haveSeenHero;
 
-    public AgressiveBehaviour(Actor actor) : base(actor)
+    public AggressiveBehaviour(Actor actor) : base(actor)
     {
     }
 

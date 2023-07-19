@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using Roguelike.Actors;
-using Roguelike.Actors.Enemies.AI;
+using Roguelike.Actors.Enemies.AI.Behaviour;
+using Roguelike.Commands;
 using Roguelike.Components.Colliders;
 
 namespace Roguelike.Core;
@@ -24,9 +25,11 @@ public abstract class BaseWorldComponent : BaseGameSystem
     public PathFinder Paths { get; protected set; }
     public StatsManager Stats { get; protected set; }
 
+    public CommandInvoker Commands { get; protected set; }
+
     public Hero Hero { get; protected set; }
 
-    public event Action onPlayerMove;
+    public event Action onHeroCommand;
 
     public override void Initialize()
     {
@@ -154,8 +157,8 @@ public abstract class BaseWorldComponent : BaseGameSystem
         actorsToAdd.Clear();
     }
 
-    public void TriggerOnPlayerMove()
+    public void TriggerOnHeroCommand()
     {
-        onPlayerMove?.Invoke();
+        onHeroCommand?.Invoke();
     }
 }

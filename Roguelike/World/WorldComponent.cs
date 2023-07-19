@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using Roguelike.Actors;
+using Roguelike.Commands;
 using Roguelike.Core;
 using Roguelike.Field;
 
@@ -28,6 +29,10 @@ public class WorldComponent : BaseWorldComponent
             return;
         initialized = true;
         base.Initialize();
+
+        Commands = new CommandInvoker(Game);
+
+        CreateActor<ItemHolder>(7, 3);
 
         CreateActor<Hero>(HeroSpawnPoint);
 
