@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
 using Roguelike.Actors.InventoryUtils;
 using Roguelike.Actors.InventoryUtils.Items;
+using Roguelike.Commands;
 using Roguelike.Components;
 using Roguelike.Components.AttackModifiers;
 using Roguelike.Components.Colliders;
@@ -40,9 +40,15 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         Instance = this;
     }
 
+    /// <summary>
+    ///     Синглтон персонажа
+    /// </summary>
     public static Hero Instance { get; private set; }
 
-    public WeaponSlot WeaponSlot { get; set; }
+    /// <summary>
+    ///     Отображение выбранного персонажем предмета в мире
+    /// </summary>
+    public WeaponSlot WeaponSlot { get; private set; }
 
     /// <summary>
     ///     Тэг главного персонажа.
@@ -50,9 +56,14 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
 
     public override string Tag => Tags.HeroTag;
 
+    /// <summary>
+    ///     Направление в котором смотрит персонаж
+    /// </summary>
     public Vector2Int CurrentDirection { get; private set; } = Vector2Int.Right;
 
-
+    /// <summary>
+    ///     Предмет выбранный персонажем
+    /// </summary>
     public Item Item
     {
         get => item;
@@ -122,80 +133,85 @@ public class Hero : Actor, IActorCreatable<Hero>, IDamageable
         attackModifierComponentComponent = AddComponent<HeroAttackModifierComponent>();
     }
 
+
     private void GameOver()
     {
-        Inventory.Clear();
-        Transform.Position = FieldInfo.Center;
-        Dispose();
+        ((RoguelikeGame)Game).GameOver();
     }
 
-    public override void Update(GameTime time)
+    /// <summary>
+    ///     Сдвинуть персонажа в заданном направлении
+    /// </summary>
+    public void MoveDirection(Direction direction)
     {
-        base.Update(time);
+        WeaponSlot.Transform.Direction = direction;
 
-        keyState = KeyboardExtended.GetState();
-
-        if (MoveLogic() || HitLogic()) World.TriggerOnPlayerMove();
-    }
-
-    private bool MoveLogic()
-    {
-        var direction = Vector2Int.Zero;
-        var state = keyState;
-
-        if (state.WasKeyJustUp(Keys.D))
+        switch (direction)
         {
-            direction = Vector2Int.Right;
-            WeaponSlot.Transform.Angle = 0;
-            spriteComponent.FlipX = false;
-            itemSpriteComponent.DrawOrder = 1;
-        }
-        else if (state.WasKeyJustUp(Keys.A))
-        {
-            direction = Vector2Int.Left;
-            WeaponSlot.Transform.Angle = MathF.PI;
-            spriteComponent.FlipX = true;
-            itemSpriteComponent.DrawOrder = 3;
-        }
-        else if (state.WasKeyJustUp(Keys.W))
-        {
-            direction = Vector2Int.Up;
-            WeaponSlot.Transform.Angle = -MathF.PI / 2;
-        }
-        else if (state.WasKeyJustUp(Keys.S))
-        {
-            direction = Vector2Int.Down;
-            WeaponSlot.Transform.Angle = MathF.PI / 2;
+            case Direction.Right:
+                spriteComponent.FlipX = false;
+                itemSpriteComponent.DrawOrder = 1;
+                break;
+            case Direction.Left:
+                spriteComponent.FlipX = true;
+                itemSpriteComponent.DrawOrder = 3;
+                break;
+            case Direction.Up:
+                break;
+            case Direction.Down:
+                break;
         }
 
         if (direction != Vector2Int.Zero) CurrentDirection = direction;
 
         if (direction == Vector2Int.Zero ||
             (World.Colliders.ContainsSolid(Transform.Position + direction) &&
-             !World.Colliders.ContainsSolid(Transform.Position))) return false;
+             !World.Colliders.ContainsSolid(Transform.Position))) return;
 
         Transform.Position += direction;
-
-        return true;
     }
 
-    private bool HitLogic()
+    public override void Update(GameTime time)
     {
+        base.Update(time);
+
+        var direction = Vector2Int.Zero;
+        keyState = KeyboardExtended.GetState();
         var state = keyState;
-        if (!state.WasKeyJustUp(Keys.Space)) return false;
 
 
+        if (state.WasKeyJustUp(Keys.Space)) Game.World.Commands.SetCommand(new AttackCommand(this));
+        Game.World.Commands.Invoke();
+
+        if (state.WasKeyJustUp(Keys.D))
+            Game.World.Commands.SetCommand(new MoveRightCommand(this));
+        else if (state.WasKeyJustUp(Keys.A))
+            Game.World.Commands.SetCommand(new MoveLeftCommand(this));
+        else if (state.WasKeyJustUp(Keys.W))
+            Game.World.Commands.SetCommand(new MoveUpCommand(this));
+        else if (state.WasKeyJustUp(Keys.S)) Game.World.Commands.SetCommand(new MoveDownCommand(this));
+        Game.World.Commands.Invoke();
+    }
+
+    /// <summary>
+    ///     Использвоать текущий выбранный предмет если это возможно
+    /// </summary>
+    public void TryAttack()
+    {
         //TODO different attacks on different keys or something
         var attack = weaponItem?.Attacks.FirstOrDefault();
         attack?.Attack(this, CurrentDirection);
-        return true;
+        if (weaponItem is OneUseItem) Inventory.Remove(Item);
     }
 
     private void OnHealthChange()
     {
-        World.Stats.SetHealth(healthComponent.Health);
+        World.Stats.Health = healthComponent.Health;
     }
 
+    /// <summary>
+    ///     Изменить максимальное здоровье игрока
+    /// </summary>
     public void UpdateHealth(int health)
     {
         healthComponent.SetMaxHealth(health, true);

@@ -1,9 +1,13 @@
 ﻿using System.Collections.Generic;
-using Roguelike.Actors.Enemies.AI;
+using Roguelike.Actors.Enemies.AI.Behaviour;
+using Roguelike.Actors.Enemies.AI.StateMachine;
 using Roguelike.Core;
 
 namespace Roguelike.Actors.Enemies;
 
+/// <summary>
+///     Агрессивная лягушка - враг
+/// </summary>
 public class Froggy : Enemy, IActorCreatable<Froggy>
 {
     public Froggy(BaseGame game) : base(game)
@@ -18,15 +22,46 @@ public class Froggy : Enemy, IActorCreatable<Froggy>
     public override void Initialize()
     {
         base.Initialize();
-        spriteComponent.SetTexture("Frog");
-        behaviour = new AgressiveBehaviour(this);
-        damagerComponent.Damages = new Dictionary<Vector2Int, int> { { Vector2Int.Up, 5 }, { Vector2Int.Zero, 10 } };
+        SpriteComponent.SetTexture("Frog");
+        HealthComponent.SetMaxHealth(40, true);
+        DamagerComponent.Damages = new Dictionary<Vector2Int, int> { { Vector2Int.Up, 5 }, { Vector2Int.Zero, 10 } };
         expInside = 100;
+    }
+
+    protected override StateMachine<EnemyBehaviour> InitializeBehaviour()
+    {
+        var machine = new StateMachine<EnemyBehaviour>(nameof(Froggy));
+
+        var defaultBehaviour = new AggressiveBehaviour(this);
+        var cowardlyBehaviour = new CowardlyBehaviour(this);
+
+        machine.Add(defaultBehaviour)
+            .GoesTo(cowardlyBehaviour)
+            .Calls(x =>
+            {
+                if (HealthComponent.HealthRatio < 0.5)
+                    x.Next();
+                x.State.Run();
+            });
+
+        machine.Add(cowardlyBehaviour)
+            .GoesTo(defaultBehaviour)
+            .OnEnter(() => { cowardlyBehaviour.GenerateHidingSpot(); })
+            .Calls(x =>
+            {
+                if (HealthComponent.HealthRatio >= 0.5)
+                    x.Next();
+                x.State.Run();
+                HealthComponent.Health += 5;
+            });
+
+        machine.CurrentState = defaultBehaviour;
+        return machine;
     }
 
     public override void TakeDamage(int damage)
     {
-        healthComponent.Health -= damage;
-        behaviour.IsAttacked = true;
+        HealthComponent.Health -= damage;
+        BehaviourStates.CurrentState.IsAttacked = true;
     }
 }
