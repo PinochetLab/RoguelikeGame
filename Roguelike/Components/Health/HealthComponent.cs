@@ -4,13 +4,13 @@ namespace Roguelike.Components;
 
 public class HealthComponent : Component
 {
-    private float health = 100;
+    private int health = 100;
 
-    private float maxHealth = 100;
+    private int maxHealth = 100;
 
-    public float HealthRatio => health / maxHealth;
+    public float HealthRatio => (float)health / maxHealth;
 
-    public float Health
+    public int Health
     {
         get => health;
         set
@@ -29,9 +29,17 @@ public class HealthComponent : Component
     public event Action OnDeath;
     public event Action OnHealthChange;
 
-    public void SetMaxHealth(float maxHealth, bool updateHealth = false)
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        OnHealthChange?.Invoke();
+    }
+
+    public void SetMaxHealth(int maxHealth, bool updateHealth = false)
     {
         this.maxHealth = maxHealth;
         if (updateHealth) health = maxHealth;
+        OnHealthChange?.Invoke();
     }
 }

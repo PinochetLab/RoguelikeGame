@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
-using Roguelike.Actors.AI;
 using Roguelike.Actors.InventoryUtils;
 using Roguelike.Actors.InventoryUtils.Items;
 using Roguelike.Components;
+using Roguelike.Components.AttackModifiers;
 using Roguelike.Components.Colliders;
 using Roguelike.Components.Sprites;
 using Roguelike.Core;
@@ -17,18 +17,11 @@ namespace Roguelike.Actors;
 /// <summary>
 ///     Данный класс - класс главного персонажа.
 /// </summary>
-public class Hero : Actor, IActorCreatable<Hero>
+public class Hero : Actor, IActorCreatable<Hero>, IDamageable
 {
-    /// <summary>
-    ///     Тэг главного персонажа.
-    /// </summary>
-    public const string HeroTag = "Hero";
-
-    public static Hero Instance;
+    private AttackModifierComponent attackModifierComponentComponent;
 
     private ColliderComponent collider;
-
-    private Vector2Int currentDirection = Vector2Int.Right;
 
     private HealthComponent healthComponent;
 
@@ -42,14 +35,22 @@ public class Hero : Actor, IActorCreatable<Hero>
 
     private WeaponItem weaponItem;
 
-    private WeaponSlot weaponSlot;
-
     public Hero(BaseGame game) : base(game)
     {
         Instance = this;
     }
 
-    public override string Tag => HeroTag;
+    public static Hero Instance { get; private set; }
+
+    public WeaponSlot WeaponSlot { get; set; }
+
+    /// <summary>
+    ///     Тэг главного персонажа.
+    /// </summary>
+
+    public override string Tag => Tags.HeroTag;
+
+    public Vector2Int CurrentDirection { get; private set; } = Vector2Int.Right;
 
 
     public Item Item
@@ -57,38 +58,40 @@ public class Hero : Actor, IActorCreatable<Hero>
         get => item;
         set
         {
-            if (value == null)
+            switch (value)
             {
-                weaponSlot.SpriteComponent.Visible = false;
-                itemSpriteComponent.Visible = false;
-                item = null;
-                weaponItem = null;
-            }
-            else
-            {
-                if (value is WeaponItem wi)
-                {
-                    weaponSlot.SpriteComponent.Visible = true;
-                    weaponSlot.SpriteComponent.SetTexture(value.TextureName);
+                case null:
+                    WeaponSlot.SpriteComponent.Visible = false;
+                    itemSpriteComponent.Visible = false;
+                    item = null;
+                    weaponItem = null;
+                    break;
+                case WeaponItem wi:
+                    WeaponSlot.SpriteComponent.Visible = true;
+                    WeaponSlot.SpriteComponent.SetTexture(value.TextureName);
                     itemSpriteComponent.Visible = false;
                     item = wi;
                     weaponItem = wi;
-                }
-                else
-                {
-                    weaponSlot.SpriteComponent.Visible = false;
+                    break;
+                default:
+                    WeaponSlot.SpriteComponent.Visible = false;
                     itemSpriteComponent.Visible = true;
                     itemSpriteComponent.SetTexture(value.TextureName);
                     item = value;
                     weaponItem = null;
-                }
+                    break;
             }
         }
     }
 
     public static Hero Create(BaseGame game)
     {
-        return new(game);
+        return new Hero(game);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        healthComponent.Health -= damage;
     }
 
     public override void Initialize()
@@ -107,24 +110,22 @@ public class Hero : Actor, IActorCreatable<Hero>
 
         collider = AddComponent<ColliderComponent>();
         collider.Type = ColliderType.Trigger;
-        collider.OnTriggerEnter += OnTriggerEnter;
 
-        weaponSlot = World.CreateActor<WeaponSlot>(Transform.Position);
-        weaponSlot.Transform.Parent = Transform;
+        WeaponSlot = World.CreateActor<WeaponSlot>(Transform.Position);
+        WeaponSlot.Transform.Parent = Transform;
 
         healthComponent = AddComponent<HealthComponent>();
         healthComponent.OnDeath += GameOver;
-    }
+        healthComponent.OnHealthChange += OnHealthChange;
+        healthComponent.Initialize();
 
-    private void OnTriggerEnter(ColliderComponent other)
-    {
-        if (other.Owner.Tag == Enemy.EnemyTag) healthComponent.Health -= 20;
+        attackModifierComponentComponent = AddComponent<HeroAttackModifierComponent>();
     }
 
     private void GameOver()
     {
-        Game.World.CreateActor<Hero>(FieldInfo.Center);
         Inventory.Clear();
+        Transform.Position = FieldInfo.Center;
         Dispose();
     }
 
@@ -134,18 +135,10 @@ public class Hero : Actor, IActorCreatable<Hero>
 
         keyState = KeyboardExtended.GetState();
 
-        MoveLogic();
-
-        if (weaponItem != null)
-        {
-            if (weaponItem.IsSword)
-                HitLogic();
-            else
-                ShootLogic();
-        }
+        if (MoveLogic() || HitLogic()) World.TriggerOnPlayerMove();
     }
 
-    private void MoveLogic()
+    private bool MoveLogic()
     {
         var direction = Vector2Int.Zero;
         var state = keyState;
@@ -153,77 +146,58 @@ public class Hero : Actor, IActorCreatable<Hero>
         if (state.WasKeyJustUp(Keys.D))
         {
             direction = Vector2Int.Right;
-            weaponSlot.Transform.Angle = 0;
+            WeaponSlot.Transform.Angle = 0;
             spriteComponent.FlipX = false;
             itemSpriteComponent.DrawOrder = 1;
         }
         else if (state.WasKeyJustUp(Keys.A))
         {
             direction = Vector2Int.Left;
-            weaponSlot.Transform.Angle = MathF.PI;
+            WeaponSlot.Transform.Angle = MathF.PI;
             spriteComponent.FlipX = true;
             itemSpriteComponent.DrawOrder = 3;
         }
         else if (state.WasKeyJustUp(Keys.W))
         {
             direction = Vector2Int.Up;
-            weaponSlot.Transform.Angle = -MathF.PI / 2;
+            WeaponSlot.Transform.Angle = -MathF.PI / 2;
         }
         else if (state.WasKeyJustUp(Keys.S))
         {
             direction = Vector2Int.Down;
-            weaponSlot.Transform.Angle = MathF.PI / 2;
+            WeaponSlot.Transform.Angle = MathF.PI / 2;
         }
 
-        if (direction != Vector2Int.Zero) currentDirection = direction;
+        if (direction != Vector2Int.Zero) CurrentDirection = direction;
 
         if (direction == Vector2Int.Zero ||
             (World.Colliders.ContainsSolid(Transform.Position + direction) &&
-             !World.Colliders.ContainsSolid(Transform.Position))) return;
+             !World.Colliders.ContainsSolid(Transform.Position))) return false;
 
         Transform.Position += direction;
 
-        World.MoveAll();
+        return true;
     }
 
-    private void ShootLogic()
+    private bool HitLogic()
     {
         var state = keyState;
+        if (!state.WasKeyJustUp(Keys.Space)) return false;
 
-        if (!state.WasKeyJustUp(Keys.Space)) return;
 
-        var bulletPosition = Transform.Position + currentDirection;
-
-        if (!World.Colliders.ContainsSolid(bulletPosition) &&
-            !World.Colliders.Contains<Arrow>(bulletPosition))
-        {
-            var arrow = World.CreateActor<Arrow>(bulletPosition);
-            arrow.Transform.Angle = MathF.Atan2(currentDirection.Y, currentDirection.X);
-            arrow.Damage = weaponItem.Damage;
-        }
+        //TODO different attacks on different keys or something
+        var attack = weaponItem?.Attacks.FirstOrDefault();
+        attack?.Attack(this, CurrentDirection);
+        return true;
     }
 
-    private async void HitLogic()
+    private void OnHealthChange()
     {
-        var state = keyState;
-
-        if (!state.WasKeyJustUp(Keys.Space)) return;
-
-        var p = Transform.Position + currentDirection;
-        var damageable = World.Colliders.Find<IDamageable>(p);
-        damageable?.TakeDamage(weaponItem.Damage);
-
-        Task.Run(Hit);
+        World.Stats.SetHealth(healthComponent.Health);
     }
 
-    private async Task Hit()
+    public void UpdateHealth(int health)
     {
-        for (var i = 0; i < 2; i++)
-        {
-            weaponSlot.Offset = currentDirection * 30;
-            await Task.Delay(50);
-            weaponSlot.Offset = Vector2Int.Zero;
-            await Task.Delay(50);
-        }
+        healthComponent.SetMaxHealth(health, true);
     }
 }

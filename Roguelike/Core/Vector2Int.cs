@@ -20,6 +20,15 @@ public record struct Vector2Int
     }
 
     /// <summary>
+    ///     Конструктор копирования.
+    /// </summary>
+    public Vector2Int(Vector2Int other)
+    {
+        X = other.X;
+        Y = other.Y;
+    }
+
+    /// <summary>
     ///     X-координата.
     /// </summary>
     public int X { get; set; }
@@ -87,7 +96,7 @@ public record struct Vector2Int
     /// </summary>
     public static Vector2Int operator +(Vector2Int v1, Vector2Int v2)
     {
-        return new(v1.X + v2.X, v1.Y + v2.Y);
+        return new Vector2Int(v1.X + v2.X, v1.Y + v2.Y);
     }
 
     /// <summary>
@@ -103,7 +112,7 @@ public record struct Vector2Int
     /// </summary>
     public static Vector2Int operator -(Vector2Int v)
     {
-        return new(-v.X, -v.Y);
+        return new Vector2Int(-v.X, -v.Y);
     }
 
     /// <summary>
@@ -111,7 +120,7 @@ public record struct Vector2Int
     /// </summary>
     public static Vector2Int operator *(Vector2Int v, int c)
     {
-        return new(c * v.X, c * v.Y);
+        return new Vector2Int(c * v.X, c * v.Y);
     }
 
     /// <summary>
@@ -119,7 +128,7 @@ public record struct Vector2Int
     /// </summary>
     public static Vector2Int operator *(Vector2Int v, float c)
     {
-        return new((int)(c * v.X), (int)(c * v.Y));
+        return new Vector2Int((int)(c * v.X), (int)(c * v.Y));
     }
 
     /// <summary>
@@ -135,7 +144,7 @@ public record struct Vector2Int
     /// </summary>
     public static Vector2Int operator *(Vector2Int v1, Vector2Int v2)
     {
-        return new(v1.X * v2.X, v1.Y * v2.Y);
+        return new Vector2Int(v1.X * v2.X, v1.Y * v2.Y);
     }
 
     /// <summary>
@@ -143,7 +152,7 @@ public record struct Vector2Int
     /// </summary>
     public static Vector2Int operator *(Vector2Int v1, Vector2 v2)
     {
-        return new((int)(v1.X * v2.X), (int)(v1.Y * v2.Y));
+        return new Vector2Int((int)(v1.X * v2.X), (int)(v1.Y * v2.Y));
     }
 
     /// <summary>
@@ -151,7 +160,7 @@ public record struct Vector2Int
     /// </summary>
     public static Vector2Int operator /(Vector2Int v, int c)
     {
-        return new(v.X / c, v.Y / c);
+        return new Vector2Int(v.X / c, v.Y / c);
     }
 
     /// <summary>
@@ -159,7 +168,7 @@ public record struct Vector2Int
     /// </summary>
     public static implicit operator Vector2(Vector2Int v)
     {
-        return new(v.X, v.Y);
+        return new Vector2(v.X, v.Y);
     }
 
     /// <summary>
@@ -167,7 +176,7 @@ public record struct Vector2Int
     /// </summary>
     public static implicit operator Point(Vector2Int v)
     {
-        return new(v.X, v.Y);
+        return new Point(v.X, v.Y);
     }
 
     /// <summary>
@@ -175,6 +184,48 @@ public record struct Vector2Int
     /// </summary>
     public static implicit operator Vector2Int(Vector2 v)
     {
-        return new((int)v.X, (int)v.Y);
+        return new Vector2Int((int)v.X, (int)v.Y);
+    }
+
+    public Vector2Int Rotate(Direction direction)
+    {
+        return direction switch
+        {
+            Direction.Up => new Vector2Int(this),
+            Direction.Right => new Vector2Int(-Y, X),
+            Direction.Down => new Vector2Int(-X, -Y),
+            Direction.Left => new Vector2Int(Y, -X),
+            _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+        };
+    }
+
+    public static implicit operator Vector2Int(Direction direction)
+    {
+        return direction switch
+        {
+            Direction.Up => Up,
+            Direction.Right => Right,
+            Direction.Down => Down,
+            Direction.Left => Left,
+            _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+        };
+    }
+
+    public static implicit operator Direction(Vector2Int direction)
+    {
+        return direction switch
+        {
+            (0, -1) => Direction.Up,
+            (1, 0) => Direction.Right,
+            (0, 1) => Direction.Down,
+            (-1, 0) => Direction.Left,
+            _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+        };
+    }
+
+    public void Deconstruct(out int x, out int y)
+    {
+        x = X;
+        y = Y;
     }
 }

@@ -22,7 +22,7 @@
     <ItemGroup>
         <Compile Remove="Actors\InterfaceActor.cs"/>
         <Compile Remove="Actors\InventoryUtils\Image.cs"/>
-        <Compile Remove="Components\SpriteComponent\ImageComponent.cs"/>
+        <Compile Remove="Components\DrawableComponents\ImageComponent.cs"/>
     </ItemGroup>
     <ItemGroup>
         <None Remove="Icon.ico"/>

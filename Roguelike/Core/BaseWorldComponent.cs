@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using Roguelike.Actors;
-using Roguelike.Actors.AI;
+using Roguelike.Actors.Enemies.AI;
 using Roguelike.Components.Colliders;
-using IMovable = Roguelike.Components.IMovable;
 
 namespace Roguelike.Core;
 
@@ -21,6 +21,9 @@ public abstract class BaseWorldComponent : BaseGameSystem
 
     public ColliderManager Colliders { get; protected set; } = new();
     public PathFinder Paths { get; protected set; }
+    public StatsManager Stats { get; protected set; }
+
+    public event Action onPlayerMove;
 
     /// <summary>
     ///     Данная функция создаёт игровой объект переданного типа,
@@ -118,16 +121,6 @@ public abstract class BaseWorldComponent : BaseGameSystem
             actor.Draw(gameTime);
     }
 
-    /// <summary>
-    ///     Метод, который вызывается при совершении главным героем хода. Двигает все подвижные игровые объекты.
-    /// </summary>
-    public void MoveAll()
-    {
-        foreach (var actor in actors)
-            if (actor is IMovable movable)
-                movable.Move();
-    }
-
     public void RemoveActor(Actor actor)
     {
         actorsToRemove.Add(actor);
@@ -150,5 +143,10 @@ public abstract class BaseWorldComponent : BaseGameSystem
 
         actorsToAdd.ForEach(x => actors.Add(x));
         actorsToAdd.Clear();
+    }
+
+    public void TriggerOnPlayerMove()
+    {
+        onPlayerMove?.Invoke();
     }
 }
